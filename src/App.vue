@@ -1,28 +1,81 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app id="fact-cracker" dark>
+    <v-navigation-drawer v-model="drawer" clipped fixed app dark v-if="$route.path=='/'">
+      <v-list dense>
+        <v-list-tile>
+          <v-list-tile-action>
+            <v-icon>dashboard</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>All</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile>
+          <v-list-tile-action>
+            <v-icon>settings</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Hottest</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-navigation-drawer>
+    <v-toolbar fixed app clipped-left>
+      <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
+        <v-btn icon v-if="$route.path!='/'" @click="goBack()">
+          <v-icon>arrow_back_ios</v-icon>
+        </v-btn>
+        <span class="hidden-sm-and-down">Fact Cracker 真相大白</span>
+      </v-toolbar-title>
+      <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search" class="hidden-sm-and-down"></v-text-field>
+      <v-spacer></v-spacer>
+      <v-menu bottom left>
+        <v-btn slot="activator" icon>
+          <v-icon>notifications</v-icon>
+        </v-btn>
+        <v-list two-line style="width:500px">
+          <v-subheader>System Announcement</v-subheader>
+          <v-list-tile v-for="(item) in items" :key="item.title" avatar>
+            <v-list-tile-avatar>
+              <img :src="item.avatar">
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title v-html="item.title"></v-list-tile-title>
+              <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+    </v-toolbar>
+    <router-view></router-view>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
-}
+  import {
+    Carousel,
+    Slide
+  } from "vue-carousel";
+  export default {
+    data: () => ({
+      dialog: false,
+      items: [{
+        avatar: 'https://pbs.twimg.com/profile_images/538456309603913728/ihbvZL7s_400x400.jpeg',
+        title: 'Hi everyone!',
+        subtitle: "I'll be in your neighborhood doing errands this weekend. Do you want to hang out? I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?"
+      }]
+    }),
+    components: {
+      Carousel,
+      Slide
+    },
+    props: {
+      source: String
+    },
+    methods: {
+      goBack() {
+        window.history.back();
+      }
+    }
+  };
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
