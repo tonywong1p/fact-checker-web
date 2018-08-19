@@ -43,26 +43,27 @@
 					<v-expansion-panel popout expand>
 						<v-expansion-panel-content v-for="evidence in sortedEvidences" :key="evidence.id">
 							<div slot="header" v-if="evidence.support=='1'">
-								Evidence #{{evidence.id}} - 
+								Evidence #{{evidence.id}} -
 								<span class="green--text">Support</span> with {{evidence.trust_count}} trust<span v-if="evidence.trust_count>1">s</span>
 							</div>
 							<div slot="header" v-if="evidence.support=='0'">
-								Evidence #{{evidence.id}} - 
+								Evidence #{{evidence.id}} -
 								<span class="red--text">Aginst</span> with {{evidence.trust_count}} trust<span v-if="evidence.trust_count>1">s</span>
 							</div>
 							<v-card>
-								<v-card-media :src="evidence.image_url" height="150px">
+								<v-card-media :src="evidence.image_url" v-if="evidence.image_url!=''" height="150px">
+								</v-card-media>
+								<v-card-text>{{evidence.text}}</v-card-text>
+								<v-divider></v-divider>
+								<v-card-text>
 									<v-layout>
+										<span class="caption ma-3">Created {{evidence.moment}}</span>
 										<v-spacer></v-spacer>
-										<v-btn class="ma-4" @click="addTrust(evidence)" :class="{'green':evidence.trusted && evidence.support=='1','red':evidence.trusted && evidence.support=='0'}">
+										<v-btn @click="addTrust(evidence)" :class="{'green':evidence.trusted && evidence.support=='1','red':evidence.trusted && evidence.support=='0'}">
 											<v-icon left>thumb_up</v-icon>
 											I trust it
 										</v-btn>
 									</v-layout>
-								</v-card-media>
-								<v-card-text>{{evidence.text}}</v-card-text>
-								<v-card-text>
-									<span class="caption">Created {{evidence.moment}}</span>
 								</v-card-text>
 							</v-card>
 						</v-expansion-panel-content>
@@ -70,7 +71,7 @@
 				</v-flex>
 			</v-layout>
 			<newEvidenceModal :dialog="dialog" :factId="$route.params.id"></newEvidenceModal>
-			<v-snackbar v-model="snackbar" :bottom="true" :right="true" :timeout="3000">
+			<v-snackbar v-model="snackbar" :bottom="true" :right="true" :timeout="2000">
 				Trusted! The truth will finally be exposed!
 				<v-btn color="pink" flat @click="snackbar = false">
 					Close
@@ -114,13 +115,13 @@
 					});
 				}
 				if (self.selectedSortIndex == 2) {
-					return self.evidences.filter((evidence)=> {
-						return (evidence.support=='1');
+					return self.evidences.filter((evidence) => {
+						return (evidence.support == '1');
 					});
 				}
 				if (self.selectedSortIndex == 3) {
-					return self.evidences.filter((evidence)=> {
-						return (evidence.support=='0');
+					return self.evidences.filter((evidence) => {
+						return (evidence.support == '0');
 					});
 				}
 			},
@@ -170,9 +171,13 @@
 				this.dialog = true;
 			},
 			selectSort(index) {
+				// Work around
+				this.dialog = false;
 				this.selectedSortIndex = index;
 			},
 			changeSortOrder() {
+				// Work around
+				this.dialog = false;
 				this.sortOrder = this.sortOrder * (-1);
 			},
 		},
