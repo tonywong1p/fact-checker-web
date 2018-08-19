@@ -1,37 +1,41 @@
 <template>
   <v-content>
     <v-container fluid>
-      <v-layout justify-center align-center wrap>
+      <v-layout justify-center align-center wrap v-if="isLoading">
+        <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
+      </v-layout>
+      <v-layout justify-center align-center wrap v-if="!isLoading">
         <v-flex xs12>
           <v-layout justify-end>
-            <v-btn flat icon color="pink">
-              <v-icon>arrow_downward</v-icon>
-              <v-icon>arrow_upward</v-icon>
+            <v-btn flat icon color="pink" @click="changeSortOrder()">
+              <v-icon v-if="sortOrder==1">arrow_downward</v-icon>
+              <v-icon v-if="sortOrder==-1">arrow_upward</v-icon>
             </v-btn>
-          <v-menu offset-y>
-            <v-btn flat slot="activator" color="primary" dark>
-              {{sortList[selectedSortIndex]}}
-            </v-btn>
-            <v-list>
-              <v-list-tile v-for="(item, index) in sortList" :key="index" @click="selectSort(index)">
-                <v-list-tile-title>{{item}}</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
+            <v-menu offset-y>
+              <v-btn flat slot="activator" color="primary" dark>
+                {{sortList[selectedSortIndex]}}
+              </v-btn>
+              <v-list>
+                <v-list-tile v-for="(item, index) in sortList" :key="index" @click="selectSort(index)">
+                  <v-list-tile-title>{{item}}</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
           </v-layout>
         </v-flex>
         <v-flex>
-          <carousel :paginationEnabled="true" :navigateTo="1" :perPage="4">
-            <slide v-for="fact in facts" :key="fact.id">
-              <v-card class="grey darken-1 ma-3">
+          <h3 class="title text-xs-center" v-if="sortedFacts.length==0">No related topic raised yet.</h3>
+          <carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[420, 1], [768, 4]]">
+            <slide v-for="fact in sortedFacts" :key="fact.id">
+              <v-card class="ma-3">
                 <v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px"></v-card-media>
                 <v-card-title primary-title style="height:250px;align-items:stretch">
                   <div>
-                    <h3 class="headline white--text mb-3 truncate">{{fact.title}}</h3>
+                    <h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
                     <p class="truncate white--text mb-0">{{fact.description}}</p>
                   </div>
                 </v-card-title>
-                <v-card-title class="caption pb-0">Created {{fact.createdAt}}</v-card-title>
+                <v-card-title class="caption pb-0">Created {{fact.moment}}</v-card-title>
                 <v-card-actions class="pb-3">
                   <v-chip outline class="mx-2" color="white">
                     <v-avatar>
@@ -57,7 +61,7 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <v-btn fab bottom right color="pink" dark fixed @click.stop="dialog = !dialog">
+    <v-btn fab bottom right color="pink" dark fixed @click.stop="openModal()">
       <v-icon>add</v-icon>
     </v-btn>
     <newFactModal :dialog="dialog"></newFactModal>
@@ -83,10 +87,31 @@
     data: () => ({
       dialog: false,
       facts: [],
-      sortList: ['Created at','Views','Responses'],
+      sortList: ['Created at', 'Views', 'Responses'],
+      sortOrder: 1,
       selectedSortIndex: 0,
+      isLoading: true,
     }),
-    computed: {},
+    computed: {
+      sortedFacts: function() {
+        let self = this;
+        if (self.selectedSortIndex == 0) {
+          return self.facts.sort(function(a, b) {
+            return (b.createdAt - a.createdAt) * (self.sortOrder);
+          });
+        }
+        if (self.selectedSortIndex == 1) {
+          return self.facts.sort(function(a, b) {
+            return (b.numOfView - a.numOfView) * (self.sortOrder);
+          });
+        }
+        if (self.selectedSortIndex == 2) {
+          return self.facts.sort(function(a, b) {
+            return (b.numOfChat - a.numOfChat) * (self.sortOrder);
+          });
+        }
+      },
+    },
     methods: {
       getFacts() {
         const self = this;
@@ -94,12 +119,16 @@
         this.axios.get(api).then(res => {
           self.facts = res.data;
           self.facts.forEach((el) => {
-            el.createdAt = moment(parseInt(el.createdAt)).fromNow()
-          })
+            el.moment = moment(parseInt(el.createdAt)).fromNow()
+          });
+          self.isLoading = false;
         });
       },
       selectSort(index) {
         this.selectedSortIndex = index;
+      },
+      changeSortOrder() {
+        this.sortOrder = this.sortOrder * (-1);
       },
       goToFact(factId) {
         this.$router.push({
@@ -113,10 +142,16 @@
         arr.forEach((el) => {
           el.createdAt = moment(el.createdAt).fromNow();
         })
+      },
+      openModal() {
+        this.dialog = false;
+        this.dialog = true;
       }
     },
     mounted() {
       this.getFacts();
+      // eslint-disable-next-line
+      console.log(this);
     }
   };
 </script>
