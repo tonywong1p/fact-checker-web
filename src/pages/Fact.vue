@@ -16,6 +16,10 @@
 								<a style="display:block" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
 							</div>
 						</v-card-title>
+						<v-divider></v-divider>
+						<div class="py-3">
+							<pie-chart :data="supportData" :width="200" :height="200"></pie-chart>
+						</div>
 					</v-card>
 				</v-flex>
 				<v-flex xs12 sm6>
@@ -69,6 +73,7 @@
 							</v-card>
 						</v-expansion-panel-content>
 					</v-expansion-panel>
+					{{supportTrustCount}}
 				</v-flex>
 			</v-layout>
 			<newEvidenceModal :dialog="dialog" :factId="$route.params.id"></newEvidenceModal>
@@ -84,13 +89,15 @@
 
 <script>
 	import newEvidenceModal from "@/components/newEvidence.vue";
+	import pieChart from "@/components/pieChart.vue";
 	const api_domain = 'http://localhost:3000/api';
 	// const img_server_domain = 'http://localhost:8080/uploads/';
 	var moment = require('moment');
 	
 	export default {
 		components: {
-			newEvidenceModal
+			newEvidenceModal,
+			pieChart
 		},
 		data: () => ({
 			dialog: false,
@@ -101,6 +108,13 @@
 			sortOrder: 1,
 			selectedSortIndex: 0,
 			snackbar: false,
+			// supportData: {
+			// 	labels: ['Support', 'Aginst'],
+			// 	datasets: [{
+			// 		backgroundColor: ['#4caf50', '#dc3912'],
+			// 		data: []
+			// 	}],
+			// },
 		}),
 		computed: {
 			sortedEvidences: function() {
@@ -125,6 +139,33 @@
 						return (evidence.support == '0');
 					});
 				}
+			},
+			trustCount: function() {
+				let temp = {
+					support: 0,
+					against: 0
+				};
+				this.evidences.forEach((evidence) => {
+					if (evidence.support == '1') {
+						temp.support = temp.support + evidence.trust_count;
+					}
+					if (evidence.support == '0') {
+						temp.against = temp.against + evidence.trust_count;
+					}
+				})
+				return temp;
+			},
+			supportData: function() {
+				let self = this;
+				let sum = self.trustCount.support + self.trustCount.against;
+				let supportData = {
+					labels: ['Support', 'Aginst'],
+					datasets: [{
+						backgroundColor: ['#4caf50', '#dc3912'],
+						data: [self.trustCount.support,self.trustCount.against]
+					}],
+				};
+				return supportData;
 			},
 		},
 		methods: {
