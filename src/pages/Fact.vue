@@ -162,6 +162,7 @@
 					this.axios.get(api).then(() => {
 						// eslint-disable-next-line
 						console.log("Added trust");
+						evidence.trust_count++;
 					});
 				}
 				self.snackbar = true;

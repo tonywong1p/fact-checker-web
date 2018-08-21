@@ -4,45 +4,39 @@
 			<v-card-title>
 				<h3 class="headline">New Evidence</h3>
 				<v-spacer></v-spacer>
-				<v-btn color="primary" dark @click="addEvidence()">Create
+				<v-btn color="primary" dark @click="addEvidence()" :disabled="!valid || newEvidence.image_url=='' || !newEvidence.support">Create
 					<v-icon right dark>send</v-icon>
 				</v-btn>
 			</v-card-title>
 			<v-container>
-				<v-layout row wrap>
-					<v-flex xs12>					            
-						<v-radio-group v-model="newEvidence.support" row class="mt-0">
-              <v-radio
-                label="Support"
-                color="success"
-                value="1"
-              ></v-radio>
-              <v-radio
-                label="Against"
-                color="error"
-                value="0"
-              ></v-radio>
-            </v-radio-group>
-						<vue-dropzone id="coverImage" :options="dropzoneOptions" class="mb-4" @vdropzone-success="finishUpload"></vue-dropzone>
-						<v-textarea box name="input-7-4" label="Description" v-model="newEvidence.text"></v-textarea>
-					</v-flex>
-				</v-layout>
-				<v-layout row wrap>
-					<v-flex xs10>
-						<v-text-field box label="Reference URL" append-icon="link" v-for="link in newEvidence.ref_url" :key="link.id" v-model="link.value"></v-text-field>
-					</v-flex>
-					<v-flex xs1>
-						<v-btn flat icon @click="addRef()">
-							<v-icon>add</v-icon>
-						</v-btn>
-					</v-flex>
-					<v-flex xs1 v-if="newEvidence.ref_url.length > 1">
-						<v-btn flat icon @click="removeRef()">
-							<v-icon>remove</v-icon>
-						</v-btn>
-					</v-flex>
-				</v-layout>
-				{{newEvidence}}
+				<v-form ref="form" v-model="valid" lazy-validation>
+					<v-layout row wrap>
+						<v-flex xs12>
+							<p class="grey--text">Standpoint (required)</p>
+							<v-radio-group v-model="newEvidence.support" row class="mt-0">
+								<v-radio label="Support" color="success" value="1"></v-radio>
+								<v-radio label="Against" color="error" value="0"></v-radio>
+							</v-radio-group>
+							<vue-dropzone id="coverImage" :options="dropzoneOptions" class="mb-4" @vdropzone-success="finishUpload"></vue-dropzone>
+							<v-textarea box name="input-7-4" label="Description" :counter="1000" maxlength="1000" v-model="newEvidence.text" :rules="descriptionRules" required></v-textarea>
+						</v-flex>
+					</v-layout>
+					<v-layout row wrap>
+						<v-flex xs10>
+							<v-text-field box label="Reference URL (optional)" append-icon="link" v-for="link in newEvidence.ref_url" :key="link.id" v-model="link.value"></v-text-field>
+						</v-flex>
+						<v-flex xs1>
+							<v-btn flat icon @click="addRef()">
+								<v-icon>add</v-icon>
+							</v-btn>
+						</v-flex>
+						<v-flex xs1 v-if="newEvidence.ref_url.length > 1">
+							<v-btn flat icon @click="removeRef()">
+								<v-icon>remove</v-icon>
+							</v-btn>
+						</v-flex>
+					</v-layout>
+				</v-form>
 			</v-container>
 		</v-card>
 	</v-dialog>
@@ -68,7 +62,7 @@
 				thumbnailWidth: 200,
 				maxFiles: 1,
 				maxFilesize: 5,
-				dictDefaultMessage: "Drop to upload the cover image here",
+				dictDefaultMessage: "Drop to upload the cover image here (required)",
 				addRemoveLinks: true,
 			},
 			newEvidence: {
@@ -77,8 +71,15 @@
 				ref_url: [{
 					value: ""
 				}],
-				support: 1,
+				support: null,
 			},
+			supportRules: [
+				v => !!v || 'Selection is required',
+			],
+			descriptionRules: [
+				v => !!v || 'Description is required',
+			],
+			valid: false,
 		}),
 		computed: {
 			urlArray: function() {
@@ -87,7 +88,7 @@
 						return el.value
 					} else {
 						return 'http://' + el.value
-					}	
+					}
 				});
 			}
 		},
@@ -98,18 +99,19 @@
 			addEvidence() {
 				const self = this;
 				let evidence = {
-					fact_id: this.factId,
-					text: this.newEvidence.text,
-					image_url: this.newEvidence.image_url,
-					ref_url: this.urlArray.toString(),
-					support: this.newEvidence.support,
+					fact_id: self.factId,
+					text: self.newEvidence.text,
+					image_url: self.newEvidence.image_url,
+					ref_url: self.urlArray.toString(),
+					support: self.newEvidence.support,
 				};
 				// eslint-disable-next-line
 				console.log(evidence);
-				let api = api_domain + "/facts/" + this.factId + "/evidences";
+				let api = api_domain + "/facts/" + self.factId + "/evidences";
 				self.axios.post(api, evidence).then(res => {
 					// eslint-disable-next-line
 					console.log("Added ID:" + res.data);
+					location.reload();
 				});
 			},
 			addRef() {
@@ -119,10 +121,17 @@
 			},
 			removeRef() {
 				this.newEvidence.ref_url.pop();
+			},
+			goToFact(factId) {
+				this.$router.push({
+					name: "Fact",
+					params: {
+						id: factId
+					}
+				});
 			}
 		},
-		mounted() {
-		}
+		mounted() {}
 	}
 </script>
 

@@ -94,16 +94,16 @@
 			addFact() {
 				const self = this;
 				let fact = {
-					title: this.newFact.title,
-					description: this.newFact.description,
-					ref_url: this.urlArray.toString(),
-					image_url: this.newFact.image_url,
+					title: self.newFact.title,
+					description: self.newFact.description,
+					ref_url: self.urlArray.toString(),
+					image_url: self.newFact.image_url,
 				};
 				let api = api_domain + "/facts";
 				self.axios.post(api, fact).then(res => {
 					// eslint-disable-next-line
 					console.log("Added ID:" + res.data);
-					this.goToFact(res.data);
+					self.goToFact(res.data);
 				});
 			},
 			addRef() {
