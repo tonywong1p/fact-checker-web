@@ -4,7 +4,7 @@
 			<v-layout justify-center align-center wrap v-if="isLoading">
 				<v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
 			</v-layout>
-			<v-layout row wrap>
+			<v-layout row wrap class="animated fadeIn">
 				<v-flex xs12 sm6>
 					<v-card>
 						<v-card-media :src="fact.image_url" height="300px"></v-card-media>
@@ -41,6 +41,7 @@
 						</v-menu>
 					</v-layout>
 					<v-expansion-panel popout expand>
+						<h3 class="subtitle" v-if="sortedEvidences.length==0">No related evidence raised yet.</h3>
 						<v-expansion-panel-content v-for="evidence in sortedEvidences" :key="evidence.id">
 							<div slot="header" v-if="evidence.support=='1'">
 								Evidence #{{evidence.id}} -

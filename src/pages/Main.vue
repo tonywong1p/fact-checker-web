@@ -4,7 +4,7 @@
       <v-layout justify-center align-center wrap v-if="isLoading">
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </v-layout>
-      <v-layout justify-center align-center wrap v-if="!isLoading">
+      <v-layout justify-center align-center wrap v-if="!isLoading" class="animated fadeIn">
         <v-flex xs12>
           <v-layout justify-end>
             <v-btn flat icon color="pink" @click="changeSortOrder()">
@@ -48,8 +48,8 @@
                     <v-avatar>
                       <v-icon>chat</v-icon>
                     </v-avatar>
-                    <span v-if="!fact.numOfChat">0</span>
-                    <span v-if="fact.numOfView">{{fact.numOfChat}}</span>
+                    <span v-if="!fact.numOfEvidence">0</span>
+                    <span v-if="fact.numOfEvidence">{{fact.numOfEvidence}}</span>
                   </v-chip>
                   <v-progress-circular :rotate="360" :size="45" :width="8" :value="fact.trustRate" class="ml-3 red--text" :class="{'orange--text':fact.trustRate>=50&&fact.trustRate<80,'green--text':fact.trustRate>=80}">
                     {{fact.trustRate}}
@@ -107,7 +107,7 @@
         }
         if (self.selectedSortIndex == 2) {
           return self.facts.sort(function(a, b) {
-            return (b.numOfChat - a.numOfChat) * (self.sortOrder);
+            return (b.numOfEvidence - a.numOfEvidence) * (self.sortOrder);
           });
         }
       },

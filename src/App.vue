@@ -21,11 +21,12 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar fixed app clipped-left>
-      <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
-        <v-btn icon v-if="$route.path!='/'" @click="goBack()">
-          <v-icon>arrow_back_ios</v-icon>
-        </v-btn>
-        <span class="hidden-sm-and-down">Fact Cracker 真相大白</span>
+      <v-btn icon v-if="$route.path!='/'" @click="goBack()">
+        <v-icon>arrow_back_ios</v-icon>
+      </v-btn>
+      <img src="./assets/logo.png" class="app-logo" />
+      <v-toolbar-title style="width: 300px" class="ml-0 pl-1">
+        <span class="hidden-sm-and-down grey--text" style="font-size:18px">Fact Cracker</span>
       </v-toolbar-title>
       <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search" class="hidden-sm-and-down"></v-text-field>
       <v-spacer></v-spacer>
@@ -79,3 +80,10 @@
     }
   };
 </script>
+
+<style>
+  .app-logo {
+    height: 40px;
+    width: auto;
+  }
+</style>
