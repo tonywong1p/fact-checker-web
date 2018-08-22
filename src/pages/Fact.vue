@@ -16,10 +16,6 @@
 								<a style="display:block" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
 							</div>
 						</v-card-title>
-						<v-divider></v-divider>
-						<div class="py-3">
-							<pie-chart :data="supportData" :width="200" :height="200"></pie-chart>
-						</div>
 					</v-card>
 				</v-flex>
 				<v-flex xs12 sm6>
@@ -46,6 +42,11 @@
 					</v-layout>
 					<v-expansion-panel popout expand>
 						<h3 class="subtitle" v-if="sortedEvidences.length==0">No related evidence raised yet.</h3>
+						<v-card style="width:95%" class="mb-2">
+							<v-card-title>
+								<trust-counter :supportTrust="trustCount.support" :againstTrust="trustCount.against" style="width:80%;margin:auto"></trust-counter>
+							</v-card-title>
+						</v-card>
 						<v-expansion-panel-content v-for="evidence in sortedEvidences" :key="evidence.id">
 							<div slot="header" v-if="evidence.support=='1'">
 								Evidence #{{evidence.id}} -
@@ -90,6 +91,7 @@
 <script>
 	import newEvidenceModal from "@/components/newEvidence.vue";
 	import pieChart from "@/components/pieChart.vue";
+	import trustCounter from "@/components/trustCounter.vue";
 	const api_domain = 'http://localhost:3000/api';
 	// const img_server_domain = 'http://localhost:8080/uploads/';
 	var moment = require('moment');
@@ -97,7 +99,8 @@
 	export default {
 		components: {
 			newEvidenceModal,
-			pieChart
+			pieChart,
+			trustCounter
 		},
 		data: () => ({
 			dialog: false,
@@ -162,7 +165,7 @@
 					labels: ['Support', 'Aginst'],
 					datasets: [{
 						backgroundColor: ['#4caf50', '#dc3912'],
-						data: [self.trustCount.support,self.trustCount.against]
+						data: [self.trustCount.support, self.trustCount.against]
 					}],
 				};
 				return supportData;
