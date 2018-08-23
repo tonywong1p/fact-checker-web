@@ -28,7 +28,7 @@
       <v-toolbar-title style="width: 300px" class="ml-0 pl-1">
         <span class="hidden-sm-and-down grey--text" style="font-size:18px">Fact Cracker</span>
       </v-toolbar-title>
-      <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search" class="hidden-sm-and-down"></v-text-field>
+      <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search"></v-text-field>
       <v-spacer></v-spacer>
       <v-menu bottom left>
         <v-btn slot="activator" icon>
@@ -48,7 +48,7 @@
         </v-list>
       </v-menu>
     </v-toolbar>
-    <router-view></router-view>
+    <router-view :search="search"></router-view>
   </v-app>
 </template>
 
@@ -64,7 +64,8 @@
         avatar: 'https://pbs.twimg.com/profile_images/538456309603913728/ihbvZL7s_400x400.jpeg',
         title: 'Hi everyone!',
         subtitle: "I'll be in your neighborhood doing errands this weekend. Do you want to hang out? I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?"
-      }]
+      }],
+      search: null,
     }),
     components: {
       Carousel,

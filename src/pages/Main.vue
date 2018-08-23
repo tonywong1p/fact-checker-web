@@ -64,6 +64,7 @@
 					</carousel>
 				</v-flex>
 			</v-layout>
+			{{search}}
 		</v-container>
 		<v-btn fab bottom right color="pink" dark fixed @click.stop="openModal()">
 			<v-icon>add</v-icon>
@@ -89,6 +90,9 @@
 			Slide,
 			newFactModal,
 			trustCounter
+		},
+		props: {
+			search: String,
 		},
 		data: () => ({
 			dialog: false,
@@ -118,10 +122,19 @@
 				}
 			}
 		},
+		watch: {
+			search: function() {
+				this.getFacts();
+			}
+		},
 		methods: {
 			getFacts() {
 				const self = this;
-				let api = api_domain + "/facts";
+				let property = '';
+				if (self.search) {
+					property = '?search='+ self.search;
+				}
+				let api = api_domain + "/facts" + property;
 				this.axios.get(api).then(res => {
 					self.facts = res.data;
 					self.facts.forEach(el => {

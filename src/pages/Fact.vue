@@ -160,7 +160,6 @@
 			},
 			supportData: function() {
 				let self = this;
-				let sum = self.trustCount.support + self.trustCount.against;
 				let supportData = {
 					labels: ['Support', 'Aginst'],
 					datasets: [{
