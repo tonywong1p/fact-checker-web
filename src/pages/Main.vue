@@ -25,7 +25,7 @@
 				</v-flex>
 				<v-flex>
 					<h3 class="title text-xs-center" v-if="sortedFacts.length==0">No related topic raised yet.</h3>
-					<carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[420, 1], [768, 4]]">
+					<carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[420, 1], [768, 3]]">
 						<slide v-for="fact in sortedFacts" :key="fact.id">
 							<v-card class="ma-3">
 								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px"></v-card-media>
@@ -59,17 +59,21 @@
 										</v-flex>
 									</v-layout>
 								</v-card-actions>
+								<v-card-actions v-if="isAdmin">
+									<span>{{fact.reported}}</span>
+									<v-btn @click="openDeletionDialog(fact.id)">Delete</v-btn>
+								</v-card-actions>
 							</v-card>
 						</slide>
 					</carousel>
 				</v-flex>
 			</v-layout>
-			{{search}}
 		</v-container>
-		<v-btn fab bottom right color="pink" dark fixed @click.stop="openModal()">
+		<v-btn fab bottom right color="pink" dark fixed @click.stop="openFactDialog()">
 			<v-icon>add</v-icon>
 		</v-btn>
-		<newFactModal :dialog="dialog"></newFactModal>
+		<newFactDialog :dialog="newFactDialog"></newFactDialog>
+		<deletion-dialog :dialog="deletionDialog" :deletedItem="deletedFact"></deletion-dialog>
 	</v-content>
 </template>
 
@@ -78,7 +82,8 @@
 		Carousel,
 		Slide
 	} from "vue-carousel";
-	import newFactModal from "@/components/newFact.vue";
+	import newFactDialog from "@/components/newFactDialog.vue";
+	import deletionDialog from "@/components/deletionDialog.vue";
 	import trustCounter from "@/components/trustCounter.vue";
 	const api_domain = "http://localhost:3000/api";
 	//const img_server_domain = 'http://localhost:8080/uploads/';
@@ -88,19 +93,23 @@
 		components: {
 			Carousel,
 			Slide,
-			newFactModal,
+			newFactDialog,
+			deletionDialog,
 			trustCounter
 		},
 		props: {
 			search: String,
+			isAdmin: Boolean
 		},
 		data: () => ({
-			dialog: false,
+			newFactDialog: false,
+			deletionDialog: false,
 			facts: [],
 			sortList: ["Created at", "Views", "Evidence"],
 			sortOrder: 1,
 			selectedSortIndex: 0,
-			isLoading: true
+			isLoading: true,
+			deletedFact: {id:Number,type: String},
 		}),
 		computed: {
 			sortedFacts: function() {
@@ -132,7 +141,7 @@
 				const self = this;
 				let property = '';
 				if (self.search) {
-					property = '?search='+ self.search;
+					property = '?search=' + self.search;
 				}
 				let api = api_domain + "/facts" + property;
 				this.axios.get(api).then(res => {
@@ -162,9 +171,16 @@
 					el.createdAt = moment(el.createdAt).fromNow();
 				});
 			},
-			openModal() {
-				this.dialog = false;
-				this.dialog = true;
+			openFactDialog() {
+				this.deletionDialog = false;
+				this.newFactDialog = false;
+				this.newFactDialog = true;
+			},
+			openDeletionDialog(id) {
+				this.newFactDialog = false;
+				this.deletedFact = {id:id,type:'fact'};
+				this.deletionDialog = false;
+				this.deletionDialog = true;
 			}
 		},
 		mounted() {

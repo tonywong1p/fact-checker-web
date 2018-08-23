@@ -28,7 +28,7 @@
       <v-toolbar-title style="width: 300px" class="ml-0 pl-1">
         <span class="hidden-sm-and-down grey--text" style="font-size:18px">Fact Cracker</span>
       </v-toolbar-title>
-      <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search"></v-text-field>
+      <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
       <v-spacer></v-spacer>
       <v-menu bottom left>
         <v-btn slot="activator" icon>
@@ -48,7 +48,7 @@
         </v-list>
       </v-menu>
     </v-toolbar>
-    <router-view :search="search"></router-view>
+    <router-view :search="search" :isAdmin="isAdmin"></router-view>
   </v-app>
 </template>
 
@@ -66,6 +66,7 @@
         subtitle: "I'll be in your neighborhood doing errands this weekend. Do you want to hang out? I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?"
       }],
       search: null,
+      isAdmin: false,
     }),
     components: {
       Carousel,
@@ -77,6 +78,12 @@
     methods: {
       goBack() {
         window.history.back();
+      },
+      checkAdmin(input) {
+        const self = this;
+        if (input == 'tonyww') {
+          self.isAdmin = true;
+        }
       }
     }
   };

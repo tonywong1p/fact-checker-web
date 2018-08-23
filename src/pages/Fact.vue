@@ -41,12 +41,12 @@
 						</v-menu>
 					</v-layout>
 					<v-expansion-panel popout expand>
-						<h3 class="subtitle" v-if="sortedEvidences.length==0">No related evidence raised yet.</h3>
 						<v-card style="width:95%" class="mb-2">
 							<v-card-title>
 								<trust-counter :supportTrust="trustCount.support" :againstTrust="trustCount.against" style="width:80%;margin:auto"></trust-counter>
 							</v-card-title>
 						</v-card>
+						<h3 class="subtitle" v-if="sortedEvidences.length==0">No related evidence raised yet.</h3>
 						<v-expansion-panel-content v-for="evidence in sortedEvidences" :key="evidence.id">
 							<div slot="header" v-if="evidence.support=='1'">
 								Evidence #{{evidence.id}} -
@@ -77,7 +77,7 @@
 					{{supportTrustCount}}
 				</v-flex>
 			</v-layout>
-			<newEvidenceModal :dialog="dialog" :factId="$route.params.id"></newEvidenceModal>
+			<newEvidenceDialog :dialog="dialog" :factId="$route.params.id"></newEvidenceDialog>
 			<v-snackbar v-model="snackbar" :bottom="true" :right="true" :timeout="2000">
 				Trusted! The truth will finally be exposed!
 				<v-btn color="pink" flat @click="snackbar = false">
@@ -89,7 +89,7 @@
 </template>
 
 <script>
-	import newEvidenceModal from "@/components/newEvidence.vue";
+	import newEvidenceDialog from "@/components/newEvidenceDialog.vue";
 	import pieChart from "@/components/pieChart.vue";
 	import trustCounter from "@/components/trustCounter.vue";
 	const api_domain = 'http://localhost:3000/api';
@@ -98,9 +98,12 @@
 	
 	export default {
 		components: {
-			newEvidenceModal,
+			newEvidenceDialog,
 			pieChart,
 			trustCounter
+		},
+		props: {
+			isAdmin: Boolean
 		},
 		data: () => ({
 			dialog: false,
@@ -226,12 +229,9 @@
 				this.sortOrder = this.sortOrder * (-1);
 			},
 		},
-		created() {
-			this.getEvidences();
-		},
 		mounted() {
 			this.getFact();
-			//	this.getEvidences();
+			this.getEvidences();
 			this.addView();
 		}
 	};
