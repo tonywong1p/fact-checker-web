@@ -1,6 +1,6 @@
 <template>
   <v-app id="fact-cracker" dark>
-    <v-navigation-drawer v-model="drawer" clipped fixed app dark v-if="$route.path=='/'">
+    <v-navigation-drawer clipped fixed app dark v-if="$route.path=='/'">
       <v-list dense>
         <v-list-tile>
           <v-list-tile-action>

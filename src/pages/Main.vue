@@ -109,7 +109,10 @@
 			sortOrder: 1,
 			selectedSortIndex: 0,
 			isLoading: true,
-			deletedFact: {id:Number,type: String},
+			deletedFact: {
+				id: Number,
+				type: String
+			},
 		}),
 		computed: {
 			sortedFacts: function() {
@@ -146,8 +149,14 @@
 				let api = api_domain + "/facts" + property;
 				this.axios.get(api).then(res => {
 					self.facts = res.data;
-					self.facts.forEach(el => {
-						el.moment = moment(parseInt(el.createdAt)).fromNow();
+					self.facts.forEach(fact => {
+						fact.moment = moment(parseInt(fact.createdAt)).fromNow();
+						if (!fact.against_trust_count) {
+							fact.against_trust_count = 0;
+						}
+						if (!fact.support_trust_count) {
+							fact.support_trust_count = 0;
+						}
 					});
 					self.isLoading = false;
 				});
@@ -178,7 +187,10 @@
 			},
 			openDeletionDialog(id) {
 				this.newFactDialog = false;
-				this.deletedFact = {id:id,type:'fact'};
+				this.deletedFact = {
+					id: id,
+					type: 'fact'
+				};
 				this.deletionDialog = false;
 				this.deletionDialog = true;
 			}

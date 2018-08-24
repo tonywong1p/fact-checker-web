@@ -12,7 +12,7 @@
 							<div>
 								<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
 								<div>{{fact.description}}</div>
-								<h3 class="subtitle mb-0 mt-3" v-if="fact.ref_url[0]!=''">Reference URL</h3>
+								<h3 class="subtitle mb-0 mt-3" v-if="!fact.ref_url">Reference URL {{fact.ref_url}}</h3>
 								<a style="display:block" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
 							</div>
 						</v-card-title>
@@ -74,7 +74,6 @@
 							</v-card>
 						</v-expansion-panel-content>
 					</v-expansion-panel>
-					{{supportTrustCount}}
 				</v-flex>
 			</v-layout>
 			<newEvidenceDialog :dialog="dialog" :factId="$route.params.id"></newEvidenceDialog>

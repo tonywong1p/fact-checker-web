@@ -28,7 +28,7 @@
 	export default {
 		props: {
 			dialog: Boolean,
-			deletedItem: Number,
+			deletedItem: Object,
 			done: Function
 		},
 		data: () => ({}),

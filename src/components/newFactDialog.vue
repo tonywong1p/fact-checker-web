@@ -99,6 +99,9 @@
 					ref_url: self.urlArray.toString(),
 					image_url: self.newFact.image_url,
 				};
+				if (self.newFact.ref_url[0].value=='' && self.newFact.ref_url.length == 1) {
+					fact.ref_url = [].toString();
+				}
 				let api = api_domain + "/facts";
 				self.axios.post(api, fact).then(res => {
 					// eslint-disable-next-line
@@ -124,7 +127,6 @@
 			}
 		},
 		mounted() {
-			this.clearNewFact()
 		}
 	}
 </script>
