@@ -14,9 +14,6 @@
 									<v-btn fab @click="openMediaDialog(fact)" style="display:block">
 										<v-icon>zoom_in</v-icon>
 									</v-btn>
-									<v-btn fab flat color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
-										<v-icon>warning</v-icon>
-									</v-btn>
 								</div>
 							</v-layout>
 						</v-card-media>
@@ -24,10 +21,20 @@
 							<div>
 								<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
 								<div>{{fact.description}}</div>
-								<h3 class="subtitle mb-0 mt-3" v-if="fact.ref_url.length!=1&&fact.ref_url[0]!=''">Reference Link</h3>
+								<h3 class="subtitle mb-0 mt-3" v-if="fact.ref_url!=''">Reference Link</h3>
 								<a style="display:block" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
 							</div>
 						</v-card-title>
+						<v-divider></v-divider>
+						<v-card-text>
+							<v-layout>
+								<span class="caption ma-3">Created {{fact.moment}}</span>
+								<v-spacer></v-spacer>
+									<v-btn fab small flat color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
+										<v-icon>warning</v-icon>
+									</v-btn>
+							</v-layout>
+						</v-card-text>
 					</v-card>
 				</v-flex>
 				<v-flex xs12 sm6>
@@ -59,7 +66,7 @@
 							</v-card-title>
 						</v-card>
 						<h3 class="subtitle" v-if="sortedEvidences.length==0">No related evidence raised yet.</h3>
-						<v-expansion-panel-content v-for="evidence in sortedEvidences" :key="evidence.id">
+						<v-expansion-panel-content v-for="evidence in sortedEvidences" :key="evidence.id" :class="{'red darken-4':evidence.report!=null && isAdmin}">
 							<div slot="header" v-if="evidence.support=='1'">
 								Evidence #{{evidence.id}} -
 								<span class="green--text">Support</span> with {{evidence.trust_count}} trust<span v-if="evidence.trust_count>1">s</span>
@@ -80,7 +87,7 @@
 									</v-layout>
 								</v-card-media>
 								<v-card-text>{{evidence.text}}
-									<h3 class="subtitle mb-0 mt-3" v-if="evidence.ref_url.length!=1&&evidence.ref_url[0]!=''">Reference Link</h3>
+									<h3 class="subtitle mb-0 mt-3" v-if="evidence.ref_url.length!=0&&evidence.ref_url[0]!=''">Reference Link</h3>
 									<a style="display:block" :href="url" target="_blank" v-for="url in evidence.ref_url" :key="url.id">{{url}}</a>
 								</v-card-text>
 								<v-divider></v-divider>
@@ -88,7 +95,7 @@
 									<v-layout>
 										<span class="caption ma-3">Created {{evidence.moment}}</span>
 										<v-spacer></v-spacer>
-										<v-btn fab small flat dark color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
+										<v-btn fab small flat dark color="white" @click="openReportDialog({type:'evidence',id:evidence.id})">
 											<v-icon>warning</v-icon>
 										</v-btn>
 										<v-btn @click="addTrust(evidence)" :class="{'green':evidence.trusted && evidence.support=='1','red':evidence.trusted && evidence.support=='0'}">
@@ -102,9 +109,9 @@
 					</v-expansion-panel>
 				</v-flex>
 			</v-layout>
-			<newEvidenceDialog :dialog="evidenceDialog" :factId="$route.params.id"></newEvidenceDialog>
-			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem" :isAdmin="isAdmin" :done="()=>{reportedSnackbar = true;reportDialog=false}"></reportDialog>
-			<mediaDialog :media="selectedMedia" :dialog="mediaDialog" :done="()=>{mediaDialog=false}"></mediaDialog>
+			<newEvidenceDialog :dialog="evidenceDialog" :factId="parseInt($route.params.id)"></newEvidenceDialog>
+			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem" :isAdmin="isAdmin" :done="()=>{reportedSnackbar=true;reportDialog=false}"></reportDialog>
+			<mediaDialog :media="selectedMedia" :dialog="mediaDialog"></mediaDialog>
 			<v-snackbar v-model="trustedSnackbar" :bottom="true" :right="true" :timeout="6000">
 				Trusted! The truth will finally be exposed!
 				<v-btn color="pink" flat @click="trustedSnackbar = false">
@@ -158,7 +165,8 @@
 			selectedSortIndex: 0,
 			trustedSnackbar: false,
 			reportedSnackbar: false,
-			fullscreen: false
+			fullscreen: false,
+			selectedMedia: {}
 			// supportData: {
 			// 	labels: ['Support', 'Aginst'],
 			// 	datasets: [{
@@ -225,6 +233,7 @@
 				this.axios.get(api).then(res => {
 					self.fact = res.data;
 					self.fact.ref_url = self.fact.ref_url.split(',');
+					self.fact.moment = moment(parseInt(self.fact.createdAt)).fromNow();
 					self.isLoading = false;
 				});
 			},
@@ -249,6 +258,7 @@
 			},
 			addTrust(evidence) {
 				let self = this;
+				self.resetAllDialog();
 				if (!evidence.trusted) {
 					let api = api_domain + "/facts/" + this.$route.params.id + "/evidences/" + evidence.id + "/add_trust";
 					this.axios.get(api).then(() => {
@@ -257,7 +267,7 @@
 						evidence.trust_count++;
 					});
 				}
-				self.snackbar = true;
+				self.trustedSnackbar = true;
 				evidence.trusted = true;
 			},
 			resetAllDialog() {
@@ -280,15 +290,11 @@
 				this.mediaDialog = true;
 			},
 			selectSort(index) {
-				// Work around
-				this.evidenceDialog = false;
-				this.reportDialog = false;
+				this.resetAllDialog();
 				this.selectedSortIndex = index;
 			},
 			changeSortOrder() {
-				// Work around
-				this.evidenceDialog = false;
-				this.reportDialog = false;
+				this.resetAllDialog();
 				this.sortOrder = this.sortOrder * (-1);
 			},
 		},
@@ -296,6 +302,7 @@
 			this.getFact();
 			this.getEvidences();
 			this.addView();
+			// window.alert(typeof this.$route.params.id)
 		}
 	};
 </script>

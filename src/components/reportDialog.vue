@@ -26,7 +26,7 @@
 				<v-btn color="primary" flat @click="dialog = false">
 					Cancel
 				</v-btn>
-				<v-btn color="primary" flat @click="reportItem(reportedItem.id)">
+				<v-btn color="primary" flat @click="reportItem(reportedItem)">
 					Confirm
 				</v-btn>
 			</v-card-actions>
@@ -41,14 +41,14 @@
 			dialog: Boolean,
 			reportedItem: Object,
 			isAdmin: Boolean,
-			done: Function,
+			done: Function
 		},
 		data: () => ({
 			reportMessage: 'Violence',
 			customMessage: '',
 		}),
 		methods: {
-			reportItem(id) {
+			reportItem(reportedItem) {
 				const self = this;
 				let message = self.reportMessage;
 				if (self.reportMessage == 'Others' && self.customMessage != '') {
@@ -57,7 +57,12 @@
 				let report = {
 					reportMessage: message
 				}
-				let api = api_domain + `/facts/${id}/report`;
+				let api = null;
+				if (reportedItem.type == 'fact') {
+					api = api_domain + `/facts/${self.$route.params.id}/report`;
+				} else if (reportedItem.type == 'evidence') {
+					api = api_domain + `/facts/${self.$route.params.id}/evidences/${reportedItem.id}/report`;
+				}
 				self.axios.post(api, report).then(res => {
 					// eslint-disable-next-line
 					console.log(res);
