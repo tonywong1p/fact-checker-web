@@ -108,6 +108,9 @@
 					ref_url: self.urlArray.toString(),
 					support: self.newEvidence.support,
 				};
+				if (self.newEvidence.ref_url[0].value == '' && self.newEvidence.ref_url.length == 1) {
+					evidence.ref_url = [].toString();
+				}
 				// eslint-disable-next-line
 				console.log(evidence);
 				let api = api_domain + "/facts/" + self.factId + "/evidences";

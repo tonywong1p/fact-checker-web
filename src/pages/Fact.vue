@@ -79,7 +79,10 @@
 										</div>
 									</v-layout>
 								</v-card-media>
-								<v-card-text>{{evidence.text}}</v-card-text>
+								<v-card-text>{{evidence.text}}
+									<h3 class="subtitle mb-0 mt-3" v-if="evidence.ref_url.length!=1&&evidence.ref_url[0]!=''">Reference Link</h3>
+									<a style="display:block" :href="url" target="_blank" v-for="url in evidence.ref_url" :key="url.id">{{url}}</a>
+								</v-card-text>
 								<v-divider></v-divider>
 								<v-card-text>
 									<v-layout>
@@ -230,8 +233,9 @@
 				let api = api_domain + "/facts/" + this.$route.params.id + "/evidences";
 				this.axios.get(api).then(res => {
 					self.evidences = res.data;
-					self.evidences.forEach((el) => {
-						el.moment = moment(parseInt(el.createdAt)).fromNow()
+					self.evidences.forEach((evidence) => {
+						evidence.moment = moment(parseInt(evidence.createdAt)).fromNow();
+						evidence.ref_url = evidence.ref_url.split(',');
 					});
 					self.isLoading = false;
 				});

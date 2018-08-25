@@ -1,5 +1,6 @@
 <template>
 	<v-dialog v-model="dialog" :fullscreen="true">
+		<div style="height:100%;width:100%; background: rgba(0, 0, 0, 0.5);position:absolute"></div>
 		<v-card-media :src="media.image_url" :contain="true" height="100%">
 			<v-layout row>
 				<v-spacer></v-spacer>
