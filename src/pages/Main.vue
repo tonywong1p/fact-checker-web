@@ -27,7 +27,7 @@
 					<h3 class="title text-xs-center" v-if="sortedFacts.length==0">No related topic raised yet.</h3>
 					<carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[420, 1], [768, 3]]">
 						<slide v-for="fact in sortedFacts" :key="fact.id">
-							<v-card class="ma-3">
+							<v-card class="ma-3" :class="{'red darken-4':isAdmin&&fact.report!=null}">
 								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
 								</v-card-media>
 								<v-card-title primary-title style="height:250px;align-items:stretch">
@@ -62,7 +62,8 @@
 								</v-card-actions>
 								<v-card-actions v-if="isAdmin">
 									<span>{{fact.reported}}</span>
-									<v-btn @click="openDeletionDialog(fact.id)">Delete</v-btn>
+									<v-btn @click="openDeletionDialog({type:'fact',id:fact.id})">Delete</v-btn>
+									<span class="ml-2" v-if="fact.report!=null">Report: {{fact.report}}</span>
 								</v-card-actions>
 							</v-card>
 						</slide>
@@ -191,12 +192,9 @@
 				this.newFactDialog = false;
 				this.newFactDialog = true;
 			},
-			openDeletionDialog(id) {
+			openDeletionDialog(item) {
 				this.newFactDialog = false;
-				this.deletedFact = {
-					id: id,
-					type: 'fact'
-				};
+				this.deletedFact = item;
 				this.deletionDialog = false;
 				this.deletionDialog = true;
 			}

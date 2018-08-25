@@ -6,7 +6,7 @@
 			</v-layout>
 			<v-layout row wrap class="animated fadeIn">
 				<v-flex xs12 sm6>
-					<v-card>
+					<v-card :class="{'red darken-4':isAdmin&&fact.report!=null}">
 						<v-card-media :src="fact.image_url" height="300px">
 							<v-btn fab flat color="black" @click="openReportDialog({type:'fact',id:$route.params.id})">
 								<v-icon>warning</v-icon>
@@ -81,10 +81,16 @@
 				</v-flex>
 			</v-layout>
 			<newEvidenceDialog :dialog="evidenceDialog" :factId="$route.params.id"></newEvidenceDialog>
-			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem"></reportDialog>
-			<v-snackbar v-model="snackbar" :bottom="true" :right="true" :timeout="2000">
+			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem" :isAdmin="isAdmin" :done="()=>{reportedSnackbar = true;reportDialog=false}"></reportDialog>
+			<v-snackbar v-model="trustedSnackbar" :bottom="true" :right="true" :timeout="6000">
 				Trusted! The truth will finally be exposed!
-				<v-btn color="pink" flat @click="snackbar = false">
+				<v-btn color="pink" flat @click="trustedSnackbar = false">
+					Close
+				</v-btn>
+			</v-snackbar>
+			<v-snackbar v-model="reportedSnackbar" :bottom="true" :right="true" :timeout="6000">
+				This case has been reported. Thank you for the effort!
+				<v-btn color="pink" flat @click="reportedSnackbar = false">
 					Close
 				</v-btn>
 			</v-snackbar>
@@ -115,13 +121,17 @@
 			evidenceDialog: false,
 			reportDialog: false,
 			fact: {},
-			reportedItem: {type:null,id:null},
+			reportedItem: {
+				type: null,
+				id: null
+			},
 			evidences: [],
 			isLoading: true,
 			sortList: ['Created at', 'Number of Trust', 'Support', 'Aginst'],
 			sortOrder: 1,
 			selectedSortIndex: 0,
-			snackbar: false,
+			trustedSnackbar: false,
+			reportedSnackbar: false,
 			// supportData: {
 			// 	labels: ['Support', 'Aginst'],
 			// 	datasets: [{
@@ -229,8 +239,8 @@
 			},
 			openReportDialog(item) {
 				this.evidenceDialog = false;
-				this.reportDialog = false;
 				this.reportedItem = item;
+				this.reportDialog = false;
 				this.reportDialog = true;
 			},
 			selectSort(index) {

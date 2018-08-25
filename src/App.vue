@@ -30,6 +30,7 @@
       </v-toolbar-title>
       <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
       <v-spacer></v-spacer>
+      <v-btn flat v-if="isAdmin" @click="isAdmin=false">I am Admin</v-btn>
       <v-menu bottom left>
         <v-btn slot="activator" icon>
           <v-icon>notifications</v-icon>
