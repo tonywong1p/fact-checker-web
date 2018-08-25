@@ -26,7 +26,7 @@
       </v-btn>
       <img src="./assets/logo.png" class="app-logo" />
       <v-toolbar-title style="width: 300px" class="ml-0 pl-1">
-        <span class="hidden-sm-and-down grey--text" style="font-size:18px">Fact Cracker</span>
+        <span class="hidden-sm-and-down grey--text" style="font-size:18px">Fact Checker</span>
       </v-toolbar-title>
       <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
       <v-spacer></v-spacer>
