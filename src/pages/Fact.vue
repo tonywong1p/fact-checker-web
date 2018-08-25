@@ -11,28 +11,45 @@
 							<v-layout>
 								<v-spacer></v-spacer>
 								<div class="pa-4">
-									<v-btn fab @click="openMediaDialog(fact)" style="display:block">
-										<v-icon>zoom_in</v-icon>
-									</v-btn>
+									<v-tooltip left>
+										<v-btn slot="activator" fab @click="openMediaDialog(fact)" style="display:block">
+											<v-icon>zoom_in</v-icon>
+										</v-btn>
+										<span>Fullscreen</span>
+									</v-tooltip>
 								</div>
 							</v-layout>
 						</v-card-media>
 						<v-card-title primary-title>
 							<div>
 								<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
+								<h3 class="subtitle mb-0 mt-3 grey--text">Description</h3>
 								<div>{{fact.description}}</div>
-								<h3 class="subtitle mb-0 mt-3" v-if="fact.ref_url!=''">Reference Link</h3>
+								<h3 class="subtitle mb-0 mt-3 grey--text" v-if="fact.ref_url!=''">Reference Link</h3>
 								<a style="display:block" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
 							</div>
 						</v-card-title>
 						<v-divider></v-divider>
 						<v-card-text>
 							<v-layout>
+								<v-tooltip top>
+									<v-chip slot="activator" outline class="ma-2" color="white">
+										<v-avatar>
+											<v-icon>remove_red_eye</v-icon>
+										</v-avatar>
+										<span v-if="!fact.numOfView">0</span>
+										<span v-if="fact.numOfView">{{fact.numOfView}}</span>
+									</v-chip>
+									<span>Views</span>
+								</v-tooltip>
 								<span class="caption ma-3">Created {{fact.moment}}</span>
 								<v-spacer></v-spacer>
-									<v-btn fab small flat color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
+								<v-tooltip top>
+									<v-btn slot="activator" fab small flat color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
 										<v-icon>warning</v-icon>
 									</v-btn>
+									<span>Report</span>
+								</v-tooltip>
 							</v-layout>
 						</v-card-text>
 					</v-card>
@@ -40,9 +57,12 @@
 				<v-flex xs12 sm6>
 					<v-layout class="px-4 mb-2">
 						<h3 class="display-1">Evidence</h3>
-						<v-btn icon color="pink" style="top:-5px" @click="openEvidenceDialog()">
-							<v-icon>add</v-icon>
-						</v-btn>
+						<v-tooltip right>
+							<v-btn slot="activator" icon color="pink" style="top:-5px" @click="openEvidenceDialog()">
+								<v-icon>add</v-icon>
+							</v-btn>
+							<span>Expose an Evidence</span>
+						</v-tooltip>
 						<v-spacer></v-spacer>
 						<v-btn flat icon color="pink" @click="changeSortOrder()" v-if="selectedSortIndex<2">
 							<v-icon v-if="sortOrder==1">arrow_downward</v-icon>
@@ -80,9 +100,12 @@
 									<v-layout>
 										<v-spacer></v-spacer>
 										<div class="pa-4">
-											<v-btn fab @click="openMediaDialog(evidence)" style="display:block">
-												<v-icon>zoom_in</v-icon>
-											</v-btn>
+											<v-tooltip left>
+												<v-btn slot="activator" fab @click="openMediaDialog(evidence)" style="display:block">
+													<v-icon>zoom_in</v-icon>
+												</v-btn>
+												<span>Fullscreen</span>
+											</v-tooltip>
 										</div>
 									</v-layout>
 								</v-card-media>
@@ -95,9 +118,12 @@
 									<v-layout>
 										<span class="caption ma-3">Created {{evidence.moment}}</span>
 										<v-spacer></v-spacer>
-										<v-btn fab small flat dark color="white" @click="openReportDialog({type:'evidence',id:evidence.id})">
-											<v-icon>warning</v-icon>
-										</v-btn>
+										<v-tooltip top>
+											<v-btn slot="activator" fab small flat dark color="white" @click="openReportDialog({type:'evidence',id:evidence.id})">
+												<v-icon>warning</v-icon>
+											</v-btn>
+											<span>Report</span>
+										</v-tooltip>
 										<v-btn @click="addTrust(evidence)" :class="{'green':evidence.trusted && evidence.support=='1','red':evidence.trusted && evidence.support=='0'}">
 											<v-icon left>thumb_up</v-icon>
 											I trust it

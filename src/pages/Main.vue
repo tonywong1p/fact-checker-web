@@ -36,24 +36,31 @@
 										<p class="truncate white--text mb-0">{{fact.description}}</p>
 									</div>
 								</v-card-title>
+								<v-divider></v-divider>
 								<v-card-title class="caption pb-0">Created {{fact.moment}}</v-card-title>
 								<v-card-actions class="pb-3">
 									<v-layout>
 										<v-flex xs12 sm6>
-											<v-chip outline class="mx-2" color="white">
+											<v-tooltip top>
+											<v-chip slot="activator" outline class="mx-2" color="white">
 												<v-avatar>
 													<v-icon>remove_red_eye</v-icon>
 												</v-avatar>
 												<span v-if="!fact.numOfView">0</span>
 												<span v-if="fact.numOfView">{{fact.numOfView}}</span>
 											</v-chip>
-											<v-chip outline class="mx-2" color="white">
-												<v-avatar>
-													<v-icon>chat</v-icon>
-												</v-avatar>
-												<span v-if="!fact.numOfEvidence">0</span>
-												<span v-if="fact.numOfEvidence">{{fact.numOfEvidence}}</span>
-											</v-chip>
+											<span>Views</span>
+											</v-tooltip>
+											<v-tooltip top>
+												<v-chip slot="activator" outline class="mx-2" color="white">
+													<v-avatar>
+														<v-icon>explicit</v-icon>
+													</v-avatar>
+													<span v-if="!fact.numOfEvidence">0</span>
+													<span v-if="fact.numOfEvidence">{{fact.numOfEvidence}}</span>
+												</v-chip>
+												<span>Related Evidence</span>
+											</v-tooltip>
 										</v-flex>
 										<v-flex xs12 sm6 class="pr-4">
 											<trustCounter :againstTrust="fact.against_trust_count" :supportTrust="fact.support_trust_count"></trustCounter>
@@ -71,9 +78,12 @@
 				</v-flex>
 			</v-layout>
 		</v-container>
-		<v-btn fab bottom right color="pink" dark fixed @click.stop="openFactDialog()">
+		<v-tooltip left>
+		<v-btn slot="activator" fab bottom right color="pink" dark fixed @click.stop="openFactDialog()">
 			<v-icon>add</v-icon>
 		</v-btn>
+		<span>Create a new Fact</span>
+		</v-tooltip>
 		<newFactDialog :dialog="newFactDialog" :done="resetAllDialog"></newFactDialog>
 		<deletion-dialog :dialog="deletionDialog" :deletedItem="deletedFact"></deletion-dialog>
 	</v-content>
