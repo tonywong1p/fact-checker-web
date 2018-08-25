@@ -8,9 +8,15 @@
 				<v-flex xs12 sm6>
 					<v-card :class="{'red darken-4':isAdmin&&fact.report!=null}">
 						<v-card-media :src="fact.image_url" height="300px">
-							<v-btn fab flat color="black" @click="openReportDialog({type:'fact',id:$route.params.id})">
-								<v-icon>warning</v-icon>
-							</v-btn>
+							<v-layout row class="pa-3">
+								<v-btn fab flat color="black" @click="openReportDialog({type:'fact',id:$route.params.id})">
+									<v-icon>warning</v-icon>
+								</v-btn>
+								<v-spacer></v-spacer>
+								<v-btn fab @click="openMediaDialog(fact)">
+									<v-icon>zoom_in</v-icon>
+								</v-btn>
+							</v-layout>
 						</v-card-media>
 						<v-card-title primary-title>
 							<div>
@@ -62,6 +68,15 @@
 							</div>
 							<v-card>
 								<v-card-media :src="evidence.image_url" v-if="evidence.image_url!=''" height="150px">
+									<v-layout row class="pa-3">
+										<v-btn fab flat color="black" @click="openReportDialog({type:'fact',id:$route.params.id})">
+											<v-icon>warning</v-icon>
+										</v-btn>
+										<v-spacer></v-spacer>
+										<v-btn fab @click="openMediaDialog(evidence)">
+											<v-icon>zoom_in</v-icon>
+										</v-btn>
+									</v-layout>
 								</v-card-media>
 								<v-card-text>{{evidence.text}}</v-card-text>
 								<v-divider></v-divider>
@@ -82,6 +97,7 @@
 			</v-layout>
 			<newEvidenceDialog :dialog="evidenceDialog" :factId="$route.params.id"></newEvidenceDialog>
 			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem" :isAdmin="isAdmin" :done="()=>{reportedSnackbar = true;reportDialog=false}"></reportDialog>
+			<mediaDialog :media="selectedMedia" :dialog="mediaDialog" :done="()=>{mediaDialog=false}"></mediaDialog>
 			<v-snackbar v-model="trustedSnackbar" :bottom="true" :right="true" :timeout="6000">
 				Trusted! The truth will finally be exposed!
 				<v-btn color="pink" flat @click="trustedSnackbar = false">
@@ -103,6 +119,7 @@
 	import pieChart from "@/components/pieChart.vue";
 	import trustCounter from "@/components/trustCounter.vue";
 	import reportDialog from "@/components/reportDialog.vue";
+	import mediaDialog from "@/components/mediaDialog.vue";
 	const api_domain = 'http://localhost:3000/api';
 	// const img_server_domain = 'http://localhost:8080/uploads/';
 	var moment = require('moment');
@@ -112,7 +129,8 @@
 			newEvidenceDialog,
 			pieChart,
 			trustCounter,
-			reportDialog
+			reportDialog,
+			mediaDialog
 		},
 		props: {
 			isAdmin: Boolean
@@ -120,6 +138,7 @@
 		data: () => ({
 			evidenceDialog: false,
 			reportDialog: false,
+			mediaDialog: false,
 			fact: {},
 			reportedItem: {
 				type: null,
@@ -132,6 +151,7 @@
 			selectedSortIndex: 0,
 			trustedSnackbar: false,
 			reportedSnackbar: false,
+			fullscreen: false
 			// supportData: {
 			// 	labels: ['Support', 'Aginst'],
 			// 	datasets: [{
@@ -242,6 +262,10 @@
 				this.reportedItem = item;
 				this.reportDialog = false;
 				this.reportDialog = true;
+			},
+			openMediaDialog(media) {
+				this.selectedMedia = media;
+				this.mediaDialog = true;
 			},
 			selectSort(index) {
 				// Work around
