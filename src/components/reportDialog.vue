@@ -44,7 +44,7 @@
 			done: Function,
 		},
 		data: () => ({
-			reportMessage: '',
+			reportMessage: 'Violence',
 			customMessage: '',
 		}),
 		methods: {

@@ -4,6 +4,9 @@
 			<v-card-title>
 				<h3 class="headline">New Evidence</h3>
 				<v-spacer></v-spacer>
+				<v-btn color="primary" flat @click="dialog = false">
+					Cancel
+				</v-btn>
 				<v-btn color="primary" dark @click="addEvidence()" :disabled="!valid || newEvidence.image_url=='' || !newEvidence.support">Create
 					<v-icon right dark>send</v-icon>
 				</v-btn>
@@ -71,7 +74,7 @@
 				ref_url: [{
 					value: ""
 				}],
-				support: null,
+				support: "1",
 			},
 			supportRules: [
 				v => !!v || 'Selection is required',

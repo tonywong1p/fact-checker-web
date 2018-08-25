@@ -4,6 +4,9 @@
 			<v-card-title>
 				<h3 class="headline">New Case</h3>
 				<v-spacer></v-spacer>
+				<v-btn color="primary" flat @click="dialog = false">
+					Cancel
+				</v-btn>
 				<v-btn color="primary" dark @click="addFact()" :disabled="!valid || newFact.image_url==''">Create
 					<v-icon right dark>send</v-icon>
 				</v-btn>
@@ -13,8 +16,8 @@
 					<v-layout row wrap>
 						<v-flex xs12>
 							<vue-dropzone id="coverImage" :options="dropzoneOptions" class="mb-4" @vdropzone-success="finishUpload"></vue-dropzone>
-							<v-text-field box label="Title" :rules="titleRules" v-model="newFact.title" maxlength="100"></v-text-field>
-							<v-textarea box name="input-7-4" label="Description" :rules="descriptionRules" :counter="1000" maxlength="1000" v-model="newFact.description"></v-textarea>
+							<v-text-field box label="Title" :rules="titleRules" v-model="newFact.title" maxlength="100" required></v-text-field>
+							<v-textarea box name="input-7-4" label="Description" :rules="descriptionRules" :counter="1000" maxlength="1000" v-model="newFact.description" required></v-textarea>
 						</v-flex>
 					</v-layout>
 					<v-layout row wrap>
@@ -56,7 +59,7 @@
 				paramName: "coverImage",
 				thumbnailWidth: 200,
 				maxFiles: 1,
-				maxFilesize: 5,
+				maxFilesize: 100,
 				dictDefaultMessage: "Drop to upload the cover image here (required)",
 				addRemoveLinks: true,
 			},
@@ -90,6 +93,7 @@
 		methods: {
 			finishUpload(file, res) {
 				this.newFact.image_url = img_server_domain + res;
+				this.valid = false;
 			},
 			addFact() {
 				const self = this;
@@ -99,7 +103,7 @@
 					ref_url: self.urlArray.toString(),
 					image_url: self.newFact.image_url,
 				};
-				if (self.newFact.ref_url[0].value=='' && self.newFact.ref_url.length == 1) {
+				if (self.newFact.ref_url[0].value == '' && self.newFact.ref_url.length == 1) {
 					fact.ref_url = [].toString();
 				}
 				let api = api_domain + "/facts";
@@ -126,8 +130,7 @@
 				});
 			}
 		},
-		mounted() {
-		}
+		mounted() {}
 	}
 </script>
 

@@ -8,21 +8,23 @@
 				<v-flex xs12 sm6>
 					<v-card :class="{'red darken-4':isAdmin&&fact.report!=null}">
 						<v-card-media :src="fact.image_url" height="300px">
-							<v-layout row class="pa-3">
-								<v-btn fab flat color="black" @click="openReportDialog({type:'fact',id:$route.params.id})">
-									<v-icon>warning</v-icon>
-								</v-btn>
+							<v-layout>
 								<v-spacer></v-spacer>
-								<v-btn fab @click="openMediaDialog(fact)">
-									<v-icon>zoom_in</v-icon>
-								</v-btn>
+								<div class="pa-4">
+									<v-btn fab @click="openMediaDialog(fact)" style="display:block">
+										<v-icon>zoom_in</v-icon>
+									</v-btn>
+									<v-btn fab flat color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
+										<v-icon>warning</v-icon>
+									</v-btn>
+								</div>
 							</v-layout>
 						</v-card-media>
 						<v-card-title primary-title>
 							<div>
 								<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
 								<div>{{fact.description}}</div>
-								<h3 class="subtitle mb-0 mt-3" v-if="!fact.ref_url">Reference URL {{fact.ref_url}}</h3>
+								<h3 class="subtitle mb-0 mt-3" v-if="fact.ref_url.length!=1&&fact.ref_url[0]!=''">Reference Link</h3>
 								<a style="display:block" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
 							</div>
 						</v-card-title>
@@ -68,14 +70,13 @@
 							</div>
 							<v-card>
 								<v-card-media :src="evidence.image_url" v-if="evidence.image_url!=''" height="150px">
-									<v-layout row class="pa-3">
-										<v-btn fab flat color="black" @click="openReportDialog({type:'fact',id:$route.params.id})">
-											<v-icon>warning</v-icon>
-										</v-btn>
+									<v-layout>
 										<v-spacer></v-spacer>
-										<v-btn fab @click="openMediaDialog(evidence)">
-											<v-icon>zoom_in</v-icon>
-										</v-btn>
+										<div class="pa-4">
+											<v-btn fab @click="openMediaDialog(evidence)" style="display:block">
+												<v-icon>zoom_in</v-icon>
+											</v-btn>
+										</div>
 									</v-layout>
 								</v-card-media>
 								<v-card-text>{{evidence.text}}</v-card-text>
@@ -84,6 +85,9 @@
 									<v-layout>
 										<span class="caption ma-3">Created {{evidence.moment}}</span>
 										<v-spacer></v-spacer>
+										<v-btn fab small flat dark color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
+											<v-icon>warning</v-icon>
+										</v-btn>
 										<v-btn @click="addTrust(evidence)" :class="{'green':evidence.trusted && evidence.support=='1','red':evidence.trusted && evidence.support=='0'}">
 											<v-icon left>thumb_up</v-icon>
 											I trust it
@@ -252,18 +256,22 @@
 				self.snackbar = true;
 				evidence.trusted = true;
 			},
-			openEvidenceDialog() {
+			resetAllDialog() {
 				this.reportDialog = false;
 				this.evidenceDialog = false;
+				this.mediaDialog = false;
+			},
+			openEvidenceDialog() {
+				this.resetAllDialog();
 				this.evidenceDialog = true;
 			},
 			openReportDialog(item) {
-				this.evidenceDialog = false;
+				this.resetAllDialog();
 				this.reportedItem = item;
-				this.reportDialog = false;
 				this.reportDialog = true;
 			},
 			openMediaDialog(media) {
+				this.resetAllDialog();
 				this.selectedMedia = media;
 				this.mediaDialog = true;
 			},

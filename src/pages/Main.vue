@@ -187,15 +187,17 @@
 					el.createdAt = moment(el.createdAt).fromNow();
 				});
 			},
-			openFactDialog() {
+			resetAllDialog() {
 				this.deletionDialog = false;
 				this.newFactDialog = false;
+			},
+			openFactDialog() {
+				this.resetAllDialog();
 				this.newFactDialog = true;
 			},
 			openDeletionDialog(item) {
-				this.newFactDialog = false;
+				this.resetAllDialog();
 				this.deletedFact = item;
-				this.deletionDialog = false;
 				this.deletionDialog = true;
 			}
 		},

@@ -84,6 +84,7 @@
         const self = this;
         if (input == 'tonyww') {
           self.isAdmin = true;
+          self.search = '';
         }
       }
     }
