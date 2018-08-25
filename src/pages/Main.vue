@@ -28,7 +28,8 @@
 					<carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[420, 1], [768, 3]]">
 						<slide v-for="fact in sortedFacts" :key="fact.id">
 							<v-card class="ma-3">
-								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px"></v-card-media>
+								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
+								</v-card-media>
 								<v-card-title primary-title style="height:250px;align-items:stretch">
 									<div>
 										<h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
@@ -142,24 +143,29 @@
 		methods: {
 			getFacts() {
 				const self = this;
-				let property = '';
-				if (self.search) {
-					property = '?search=' + self.search;
-				}
-				let api = api_domain + "/facts" + property;
-				this.axios.get(api).then(res => {
-					self.facts = res.data;
-					self.facts.forEach(fact => {
-						fact.moment = moment(parseInt(fact.createdAt)).fromNow();
-						if (!fact.against_trust_count) {
-							fact.against_trust_count = 0;
+				let api = api_domain + "/facts";
+				self.axios.get(api, {
+						params: {
+							search: self.search
 						}
-						if (!fact.support_trust_count) {
-							fact.support_trust_count = 0;
-						}
-					});
-					self.isLoading = false;
-				});
+					})
+					.then((res) => {
+						self.facts = res.data;
+						self.facts.forEach(fact => {
+							fact.moment = moment(parseInt(fact.createdAt)).fromNow();
+							if (!fact.against_trust_count) {
+								fact.against_trust_count = 0;
+							}
+							if (!fact.support_trust_count) {
+								fact.support_trust_count = 0;
+							}
+						});
+						self.isLoading = false;
+					})
+					.catch(error => {
+						// eslint-disable-next-line
+						console.log(error);
+					})
 			},
 			selectSort(index) {
 				this.selectedSortIndex = index;

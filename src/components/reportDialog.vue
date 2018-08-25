@@ -6,7 +6,7 @@
 			</v-card-title>
 	
 			<v-card-text>
-				Are you sure to delete this {{deletedItem.type}} ? </v-card-text>
+				Are you sure to delete this {{reportedItem.type}} ? </v-card-text>
 	
 			<v-divider></v-divider>
 
@@ -15,7 +15,7 @@
 				<v-btn color="primary" flat @click="dialog = false">
 					Cancel
 				</v-btn>
-				<v-btn color="primary" flat @click="deleteItem(deletedItem.id)">
+				<v-btn color="primary" flat @click="reportItem(reportedItem.id)">
 					Yes
 				</v-btn>
 			</v-card-actions>
@@ -28,11 +28,11 @@
 	export default {
 		props: {
 			dialog: Boolean,
-			deletedItem: Object,
+			reportedItem: Object,
 		},
 		data: () => ({}),
 		methods: {
-			deleteItem(id) {
+			reportItem(id) {
 				const self = this;
 				let api = api_domain + `/facts/${id}`;
 				this.axios.delete(api).then(res => {

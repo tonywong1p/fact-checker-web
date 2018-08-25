@@ -7,7 +7,11 @@
 			<v-layout row wrap class="animated fadeIn">
 				<v-flex xs12 sm6>
 					<v-card>
-						<v-card-media :src="fact.image_url" height="300px"></v-card-media>
+						<v-card-media :src="fact.image_url" height="300px">
+							<v-btn fab flat color="black" @click="openReportDialog({type:'fact',id:$route.params.id})">
+								<v-icon>warning</v-icon>
+							</v-btn>
+						</v-card-media>
 						<v-card-title primary-title>
 							<div>
 								<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
@@ -21,7 +25,7 @@
 				<v-flex xs12 sm6>
 					<v-layout class="px-4 mb-2">
 						<h3 class="display-1">Evidence</h3>
-						<v-btn icon color="pink" style="top:-5px" @click="openModal()">
+						<v-btn icon color="pink" style="top:-5px" @click="openEvidenceDialog()">
 							<v-icon>add</v-icon>
 						</v-btn>
 						<v-spacer></v-spacer>
@@ -76,7 +80,8 @@
 					</v-expansion-panel>
 				</v-flex>
 			</v-layout>
-			<newEvidenceDialog :dialog="dialog" :factId="$route.params.id"></newEvidenceDialog>
+			<newEvidenceDialog :dialog="evidenceDialog" :factId="$route.params.id"></newEvidenceDialog>
+			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem"></reportDialog>
 			<v-snackbar v-model="snackbar" :bottom="true" :right="true" :timeout="2000">
 				Trusted! The truth will finally be exposed!
 				<v-btn color="pink" flat @click="snackbar = false">
@@ -91,6 +96,7 @@
 	import newEvidenceDialog from "@/components/newEvidenceDialog.vue";
 	import pieChart from "@/components/pieChart.vue";
 	import trustCounter from "@/components/trustCounter.vue";
+	import reportDialog from "@/components/reportDialog.vue";
 	const api_domain = 'http://localhost:3000/api';
 	// const img_server_domain = 'http://localhost:8080/uploads/';
 	var moment = require('moment');
@@ -99,14 +105,17 @@
 		components: {
 			newEvidenceDialog,
 			pieChart,
-			trustCounter
+			trustCounter,
+			reportDialog
 		},
 		props: {
 			isAdmin: Boolean
 		},
 		data: () => ({
-			dialog: false,
+			evidenceDialog: false,
+			reportDialog: false,
 			fact: {},
+			reportedItem: {type:null,id:null},
 			evidences: [],
 			isLoading: true,
 			sortList: ['Created at', 'Number of Trust', 'Support', 'Aginst'],
@@ -175,7 +184,7 @@
 		methods: {
 			getFact() {
 				const self = this;
-				let api = api_domain + "/facts/" + this.$route.params.id;
+				let api = api_domain + "/facts/" + self.$route.params.id;
 				this.axios.get(api).then(res => {
 					self.fact = res.data;
 					self.fact.ref_url = self.fact.ref_url.split(',');
@@ -213,18 +222,27 @@
 				self.snackbar = true;
 				evidence.trusted = true;
 			},
-			openModal() {
-				this.dialog = false;
-				this.dialog = true;
+			openEvidenceDialog() {
+				this.reportDialog = false;
+				this.evidenceDialog = false;
+				this.evidenceDialog = true;
+			},
+			openReportDialog(item) {
+				this.evidenceDialog = false;
+				this.reportDialog = false;
+				this.reportedItem = item;
+				this.reportDialog = true;
 			},
 			selectSort(index) {
 				// Work around
-				this.dialog = false;
+				this.evidenceDialog = false;
+				this.reportDialog = false;
 				this.selectedSortIndex = index;
 			},
 			changeSortOrder() {
 				// Work around
-				this.dialog = false;
+				this.evidenceDialog = false;
+				this.reportDialog = false;
 				this.sortOrder = this.sortOrder * (-1);
 			},
 		},
