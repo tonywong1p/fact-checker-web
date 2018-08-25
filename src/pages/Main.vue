@@ -74,7 +74,7 @@
 		<v-btn fab bottom right color="pink" dark fixed @click.stop="openFactDialog()">
 			<v-icon>add</v-icon>
 		</v-btn>
-		<newFactDialog :dialog="newFactDialog"></newFactDialog>
+		<newFactDialog :dialog="newFactDialog" :done="resetAllDialog"></newFactDialog>
 		<deletion-dialog :dialog="deletionDialog" :deletedItem="deletedFact"></deletion-dialog>
 	</v-content>
 </template>

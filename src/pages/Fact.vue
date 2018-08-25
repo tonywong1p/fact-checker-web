@@ -4,7 +4,7 @@
 			<v-layout justify-center align-center wrap v-if="isLoading">
 				<v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
 			</v-layout>
-			<v-layout row wrap class="animated fadeIn">
+			<v-layout row wrap class="animated fadeIn" v-if="!isLoading">
 				<v-flex xs12 sm6>
 					<v-card :class="{'red darken-4':isAdmin&&fact.report!=null}">
 						<v-card-media :src="fact.image_url" height="300px">
@@ -109,9 +109,9 @@
 					</v-expansion-panel>
 				</v-flex>
 			</v-layout>
-			<newEvidenceDialog :dialog="evidenceDialog" :factId="parseInt($route.params.id)"></newEvidenceDialog>
+			<newEvidenceDialog :dialog="evidenceDialog" :factId="parseInt($route.params.id)" :done="resetAllDialog"></newEvidenceDialog>
 			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem" :isAdmin="isAdmin" :done="()=>{reportedSnackbar=true;reportDialog=false}"></reportDialog>
-			<mediaDialog :media="selectedMedia" :dialog="mediaDialog"></mediaDialog>
+			<mediaDialog :media="selectedMedia" :dialog="mediaDialog" :done="resetAllDialog"></mediaDialog>
 			<v-snackbar v-model="trustedSnackbar" :bottom="true" :right="true" :timeout="6000">
 				Trusted! The truth will finally be exposed!
 				<v-btn color="pink" flat @click="trustedSnackbar = false">

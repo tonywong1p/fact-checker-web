@@ -4,7 +4,7 @@
 			<v-card-title>
 				<h3 class="headline">New Evidence</h3>
 				<v-spacer></v-spacer>
-				<v-btn color="primary" flat @click="dialog = false">
+				<v-btn color="primary" flat @click="done()">
 					Cancel
 				</v-btn>
 				<v-btn color="primary" dark @click="addEvidence()" :disabled="!valid || newEvidence.image_url=='' || !newEvidence.support">Create
@@ -56,7 +56,8 @@
 		},
 		props: {
 			dialog: Boolean,
-			factId: Number
+			factId: Number,
+			done: Function
 		},
 		data: () => ({
 			dropzoneOptions: {
@@ -93,7 +94,7 @@
 						return 'http://' + el.value
 					}
 				});
-			}
+			},
 		},
 		methods: {
 			finishUpload(file, res) {

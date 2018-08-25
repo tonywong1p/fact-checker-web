@@ -4,7 +4,7 @@
 			<v-card-title>
 				<h3 class="headline">New Case</h3>
 				<v-spacer></v-spacer>
-				<v-btn color="primary" flat @click="dialog = false">
+				<v-btn color="primary" flat @click="done()">
 					Cancel
 				</v-btn>
 				<v-btn color="primary" dark @click="addFact()" :disabled="!valid || newFact.image_url==''">Create
@@ -52,6 +52,7 @@
 		},
 		props: {
 			dialog: Boolean,
+			done: Function
 		},
 		data: () => ({
 			dropzoneOptions: {
