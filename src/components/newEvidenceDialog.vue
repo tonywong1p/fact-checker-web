@@ -65,9 +65,10 @@
 				paramName: "coverImage",
 				thumbnailWidth: 200,
 				maxFiles: 1,
-				maxFilesize: 5,
-				dictDefaultMessage: "Drop to upload the cover image here (required)",
+				maxFilesize: 10,
+				dictDefaultMessage: "<i class='material-icons' style='font-size:80px'>add_photo_alternate</i><br>Drop to upload the cover image here (required) (max 10MB)",
 				addRemoveLinks: true,
+				acceptedFiles: 'image/*'
 			},
 			newEvidence: {
 				image_url: "",
@@ -141,4 +142,10 @@
 		mounted() {}
 	}
 </script>
+
+<style>
+	.dropzone .dz-message {
+		margin: 0px
+	}
+</style>
 
