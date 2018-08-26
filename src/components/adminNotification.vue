@@ -12,6 +12,7 @@
     <v-list two-line style="width:500px">
       <v-subheader>Creator Announcement</v-subheader>
       <v-textarea box v-if="isAdmin" name="input-7-4" label="Message" v-model="newMessage" append-icon="send" @click:append="addNotification"></v-textarea>
+      <v-list-tile v-if="notifications.length==0">No recent nofication</v-list-tile>
       <v-list-tile v-for="notification in notifications" :key="notification.id" avatar>
         <v-list-tile-avatar>
           <img src="@/assets/avatar.png">

@@ -21,13 +21,11 @@
 							</v-layout>
 						</v-card-media>
 						<v-card-title primary-title>
-							<div>
-								<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
-								<h3 class="subtitle mb-0 mt-3 grey--text">Description</h3>
-								<div>{{fact.description}}</div>
-								<h3 class="subtitle mb-0 mt-3 grey--text" v-if="fact.ref_url!=''">Reference Link</h3>
-								<a style="display:block" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
-							</div>
+							<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
+							<h3 class="subtitle mb-0 mt-3 grey--text">Description</h3>
+							<p>{{fact.description}}</p>
+							<h3 class="subtitle mb-0 mt-3 grey--text" v-if="fact.ref_url!=''">Reference Link</h3>
+							<a class="truncate" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
 						</v-card-title>
 						<v-divider></v-divider>
 						<v-card-text>
@@ -196,7 +194,7 @@
 			reportedSnackbar: false,
 			fullscreen: false,
 			selectedMedia: {},
-			deletedItem:{}
+			deletedItem: {}
 		}),
 		computed: {
 			sortedEvidences: function() {
