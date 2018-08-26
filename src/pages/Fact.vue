@@ -128,6 +128,7 @@
 											<v-icon left>thumb_up</v-icon>
 											I trust it
 										</v-btn>
+										<v-btn color="red" v-if="isAdmin" @click="openDeletionDialog({type:'evidence',id:evidence.id})">Delete</v-btn>
 									</v-layout>
 								</v-card-text>
 							</v-card>
@@ -135,9 +136,10 @@
 					</v-expansion-panel>
 				</v-flex>
 			</v-layout>
-			<newEvidenceDialog :dialog="evidenceDialog" :factId="parseInt($route.params.id)" :done="resetAllDialog"></newEvidenceDialog>
+			<newEvidenceDialog :dialog="evidenceDialog" :factId="parseInt($route.params.id)" :done="actionComplete"></newEvidenceDialog>
 			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem" :isAdmin="isAdmin" :done="()=>{reportedSnackbar=true;reportDialog=false}"></reportDialog>
 			<mediaDialog :media="selectedMedia" :dialog="mediaDialog" :done="resetAllDialog"></mediaDialog>
+			<deletionDialog :deletedItem="deletedItem" :dialog="deletionDialog" :done="actionComplete"></deletionDialog>
 			<v-snackbar v-model="trustedSnackbar" :bottom="true" :right="true" :timeout="6000">
 				Trusted! The truth will finally be exposed!
 				<v-btn color="pink" flat @click="trustedSnackbar = false">
@@ -160,8 +162,7 @@
 	import trustCounter from "@/components/trustCounter.vue";
 	import reportDialog from "@/components/reportDialog.vue";
 	import mediaDialog from "@/components/mediaDialog.vue";
-	const api_domain = 'http://localhost:3000/api';
-	// const img_server_domain = 'http://localhost:8080/uploads/';
+	import deletionDialog from "@/components/deletionDialog.vue";
 	var moment = require('moment');
 	
 	export default {
@@ -170,7 +171,8 @@
 			pieChart,
 			trustCounter,
 			reportDialog,
-			mediaDialog
+			mediaDialog,
+			deletionDialog
 		},
 		props: {
 			isAdmin: Boolean
@@ -179,6 +181,7 @@
 			evidenceDialog: false,
 			reportDialog: false,
 			mediaDialog: false,
+			deletionDialog: false,
 			fact: {},
 			reportedItem: {
 				type: null,
@@ -192,14 +195,8 @@
 			trustedSnackbar: false,
 			reportedSnackbar: false,
 			fullscreen: false,
-			selectedMedia: {}
-			// supportData: {
-			// 	labels: ['Support', 'Aginst'],
-			// 	datasets: [{
-			// 		backgroundColor: ['#4caf50', '#dc3912'],
-			// 		data: []
-			// 	}],
-			// },
+			selectedMedia: {},
+			deletedItem:{}
 		}),
 		computed: {
 			sortedEvidences: function() {
@@ -255,7 +252,7 @@
 		methods: {
 			getFact() {
 				const self = this;
-				let api = api_domain + "/facts/" + self.$route.params.id;
+				let api = self.api_url + "/facts/" + self.$route.params.id;
 				this.axios.get(api).then(res => {
 					self.fact = res.data;
 					self.fact.ref_url = self.fact.ref_url.split(',');
@@ -265,7 +262,7 @@
 			},
 			getEvidences() {
 				const self = this;
-				let api = api_domain + "/facts/" + this.$route.params.id + "/evidences";
+				let api = self.api_url + "/facts/" + this.$route.params.id + "/evidences";
 				this.axios.get(api).then(res => {
 					self.evidences = res.data;
 					self.evidences.forEach((evidence) => {
@@ -276,17 +273,18 @@
 				});
 			},
 			addView() {
-				let api = api_domain + "/facts/" + this.$route.params.id + "/add_view";
+				const self = this;
+				let api = self.api_url + "/facts/" + this.$route.params.id + "/add_view";
 				this.axios.get(api).then(() => {
 					// eslint-disable-next-line
 					console.log("Added view");
-				});
+				})
 			},
 			addTrust(evidence) {
 				let self = this;
 				self.resetAllDialog();
 				if (!evidence.trusted) {
-					let api = api_domain + "/facts/" + this.$route.params.id + "/evidences/" + evidence.id + "/add_trust";
+					let api = self.api_url + "/facts/" + this.$route.params.id + "/evidences/" + evidence.id + "/add_trust";
 					this.axios.get(api).then(() => {
 						// eslint-disable-next-line
 						console.log("Added trust");
@@ -300,6 +298,7 @@
 				this.reportDialog = false;
 				this.evidenceDialog = false;
 				this.mediaDialog = false;
+				this.deletionDialog = false;
 			},
 			openEvidenceDialog() {
 				this.resetAllDialog();
@@ -315,6 +314,11 @@
 				this.selectedMedia = media;
 				this.mediaDialog = true;
 			},
+			openDeletionDialog(item) {
+				this.resetAllDialog();
+				this.deletedItem = item;
+				this.deletionDialog = true;
+			},
 			selectSort(index) {
 				this.resetAllDialog();
 				this.selectedSortIndex = index;
@@ -323,6 +327,10 @@
 				this.resetAllDialog();
 				this.sortOrder = this.sortOrder * (-1);
 			},
+			actionComplete() {
+				this.resetAllDialog();
+				this.getEvidences();
+			}
 		},
 		mounted() {
 			this.getFact();

@@ -48,8 +48,6 @@
 <script>
 	import vue2Dropzone from "vue2-dropzone";
 	import "vue2-dropzone/dist/vue2Dropzone.min.css";
-	const api_domain = 'http://localhost:3000/api';
-	const img_server_domain = 'http://localhost:8080/uploads/';
 	export default {
 		components: {
 			vueDropzone: vue2Dropzone,
@@ -61,7 +59,6 @@
 		},
 		data: () => ({
 			dropzoneOptions: {
-				url: api_domain + '/upload',
 				paramName: "coverImage",
 				thumbnailWidth: 200,
 				maxFiles: 1,
@@ -86,6 +83,9 @@
 			],
 			valid: false,
 		}),
+		created() {
+			this.dropzoneOptions.url = this.api_url + '/upload';
+		},
 		computed: {
 			urlArray: function() {
 				return this.newEvidence.ref_url.map((el) => {
@@ -99,7 +99,7 @@
 		},
 		methods: {
 			finishUpload(file, res) {
-				this.newEvidence.image_url = img_server_domain + res;
+				this.newEvidence.image_url = this.media_server_url + '/' + res;
 			},
 			addEvidence() {
 				const self = this;
@@ -115,11 +115,11 @@
 				}
 				// eslint-disable-next-line
 				console.log(evidence);
-				let api = api_domain + "/facts/" + self.factId + "/evidences";
+				let api = self.api_url + "/facts/" + self.factId + "/evidences";
 				self.axios.post(api, evidence).then(res => {
 					// eslint-disable-next-line
 					console.log("Added ID:" + res.data);
-					location.reload();
+					self.done();
 				});
 			},
 			addRef() {

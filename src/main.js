@@ -12,7 +12,13 @@ import 'animate.css/animate.css'
 
 Vue.config.productionTip = false
 
+Vue.prototype.api_url = 'http://localhost:3000/api'
+Vue.prototype.media_server_url = 'http://localhost:8080/uploads'
+
 new Vue({
     router,
-    render: h => h(App)
+    render: h => h(App),
+    // beforeCreate: function() {
+    //     window.alert(this.$appName)
+    // }
 }).$mount('#app')

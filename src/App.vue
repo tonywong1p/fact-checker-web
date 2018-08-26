@@ -28,26 +28,10 @@
       <v-toolbar-title style="width: 300px" class="ml-0 pl-1">
         <span class="hidden-sm-and-down grey--text" style="font-size:18px">Fact Checker</span>
       </v-toolbar-title>
-      <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" append-icon="clear" :append-icon-cb="clearSearch" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
+      <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" append-icon="clear" @click:append="clearSearch" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
       <v-spacer></v-spacer>
       <v-btn flat v-if="isAdmin" @click="isAdmin=false">I am Admin</v-btn>
-      <v-menu bottom left>
-        <v-btn slot="activator" icon>
-          <v-icon>notifications</v-icon>
-        </v-btn>
-        <v-list two-line style="width:500px">
-          <v-subheader>System Announcement</v-subheader>
-          <v-list-tile v-for="(item) in items" :key="item.title" avatar>
-            <v-list-tile-avatar>
-              <img :src="item.avatar">
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title v-html="item.title"></v-list-tile-title>
-              <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
+      <admin-notification :isAdmin="isAdmin"></admin-notification>
     </v-toolbar>
     <router-view :search="search" :isAdmin="isAdmin"></router-view>
   </v-app>
@@ -58,7 +42,16 @@
     Carousel,
     Slide
   } from "vue-carousel";
+  import adminNotification from '@/components/adminNotification.vue';
   export default {
+    components: {
+      Carousel,
+      Slide,
+      adminNotification
+    },
+    props: {
+      source: String
+    },
     data: () => ({
       dialog: false,
       items: [{
@@ -69,13 +62,6 @@
       search: null,
       isAdmin: false,
     }),
-    components: {
-      Carousel,
-      Slide
-    },
-    props: {
-      source: String
-    },
     methods: {
       goBack() {
         window.history.back();

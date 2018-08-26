@@ -35,7 +35,6 @@
 </template>
 
 <script>
-	const api_domain = 'http://localhost:3000/api';
 	export default {
 		props: {
 			dialog: Boolean,
@@ -59,9 +58,9 @@
 				}
 				let api = null;
 				if (reportedItem.type == 'fact') {
-					api = api_domain + `/facts/${self.$route.params.id}/report`;
+					api = self.api_url + `/facts/${self.$route.params.id}/report`;
 				} else if (reportedItem.type == 'evidence') {
-					api = api_domain + `/facts/${self.$route.params.id}/evidences/${reportedItem.id}/report`;
+					api = self.api_url + `/facts/${self.$route.params.id}/evidences/${reportedItem.id}/report`;
 				}
 				self.axios.post(api, report).then(res => {
 					// eslint-disable-next-line

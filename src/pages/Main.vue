@@ -69,7 +69,7 @@
 								</v-card-actions>
 								<v-card-actions v-if="isAdmin">
 									<span>{{fact.reported}}</span>
-									<v-btn @click="openDeletionDialog({type:'fact',id:fact.id})">Delete</v-btn>
+									<v-btn color="red" @click="openDeletionDialog({type:'fact',id:fact.id})">Delete</v-btn>
 									<span class="ml-2" v-if="fact.report!=null">Report: {{fact.report}}</span>
 								</v-card-actions>
 							</v-card>
@@ -85,7 +85,7 @@
 		<span>Create a new Fact</span>
 		</v-tooltip>
 		<newFactDialog :dialog="newFactDialog" :done="resetAllDialog"></newFactDialog>
-		<deletion-dialog :dialog="deletionDialog" :deletedItem="deletedFact"></deletion-dialog>
+		<deletionDialog :dialog="deletionDialog" :deletedItem="deletedFact" :done="actionComplete"></deletionDialog>
 	</v-content>
 </template>
 
@@ -97,8 +97,6 @@
 	import newFactDialog from "@/components/newFactDialog.vue";
 	import deletionDialog from "@/components/deletionDialog.vue";
 	import trustCounter from "@/components/trustCounter.vue";
-	const api_domain = "http://localhost:3000/api";
-	//const img_server_domain = 'http://localhost:8080/uploads/';
 	var moment = require("moment");
 	
 	export default {
@@ -154,7 +152,7 @@
 		methods: {
 			getFacts() {
 				const self = this;
-				let api = api_domain + "/facts";
+				let api = self.api_url + "/facts";
 				self.axios.get(api, {
 						params: {
 							search: self.search
@@ -209,6 +207,10 @@
 				this.resetAllDialog();
 				this.deletedFact = item;
 				this.deletionDialog = true;
+			},
+			actionComplete() {
+				this.resetAllDialog();
+				this.getFacts();
 			}
 		},
 		mounted() {
