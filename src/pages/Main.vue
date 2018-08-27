@@ -28,6 +28,7 @@
 					<carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[420, 1], [768, 3]]">
 						<slide v-for="fact in sortedFacts" :key="fact.id">
 							<v-card class="ma-3" :class="{'red darken-4':isAdmin&&fact.report!=null}">
+								<div class="empty-img"><v-icon style="font-size:60px">block</v-icon></div>
 								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
 								</v-card-media>
 								<v-card-title primary-title style="height:250px;align-items:stretch">
@@ -42,14 +43,14 @@
 									<v-layout>
 										<v-flex xs12 sm6>
 											<v-tooltip top>
-											<v-chip slot="activator" outline class="mx-2" color="white">
-												<v-avatar>
-													<v-icon>remove_red_eye</v-icon>
-												</v-avatar>
-												<span v-if="!fact.numOfView">0</span>
-												<span v-if="fact.numOfView">{{fact.numOfView}}</span>
-											</v-chip>
-											<span>Views</span>
+												<v-chip slot="activator" outline class="mx-2" color="white">
+													<v-avatar>
+														<v-icon>remove_red_eye</v-icon>
+													</v-avatar>
+													<span v-if="!fact.numOfView">0</span>
+													<span v-if="fact.numOfView">{{fact.numOfView}}</span>
+												</v-chip>
+												<span>Views</span>
 											</v-tooltip>
 											<v-tooltip top>
 												<v-chip slot="activator" outline class="mx-2" color="white">
@@ -79,10 +80,10 @@
 			</v-layout>
 		</v-container>
 		<v-tooltip left>
-		<v-btn slot="activator" fab bottom right color="pink" dark fixed @click.stop="openFactDialog()">
-			<v-icon>add</v-icon>
-		</v-btn>
-		<span>Create a new Fact</span>
+			<v-btn slot="activator" fab bottom right color="pink" dark fixed @click.stop="openFactDialog()">
+				<v-icon>add</v-icon>
+			</v-btn>
+			<span>Create a new Fact</span>
 		</v-tooltip>
 		<newFactDialog :dialog="newFactDialog" :done="resetAllDialog"></newFactDialog>
 		<deletionDialog :dialog="deletionDialog" :deletedItem="deletedFact" :done="actionComplete"></deletionDialog>
@@ -222,6 +223,18 @@
 </script>
 
 <style>
+	.empty-img {
+		position: absolute;
+		top: 0px;
+		background-color: rgb(53, 55, 146);
+		height: 200px;
+		width: 100%;
+		font-size: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
 	.hoverable:hover {
 		cursor: pointer;
 		transition: 0.3s;

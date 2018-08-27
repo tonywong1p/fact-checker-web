@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" width="800px">
+	<v-dialog v-model="dialog" width="800px" lazy="true">
 		<v-card>
 			<v-card-title>
 				<h3 class="headline">New Case</h3>
@@ -7,7 +7,7 @@
 				<v-btn color="primary" flat @click="done()">
 					Cancel
 				</v-btn>
-				<v-btn color="primary" dark @click="addFact()" :disabled="!valid || newFact.image_url==''">Create
+				<v-btn color="primary" dark @click="addFact()" :disabled="!valid">Create
 					<v-icon right dark>send</v-icon>
 				</v-btn>
 			</v-card-title>
@@ -15,7 +15,20 @@
 				<v-form ref="form" v-model="valid" lazy-validation>
 					<v-layout row wrap>
 						<v-flex xs12>
-							<vue-dropzone id="coverImage" :options="dropzoneOptions" class="mb-4" @vdropzone-success="finishUpload"></vue-dropzone>
+							<v-tabs v-model="activeTab" dark slider-color="pink">
+								<v-tab ripple key="0">
+									Upload
+								</v-tab>
+								<v-tab ripple>
+									URL
+								</v-tab>
+								<v-tab-item>
+									<vue-dropzone id="coverImage" :options="dropzoneOptions" class="mb-4" @vdropzone-success="finishUpload"></vue-dropzone>
+								</v-tab-item>
+								<v-tab-item>
+									<v-text-field box label="Cover image URL" :rules="imageUrlRules" v-model="newFact.image_url" maxlength="100" required></v-text-field>
+								</v-tab-item>
+							</v-tabs>
 							<v-text-field box label="Title" :rules="titleRules" v-model="newFact.title" maxlength="100" required></v-text-field>
 							<v-textarea box name="input-7-4" label="Description" :rules="descriptionRules" :counter="1000" maxlength="1000" v-model="newFact.description" required></v-textarea>
 						</v-flex>
@@ -70,13 +83,16 @@
 				}],
 				image_url: ""
 			},
+			imageUrlRules: [
+				v => !!v || 'Cover image is required',
+			],
 			titleRules: [
 				v => !!v || 'Title is required',
 			],
 			descriptionRules: [
 				v => !!v || 'Description is required',
 			],
-			valid: false,
+			valid: true,
 		}),
 		created() {
 			this.dropzoneOptions.url = this.api_url + '/upload';
@@ -95,7 +111,6 @@
 		methods: {
 			finishUpload(file, res) {
 				this.newFact.image_url = this.media_server_url + '/' + res;
-				this.valid = false;
 			},
 			addFact() {
 				const self = this;
@@ -109,11 +124,13 @@
 					fact.ref_url = [].toString();
 				}
 				let api = self.api_url + "/facts";
-				self.axios.post(api, fact).then(res => {
-					// eslint-disable-next-line
-					console.log("Added ID:" + res.data);
-					self.goToFact(res.data);
-				});
+				if (self.$refs.form.validate()) {
+					self.axios.post(api, fact).then(res => {
+						// eslint-disable-next-line
+						console.log("Added ID:" + res.data);
+						self.goToFact(res.data);
+					});
+				}
 			},
 			addRef() {
 				this.newFact.ref_url.push({
@@ -135,6 +152,7 @@
 		mounted() {}
 	}
 </script>
+
 <style>
 	.dropzone .dz-message {
 		margin: 0px

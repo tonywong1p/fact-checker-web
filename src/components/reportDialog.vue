@@ -13,6 +13,8 @@
 					<v-radio label="Harassment" value="Harassment"></v-radio>
 					<v-radio label="Spam" value="Spam"></v-radio>
 					<v-radio label="Sexual Activity" value="Sexual Activity"></v-radio>
+					<v-radio label="Irrelevant" value="Irrelevant"></v-radio>
+					<v-radio label="Dead image" value="Dead image"></v-radio>
 					<v-radio label="Others" value="Others">
 					</v-radio>
 					<v-text-field placeholder="Tell us what's going on" v-model="customMessage" v-if="reportMessage=='Others'"></v-text-field>

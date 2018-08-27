@@ -7,6 +7,7 @@
 			<v-layout row wrap class="animated fadeIn" v-if="!isLoading">
 				<v-flex xs12 sm6>
 					<v-card :class="{'red darken-4':isAdmin&&fact.report!=null}">
+						<div class="empty-img" style="height:300px"><v-icon style="font-size:60px">block</v-icon></div>
 						<v-card-media :src="fact.image_url" height="300px">
 							<v-layout>
 								<v-spacer></v-spacer>
@@ -21,11 +22,13 @@
 							</v-layout>
 						</v-card-media>
 						<v-card-title primary-title>
-							<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
-							<h3 class="subtitle mb-0 mt-3 grey--text">Description</h3>
-							<p>{{fact.description}}</p>
-							<h3 class="subtitle mb-0 mt-3 grey--text" v-if="fact.ref_url!=''">Reference Link</h3>
-							<a class="truncate" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
+							<div style="width:100%">
+								<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
+								<h3 class="subtitle mb-0 mt-3 grey--text">Description</h3>
+								<p>{{fact.description}}</p>
+								<h3 class="subtitle mb-0 mt-3 grey--text" v-if="fact.ref_url!=''">Reference Link</h3>
+								<a class="truncate" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
+							</div>
 						</v-card-title>
 						<v-divider></v-divider>
 						<v-card-text>
@@ -94,6 +97,7 @@
 								<span class="red--text">Aginst</span> with {{evidence.trust_count}} trust<span v-if="evidence.trust_count>1">s</span>
 							</div>
 							<v-card>
+								<div class="empty-img" style="height:150px" v-if="evidence.image_url!=''"><v-icon style="font-size:60px">block</v-icon></div>
 								<v-card-media :src="evidence.image_url" v-if="evidence.image_url!=''" height="150px">
 									<v-layout>
 										<v-spacer></v-spacer>
@@ -109,7 +113,7 @@
 								</v-card-media>
 								<v-card-text>{{evidence.text}}
 									<h3 class="subtitle mb-0 mt-3" v-if="evidence.ref_url.length!=0&&evidence.ref_url[0]!=''">Reference Link</h3>
-									<a style="display:block" :href="url" target="_blank" v-for="url in evidence.ref_url" :key="url.id">{{url}}</a>
+									<a style="display:block" class="truncate" :href="url" target="_blank" v-for="url in evidence.ref_url" :key="url.id">{{url}}</a>
 								</v-card-text>
 								<v-divider></v-divider>
 								<v-card-text>
@@ -340,6 +344,17 @@
 </script>
 
 <style>
+	.empty-img {
+		position: absolute;
+		top: 0px;
+		background-color: rgb(53, 55, 146);
+		width: 100%;
+		font-size: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
 	.truncate {
 		display: block;
 		display: -webkit-box;

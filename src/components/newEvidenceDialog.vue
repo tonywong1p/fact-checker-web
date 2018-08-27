@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" width="800px">
+	<v-dialog v-model="dialog" width="800px" lazy="true">
 		<v-card>
 			<v-card-title>
 				<h3 class="headline">New Evidence</h3>
@@ -7,7 +7,7 @@
 				<v-btn color="primary" flat @click="done()">
 					Cancel
 				</v-btn>
-				<v-btn color="primary" dark @click="addEvidence()" :disabled="!valid || newEvidence.image_url=='' || !newEvidence.support">Create
+				<v-btn color="primary" dark @click="addEvidence()" :disabled="!valid || !newEvidence.support">Create
 					<v-icon right dark>send</v-icon>
 				</v-btn>
 			</v-card-title>
@@ -16,11 +16,24 @@
 					<v-layout row wrap>
 						<v-flex xs12>
 							<p class="grey--text">Standpoint (required)</p>
-							<v-radio-group v-model="newEvidence.support" row class="mt-0">
+							<v-radio-group v-model="newEvidence.support" required row class="mt-0">
 								<v-radio label="Support" color="success" value="1"></v-radio>
 								<v-radio label="Against" color="error" value="0"></v-radio>
 							</v-radio-group>
-							<vue-dropzone id="coverImage" :options="dropzoneOptions" class="mb-4" @vdropzone-success="finishUpload"></vue-dropzone>
+							<v-tabs v-model="activeTab" dark slider-color="pink">
+								<v-tab ripple key="0">
+									Upload
+								</v-tab>
+								<v-tab ripple>
+									URL
+								</v-tab>
+								<v-tab-item>
+									<vue-dropzone id="coverImage" :options="dropzoneOptions" class="mb-4" @vdropzone-success="finishUpload"></vue-dropzone>
+								</v-tab-item>
+								<v-tab-item>
+									<v-text-field box label="Image URL (optional)" v-model="newEvidence.image_url" maxlength="100"></v-text-field>
+								</v-tab-item>
+							</v-tabs>
 							<v-textarea box name="input-7-4" label="Description" :counter="1000" maxlength="1000" v-model="newEvidence.text" :rules="descriptionRules" required></v-textarea>
 						</v-flex>
 					</v-layout>
@@ -63,7 +76,7 @@
 				thumbnailWidth: 200,
 				maxFiles: 1,
 				maxFilesize: 10,
-				dictDefaultMessage: "<i class='material-icons' style='font-size:80px'>add_photo_alternate</i><br>Drop to upload the cover image here (required) (max 10MB)",
+				dictDefaultMessage: "<i class='material-icons' style='font-size:80px'>add_photo_alternate</i><br>Drop to upload the cover image here (optional) (max 10MB)",
 				addRemoveLinks: true,
 				acceptedFiles: 'image/*'
 			},
@@ -81,7 +94,7 @@
 			descriptionRules: [
 				v => !!v || 'Description is required',
 			],
-			valid: false,
+			valid: true,
 		}),
 		created() {
 			this.dropzoneOptions.url = this.api_url + '/upload';
@@ -116,11 +129,13 @@
 				// eslint-disable-next-line
 				console.log(evidence);
 				let api = self.api_url + "/facts/" + self.factId + "/evidences";
-				self.axios.post(api, evidence).then(res => {
-					// eslint-disable-next-line
-					console.log("Added ID:" + res.data);
-					self.done();
-				});
+				if (self.$refs.form.validate()) {
+					self.axios.post(api, evidence).then(res => {
+						// eslint-disable-next-line
+						console.log("Added ID:" + res.data);
+						self.done();
+					});
+				}
 			},
 			addRef() {
 				this.newEvidence.ref_url.push({
