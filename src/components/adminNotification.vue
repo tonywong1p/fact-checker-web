@@ -9,19 +9,20 @@
     <v-toolbar color="indigo" dark>
       <v-toolbar-title>Notifications</v-toolbar-title>
     </v-toolbar>
-    <v-list two-line style="width:500px">
-      <v-subheader>Creator Announcement</v-subheader>
+    <v-list three-line style="width:500px">
+      <!-- <v-subheader>Creator Announcement</v-subheader> -->
       <v-textarea box v-if="isAdmin" name="input-7-4" label="Message" v-model="newMessage" append-icon="send" @click:append="addNotification"></v-textarea>
       <v-list-tile v-if="notifications.length==0">No recent nofication</v-list-tile>
-      <v-list-tile v-for="notification in notifications" :key="notification.id" avatar>
+      <v-list-tile v-for="notification in notifications" :key="notification.id" avatar class="py-2">
         <v-list-tile-avatar>
           <img src="@/assets/avatar.png">
         </v-list-tile-avatar>
         <v-list-tile-content>
-          <v-list-tile-title v-html="notification.text"></v-list-tile-title>
-          <v-list-tile-sub-title v-html="notification.moment"></v-list-tile-sub-title>
+          <v-list-tile-sub-title class="white--text">{{notification.text}}</v-list-tile-sub-title>
+          <v-list-tile-sub-title class="caption">{{notification.moment}} by Creator</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-btn v-if="isAdmin" @click="openDeletionDialog({type:'notification',id:notification.id})">Delete</v-btn>
+        <v-divider></v-divider>
       </v-list-tile>
     </v-list>
     <deletionDialog :dialog="deletionDialog" :deletedItem="deletedNotification" :done="actionComplete"></deletionDialog>
@@ -85,3 +86,8 @@
   }
 </script>
 
+<style>
+  .v-list--three-line .v-list__tile {
+    height: 100% !important;
+  }
+</style>
