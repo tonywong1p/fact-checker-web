@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" width="800px" lazy="true">
+	<v-dialog v-model="dialog" width="800px" lazy>
 		<v-card>
 			<v-card-title>
 				<h3 class="headline">New Evidence</h3>
@@ -20,7 +20,7 @@
 								<v-radio label="Support" color="success" value="1"></v-radio>
 								<v-radio label="Against" color="error" value="0"></v-radio>
 							</v-radio-group>
-							<v-tabs v-model="activeTab" dark slider-color="pink">
+							<v-tabs dark slider-color="pink">
 								<v-tab ripple key="0">
 									Upload
 								</v-tab>

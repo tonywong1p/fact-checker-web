@@ -1,21 +1,31 @@
 <template>
   <v-app id="fact-cracker" dark>
-    <v-navigation-drawer clipped fixed app dark v-if="$route.path=='/'">
+    <v-navigation-drawer clipped fixed app dark v-if="$route.path=='/'" v-model="drawer">
       <v-list dense>
-        <v-list-tile>
-          <v-list-tile-action>
-            <v-icon>dashboard</v-icon>
-          </v-list-tile-action>
+        <v-list-tile @click="selectedTag='all'" avatar>
+          <v-list-tile-avatar color="grey">
+            <v-icon>all_inclusive</v-icon>
+          </v-list-tile-avatar>
           <v-list-tile-content>
             <v-list-tile-title>All</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-action>
-            <v-icon>settings</v-icon>
-          </v-list-tile-action>
+        <v-list-tile @click="selectedTag='hot'" avatar>
+          <v-list-tile-avatar color="red">
+            <v-icon>whatshot</v-icon>
+          </v-list-tile-avatar>
           <v-list-tile-content>
             <v-list-tile-title>Hottest</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-divider></v-divider>
+        <v-subheader class="subtitle">Topics</v-subheader>
+        <v-list-tile v-for="tag in tags" :key="tag.id" @click="selectedTag=tag" avatar>
+          <v-list-tile-avatar :color="color[(tag.charCodeAt(0)+tag.charCodeAt(1))%color.length]">
+            <span class="white--text headline">{{tag[0].toUpperCase()}}</span>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>{{tag}}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -24,6 +34,7 @@
       <v-btn icon v-if="$route.path!='/'" @click="goBack()">
         <v-icon>arrow_back_ios</v-icon>
       </v-btn>
+      <v-toolbar-side-icon v-if="$route.path=='/'" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <img src="./assets/logo.png" class="app-logo" />
       <v-toolbar-title style="width: 300px" class="ml-0 pl-1">
         <span class="hidden-sm-and-down grey--text" style="font-size:18px">Fact Checker</span>
@@ -33,7 +44,7 @@
       <v-btn flat v-if="isAdmin" @click="isAdmin=false">I am Admin</v-btn>
       <admin-notification :isAdmin="isAdmin"></admin-notification>
     </v-toolbar>
-    <router-view :search="search" :isAdmin="isAdmin"></router-view>
+    <router-view :search="search" :tagFilter="selectedTag" :isAdmin="isAdmin"></router-view>
   </v-app>
 </template>
 
@@ -54,6 +65,7 @@
     },
     data: () => ({
       dialog: false,
+      drawer: true,
       items: [{
         avatar: 'https://pbs.twimg.com/profile_images/538456309603913728/ihbvZL7s_400x400.jpeg',
         title: 'Hi everyone!',
@@ -61,6 +73,9 @@
       }],
       search: null,
       isAdmin: false,
+      tags: [],
+      color: ['blue', 'pink', 'teal', 'orange', 'purple', 'deep-purple', 'indigo','cyan','brown','deep-orange'],
+      selectedTag: 'all',
     }),
     methods: {
       goBack() {
@@ -75,7 +90,19 @@
       },
       clearSearch() {
         this.search = null;
-      }
+      },
+      getTags() {
+        const self = this;
+        let api = self.api_url + "/tags";
+        self.axios.get(api).then((res) => {
+          self.tags = res.data.map((tag) => {
+            return tag.tag
+          })
+        })
+      },
+    },
+    mounted() {
+      this.getTags();
     }
   };
 </script>

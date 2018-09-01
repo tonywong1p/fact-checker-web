@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" width="800px" lazy="true">
+	<v-dialog v-model="dialog" width="800px" lazy>
 		<v-card>
 			<v-card-title>
 				<h3 class="headline">New Case</h3>
@@ -15,7 +15,7 @@
 				<v-form ref="form" v-model="valid" lazy-validation>
 					<v-layout row wrap>
 						<v-flex xs12>
-							<v-tabs v-model="activeTab" dark slider-color="pink">
+							<v-tabs dark slider-color="pink">
 								<v-tab ripple key="0">
 									Upload
 								</v-tab>
@@ -30,6 +30,10 @@
 								</v-tab-item>
 							</v-tabs>
 							<v-text-field box label="Title" :rules="titleRules" v-model="newFact.title" maxlength="100" required></v-text-field>
+							<v-flex xs12>
+								<v-combobox v-model="selectedTags" :items="tags" label="I use chips" multiple chips></v-combobox>
+								{{selectedTags}}
+							</v-flex>
 							<v-textarea box name="input-7-4" label="Description" :rules="descriptionRules" :counter="1000" maxlength="1000" v-model="newFact.description" required></v-textarea>
 						</v-flex>
 					</v-layout>
@@ -93,6 +97,8 @@
 				v => !!v || 'Description is required',
 			],
 			valid: true,
+			tags: [],
+			selectedTags: [],
 		}),
 		created() {
 			this.dropzoneOptions.url = this.api_url + '/upload';
@@ -119,6 +125,7 @@
 					description: self.newFact.description,
 					ref_url: self.urlArray.toString(),
 					image_url: self.newFact.image_url,
+					tags: self.selectedTags,
 				};
 				if (self.newFact.ref_url[0].value == '' && self.newFact.ref_url.length == 1) {
 					fact.ref_url = [].toString();
@@ -131,6 +138,15 @@
 						self.goToFact(res.data);
 					});
 				}
+			},
+			getTags() {
+				const self = this;
+				let api = self.api_url + "/tags";
+				self.axios.get(api).then((res)=>{
+					self.tags = res.data.map((tag)=>{
+						return tag.tag
+					})
+				})
 			},
 			addRef() {
 				this.newFact.ref_url.push({
@@ -149,7 +165,9 @@
 				});
 			},
 		},
-		mounted() {}
+		mounted() {
+			this.getTags();
+		}
 	}
 </script>
 

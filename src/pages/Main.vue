@@ -7,11 +7,14 @@
 			<v-layout justify-center align-center wrap v-if="!isLoading" class="animated fadeIn">
 				<v-flex xs12>
 					<v-layout justify-end>
-						<v-btn flat icon color="pink" @click="changeSortOrder()">
+						<v-btn flat icon color="pink" @click="changeSortOrder()" v-if="tagFilter!='hot'">
 							<v-icon v-if="sortOrder==1">arrow_downward</v-icon>
 							<v-icon v-if="sortOrder==-1">arrow_upward</v-icon>
 						</v-btn>
-						<v-menu offset-y>
+						<v-btn flat color="primary" dark v-if="tagFilter=='hot'">
+							Hottest
+						</v-btn>
+						<v-menu offset-y v-if="tagFilter!='hot'">
 							<v-btn flat slot="activator" color="primary" dark>
 								{{sortList[selectedSortIndex]}}
 							</v-btn>
@@ -28,13 +31,16 @@
 					<carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[420, 1], [768, 3]]">
 						<slide v-for="fact in sortedFacts" :key="fact.id">
 							<v-card class="ma-3" :class="{'red darken-4':isAdmin&&fact.report!=null}">
-								<div class="empty-img"><v-icon style="font-size:60px">block</v-icon></div>
+								<div class="empty-img">
+									<v-icon style="font-size:60px">block</v-icon>
+								</div>
 								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
 								</v-card-media>
 								<v-card-title primary-title style="height:250px;align-items:stretch">
 									<div>
 										<h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
 										<p class="truncate white--text mb-0">{{fact.description}}</p>
+										{{fact.tags}}
 									</div>
 								</v-card-title>
 								<v-divider></v-divider>
@@ -110,6 +116,7 @@
 		},
 		props: {
 			search: String,
+			tagFilter: String,
 			isAdmin: Boolean
 		},
 		data: () => ({
@@ -128,27 +135,47 @@
 		computed: {
 			sortedFacts: function() {
 				let self = this;
+				let results = [];
 				if (self.selectedSortIndex == 0) {
-					return self.facts.sort(function(a, b) {
+					results = self.facts.sort(function(a, b) {
 						return (b.createdAt - a.createdAt) * self.sortOrder;
 					});
 				}
 				if (self.selectedSortIndex == 1) {
-					return self.facts.sort(function(a, b) {
+					results = self.facts.sort(function(a, b) {
 						return (b.numOfView - a.numOfView) * self.sortOrder;
 					});
 				}
 				if (self.selectedSortIndex == 2) {
-					return self.facts.sort(function(a, b) {
+					results = self.facts.sort(function(a, b) {
 						return (b.numOfEvidence - a.numOfEvidence) * self.sortOrder;
 					});
 				}
+				if (self.tagFilter == 'hot') {
+					results = self.facts.sort(function(a, b) {
+						return ((b.numOfEvidence + b.numOfView) - (a.numOfEvidence + a.numOfView));
+					});
+				}
+				if (self.tagFilter == 'all' || self.tagFilter == 'hot') {
+					return results;
+				} else {
+					return results.filter((result) => {
+						let flag = false;
+						result.tags.forEach((tag) => {
+							if (tag == self.tagFilter) {
+								flag = true;
+							}
+						})
+						return flag;
+					})
+				}
+				return results
 			}
 		},
 		watch: {
 			search: function() {
 				this.getFacts();
-			}
+			},
 		},
 		methods: {
 			getFacts() {
@@ -160,8 +187,8 @@
 						}
 					})
 					.then((res) => {
-						self.facts = res.data;
-						self.facts.forEach(fact => {
+						let facts = res.data;
+						facts.forEach(fact => {
 							fact.moment = moment(parseInt(fact.createdAt)).fromNow();
 							if (!fact.against_trust_count) {
 								fact.against_trust_count = 0;
@@ -170,6 +197,7 @@
 								fact.support_trust_count = 0;
 							}
 						});
+						self.facts = facts;
 						self.isLoading = false;
 					})
 					.catch(error => {
