@@ -7,7 +7,9 @@
 			<v-layout row wrap class="animated fadeIn" v-if="!isLoading">
 				<v-flex xs12 sm6>
 					<v-card :class="{'red darken-4':isAdmin&&fact.report!=null}">
-						<div class="empty-img" style="height:300px"><v-icon style="font-size:60px">photo</v-icon></div>
+						<div class="empty-img" style="height:300px">
+							<v-icon style="font-size:60px">photo</v-icon>
+						</div>
 						<v-card-media :src="fact.image_url" height="300px">
 							<v-layout>
 								<v-spacer></v-spacer>
@@ -32,7 +34,7 @@
 						</v-card-title>
 						<v-divider></v-divider>
 						<v-card-text>
-							<v-layout>
+							<v-layout align-center>
 								<v-tooltip top>
 									<v-chip slot="activator" outline class="ma-2" color="white">
 										<v-avatar>
@@ -45,8 +47,15 @@
 								</v-tooltip>
 								<span class="caption ma-3">Created {{fact.moment}}</span>
 								<v-spacer></v-spacer>
+								<social-sharing :url="'http://35.240.217.27/#/fact/'+$route.params.id" :quote="fact.title" hashtags="vuejs,javascript,framework" twitter-user="vuejs" inline-template>
+									<network network="facebook">
+										<v-btn fab flat>
+											<v-icon dark>share</v-icon>
+										</v-btn>
+									</network>
+								</social-sharing>
 								<v-tooltip top>
-									<v-btn slot="activator" fab small flat color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
+									<v-btn slot="activator" fab flat color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
 										<v-icon>warning</v-icon>
 									</v-btn>
 									<span>Report</span>
@@ -97,7 +106,9 @@
 								<span class="red--text">Aginst</span> with {{evidence.trust_count}} trust<span v-if="evidence.trust_count>1">s</span>
 							</div>
 							<v-card>
-								<div class="empty-img" style="height:150px" v-if="evidence.image_url!=''"><v-icon style="font-size:60px">photo</v-icon></div>
+								<div class="empty-img" style="height:150px" v-if="evidence.image_url!=''">
+									<v-icon style="font-size:60px">photo</v-icon>
+								</div>
 								<v-card-media :src="evidence.image_url" v-if="evidence.image_url!=''" height="150px">
 									<v-layout>
 										<v-spacer></v-spacer>

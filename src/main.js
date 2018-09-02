@@ -10,10 +10,13 @@ Vue.use(VueAxios, axios)
 
 import 'animate.css/animate.css'
 
+import SocialSharing from 'vue-social-sharing'
+Vue.use(SocialSharing);
+
 Vue.config.productionTip = false
 
-Vue.prototype.api_url = 'http://35.185.180.15:3000/api'
-Vue.prototype.media_server_url = 'http://35.185.180.15:8080/uploads'
+Vue.prototype.api_url = 'http://35.240.217.27:3000/api'
+Vue.prototype.media_server_url = 'http://35.240.217.27:8080/uploads'
 
 new Vue({
     router,

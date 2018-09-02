@@ -83,6 +83,11 @@
 					</carousel>
 				</v-flex>
 			</v-layout>
+								<social-sharing url="https://vuejs.org/" inline-template>
+						<network network="facebook">
+							<v-btn>share</v-btn>
+						</network>
+					</social-sharing>
 		</v-container>
 		<v-tooltip left>
 			<v-btn slot="activator" fab bottom right color="pink" dark fixed @click.stop="openFactDialog()">
