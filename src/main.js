@@ -12,8 +12,8 @@ import 'animate.css/animate.css'
 
 Vue.config.productionTip = false
 
-Vue.prototype.api_url = 'http://localhost:3000/api'
-Vue.prototype.media_server_url = 'http://localhost:8080/uploads'
+Vue.prototype.api_url = 'http://35.185.180.15:3000/api'
+Vue.prototype.media_server_url = 'http://35.185.180.15:8080/uploads'
 
 new Vue({
     router,
