@@ -257,7 +257,6 @@
 				let api = self.api_url + "/facts/" + self.$route.params.id;
 				this.axios.get(api).then(res => {
 					self.fact = res.data;
-					self.fact.ref_url = self.fact.ref_url.split(',');
 					self.fact.moment = moment(parseInt(self.fact.createdAt)).fromNow();
 					self.isLoading = false;
 				});
@@ -269,7 +268,6 @@
 					self.evidences = res.data;
 					self.evidences.forEach((evidence) => {
 						evidence.moment = moment(parseInt(evidence.createdAt)).fromNow();
-						evidence.ref_url = evidence.ref_url.split(',');
 					});
 					self.isLoading = false;
 				});

@@ -38,6 +38,7 @@
 						</v-flex>
 					</v-layout>
 					<v-layout row wrap>
+						{{urlArray}}
 						<v-flex xs10>
 							<v-text-field box label="Reference URL (optional)" append-icon="link" v-for="link in newFact.ref_url" :key="link.id" v-model="link.value"></v-text-field>
 						</v-flex>
@@ -106,7 +107,7 @@
 		computed: {
 			urlArray: function() {
 				return this.newFact.ref_url.map((el) => {
-					if (RegExp('^(http|https)://').test(el.value)) {
+					if (RegExp('^(http|https)://').test(el.value) || el.value=='') {
 						return el.value
 					} else {
 						return 'http://' + el.value
@@ -123,13 +124,13 @@
 				let fact = {
 					title: self.newFact.title,
 					description: self.newFact.description,
-					ref_url: self.urlArray.toString(),
+					ref_url: self.urlArray,
 					image_url: self.newFact.image_url,
 					tags: self.selectedTags,
 				};
-				if (self.newFact.ref_url[0].value == '' && self.newFact.ref_url.length == 1) {
-					fact.ref_url = [].toString();
-				}
+				fact.ref_url = fact.ref_url.filter((url)=>{
+					return url != '';
+				})
 				let api = self.api_url + "/facts";
 				if (self.$refs.form.validate()) {
 					self.axios.post(api, fact).then(res => {
