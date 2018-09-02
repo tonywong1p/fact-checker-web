@@ -32,13 +32,11 @@
 							<v-text-field box label="Title" :rules="titleRules" v-model="newFact.title" maxlength="100" required></v-text-field>
 							<v-flex xs12>
 								<v-combobox v-model="selectedTags" :items="tags" label="I use chips" multiple chips></v-combobox>
-								{{selectedTags}}
 							</v-flex>
 							<v-textarea box name="input-7-4" label="Description" :rules="descriptionRules" :counter="1000" maxlength="1000" v-model="newFact.description" required></v-textarea>
 						</v-flex>
 					</v-layout>
 					<v-layout row wrap>
-						{{urlArray}}
 						<v-flex xs10>
 							<v-text-field box label="Reference URL (optional)" append-icon="link" v-for="link in newFact.ref_url" :key="link.id" v-model="link.value"></v-text-field>
 						</v-flex>
@@ -136,7 +134,7 @@
 					self.axios.post(api, fact).then(res => {
 						// eslint-disable-next-line
 						console.log("Added ID:" + res.data);
-						self.goToFact(res.data);
+						self.goToFact(res.data.insertId);
 					});
 				}
 			},

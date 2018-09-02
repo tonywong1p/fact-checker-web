@@ -32,7 +32,7 @@
 						<slide v-for="fact in sortedFacts" :key="fact.id">
 							<v-card class="ma-3" :class="{'red darken-4':isAdmin&&fact.report!=null}">
 								<div class="empty-img">
-									<v-icon style="font-size:60px">block</v-icon>
+									<v-icon style="font-size:60px">photo</v-icon>
 								</div>
 								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
 								</v-card-media>
@@ -40,7 +40,6 @@
 									<div>
 										<h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
 										<p class="truncate white--text mb-0">{{fact.description}}</p>
-										{{fact.tags}}
 									</div>
 								</v-card-title>
 								<v-divider></v-divider>
@@ -169,7 +168,6 @@
 						return flag;
 					})
 				}
-				return results
 			}
 		},
 		watch: {

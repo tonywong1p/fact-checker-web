@@ -7,7 +7,7 @@
 			<v-layout row wrap class="animated fadeIn" v-if="!isLoading">
 				<v-flex xs12 sm6>
 					<v-card :class="{'red darken-4':isAdmin&&fact.report!=null}">
-						<div class="empty-img" style="height:300px"><v-icon style="font-size:60px">block</v-icon></div>
+						<div class="empty-img" style="height:300px"><v-icon style="font-size:60px">photo</v-icon></div>
 						<v-card-media :src="fact.image_url" height="300px">
 							<v-layout>
 								<v-spacer></v-spacer>
@@ -97,7 +97,7 @@
 								<span class="red--text">Aginst</span> with {{evidence.trust_count}} trust<span v-if="evidence.trust_count>1">s</span>
 							</div>
 							<v-card>
-								<div class="empty-img" style="height:150px" v-if="evidence.image_url!=''"><v-icon style="font-size:60px">block</v-icon></div>
+								<div class="empty-img" style="height:150px" v-if="evidence.image_url!=''"><v-icon style="font-size:60px">photo</v-icon></div>
 								<v-card-media :src="evidence.image_url" v-if="evidence.image_url!=''" height="150px">
 									<v-layout>
 										<v-spacer></v-spacer>

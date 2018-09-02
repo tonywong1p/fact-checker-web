@@ -102,7 +102,7 @@
 		computed: {
 			urlArray: function() {
 				return this.newEvidence.ref_url.map((el) => {
-					if (RegExp('^(http|https)://').test(el.value)) {
+					if (RegExp('^(http|https)://').test(el.value) || el.value=='') {
 						return el.value
 					} else {
 						return 'http://' + el.value
@@ -120,12 +120,12 @@
 					fact_id: self.factId,
 					text: self.newEvidence.text,
 					image_url: self.newEvidence.image_url,
-					ref_url: self.urlArray.toString(),
+					ref_url: self.urlArray,
 					support: self.newEvidence.support,
 				};
-				if (self.newEvidence.ref_url[0].value == '' && self.newEvidence.ref_url.length == 1) {
-					evidence.ref_url = [].toString();
-				}
+				evidence.ref_url = evidence.ref_url.filter((url)=>{
+					return url != '';
+				})
 				// eslint-disable-next-line
 				console.log(evidence);
 				let api = self.api_url + "/facts/" + self.factId + "/evidences";
