@@ -28,7 +28,7 @@
 				</v-flex>
 				<v-flex>
 					<h3 class="title text-xs-center" v-if="sortedFacts.length==0">No related topic raised yet.</h3>
-					<carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[420, 1], [768, 3]]">
+					<carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[0, 1], [768, 2],[1024,3],[1024,4]]">
 						<slide v-for="fact in sortedFacts" :key="fact.id">
 							<v-card class="ma-3" :class="{'red darken-4':isAdmin&&fact.report!=null}">
 								<div class="empty-img">
@@ -83,11 +83,6 @@
 					</carousel>
 				</v-flex>
 			</v-layout>
-								<social-sharing url="https://vuejs.org/" inline-template>
-						<network network="facebook">
-							<v-btn>share</v-btn>
-						</network>
-					</social-sharing>
 		</v-container>
 		<v-tooltip left>
 			<v-btn slot="activator" fab bottom right color="pink" dark fixed @click.stop="openFactDialog()">

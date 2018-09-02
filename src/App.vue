@@ -1,8 +1,8 @@
 <template>
   <v-app id="fact-cracker" dark>
-    <v-navigation-drawer clipped fixed app dark v-if="$route.path=='/'" v-model="drawer">
+    <v-navigation-drawer clipped fixed app dark v-if="$route.path=='/'" mobile-break-point="1024" v-model="drawer">
       <v-list dense>
-        <v-list-tile @click="selectedTag='all'" avatar>
+        <v-list-tile @click="selectTag('all')" avatar>
           <v-list-tile-avatar color="grey">
             <v-icon>all_inclusive</v-icon>
           </v-list-tile-avatar>
@@ -10,7 +10,7 @@
             <v-list-tile-title>All</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click="selectedTag='hot'" avatar>
+        <v-list-tile @click="selectTag('hot')" avatar>
           <v-list-tile-avatar color="red">
             <v-icon>whatshot</v-icon>
           </v-list-tile-avatar>
@@ -20,7 +20,7 @@
         </v-list-tile>
         <v-divider></v-divider>
         <v-subheader class="subtitle">Topics</v-subheader>
-        <v-list-tile v-for="tag in tags" :key="tag.id" @click="selectedTag=tag" avatar>
+        <v-list-tile v-for="tag in tags" :key="tag.id" @click="selectTag(tag)" avatar>
           <v-list-tile-avatar :color="color[(tag.charCodeAt(0)+tag.charCodeAt(1))%color.length]">
             <span class="white--text headline">{{tag[0].toUpperCase()}}</span>
           </v-list-tile-avatar>
@@ -100,9 +100,27 @@
           })
         })
       },
+      checkMobile(){
+        let self = this;
+        if (window.innerWidth<1024){
+          self.drawer = false;
+        } else {
+          self.drawer = true;
+        }
+      },
+      selectTag(tag){
+        let self = this;
+        self.selectedTag = tag;
+        if (window.innerWidth<1024) {
+          self.drawer = false;
+        }
+      }
     },
     mounted() {
       this.getTags();
+    },
+    created(){
+      this.checkMobile();
     }
   };
 </script>
