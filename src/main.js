@@ -15,8 +15,8 @@ Vue.use(SocialSharing);
 
 Vue.config.productionTip = false
 
-Vue.prototype.api_url = 'http://35.240.217.27:3000/api'
-Vue.prototype.media_server_url = 'http://35.240.217.27:8080/uploads'
+Vue.prototype.api_url = 'http://localhost:3000/api'
+Vue.prototype.media_server_url = 'http://localhost:8080/uploads'
 
 new Vue({
     router,
