@@ -29,8 +29,8 @@
 				<v-flex>
 					<h3 class="title text-xs-center" v-if="sortedFacts.length==0">No related topic raised yet.</h3>
 					<carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[0, 1], [768, 2],[1024,3],[1024,4]]">
-						<slide v-for="fact in sortedFacts" :key="fact.id">
-							<v-card class="ma-3" :class="{'red darken-4':isAdmin&&fact.report!=null}">
+						<slide v-for="fact in sortedFacts" :key="fact.id" class="slide">
+							<v-card class="ma-3 slide-card" :class="{'red darken-4':isAdmin&&fact.report!=null}">
 								<div class="empty-img">
 									<v-icon style="font-size:60px">photo</v-icon>
 								</div>
@@ -249,6 +249,16 @@
 </script>
 
 <style>
+	.slide {
+		display:flex;
+		justify-content:center
+	}
+
+	.slide-card {
+		max-width:500px;
+		width:100%
+	}
+
 	.empty-img {
 		position: absolute;
 		top: 0px;

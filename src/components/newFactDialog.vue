@@ -31,7 +31,7 @@
 							</v-tabs>
 							<v-text-field box label="Title" :rules="titleRules" v-model="newFact.title" maxlength="100" required></v-text-field>
 							<v-flex xs12>
-								<v-combobox v-model="selectedTags" :items="tags" label="I use chips" multiple chips></v-combobox>
+								<v-combobox v-model="selectedTags" :items="tags" label="Related Topic" multiple chips></v-combobox>
 							</v-flex>
 							<v-textarea box name="input-7-4" label="Description" :rules="descriptionRules" :counter="1000" maxlength="1000" v-model="newFact.description" required></v-textarea>
 						</v-flex>
