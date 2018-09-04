@@ -4,16 +4,28 @@
 			<v-layout justify-center align-center wrap v-if="isLoading">
 				<v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
 			</v-layout>
-			<v-layout justify-center align-center wrap v-if="!isLoading" class="animated fadeIn">
+			<v-layout wrap v-if="!isLoading" class="animated fadeIn">
 				<v-flex xs12>
-					<v-layout justify-end>
-						<v-btn flat icon color="pink" @click="changeSortOrder()" v-if="tagFilter!='hot'">
-							<v-icon v-if="sortOrder==1">arrow_downward</v-icon>
-							<v-icon v-if="sortOrder==-1">arrow_upward</v-icon>
-						</v-btn>
-						<v-btn flat color="primary" dark v-if="tagFilter=='hot'">
-							Hottest
-						</v-btn>
+					<v-layout justify-space-between>
+						<v-layout justify-start>
+							<v-btn flat color="pink" v-if="view=='carousel'" @click="changeView('grid')">
+								<v-icon left>view_module</v-icon>
+								Grid View
+							</v-btn>
+							<v-btn flat color="pink" v-if="view=='grid'" @click="changeView('carousel')">
+								<v-icon left>view_array</v-icon>
+								Slide View
+							</v-btn>
+						</v-layout>
+						<v-layout justify-end>
+							<v-btn flat icon color="pink" @click="changeSortOrder()" v-if="tagFilter!='hot'">
+								<v-icon v-if="sortOrder==1">arrow_downward</v-icon>
+								<v-icon v-if="sortOrder==-1">arrow_upward</v-icon>
+							</v-btn>
+							<v-btn flat color="primary" dark v-if="tagFilter=='hot'">
+								Hottest
+							</v-btn>
+						</v-layout>
 						<v-menu offset-y v-if="tagFilter!='hot'">
 							<v-btn flat slot="activator" color="primary" dark>
 								{{sortList[selectedSortIndex]}}
@@ -26,9 +38,9 @@
 						</v-menu>
 					</v-layout>
 				</v-flex>
-				<v-flex>
+				<v-flex xs12>
 					<h3 class="title text-xs-center" v-if="sortedFacts.length==0">No related topic raised yet.</h3>
-					<carousel :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[0, 1], [768, 2],[1024,3],[1440,4]]">
+					<carousel v-if="view=='carousel'" :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[0, 1], [768, 2],[1024,3],[1440,4]]">
 						<slide v-for="fact in sortedFacts" :key="fact.id" class="slide">
 							<v-card class="ma-3 slide-card" :class="{'red darken-4':isAdmin&&fact.report!=null}">
 								<div class="empty-img">
@@ -38,7 +50,7 @@
 								</v-card-media>
 								<v-card-title primary-title style="height:250px;align-items:stretch;overflow:hidden">
 									<div>
-										<h3 class="headline white--text mb-3 truncate" >#{{fact.id}} - {{fact.title}}</h3>
+										<h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
 										<p class="truncate white--text mb-0">{{fact.description}}</p>
 									</div>
 								</v-card-title>
@@ -81,6 +93,59 @@
 							</v-card>
 						</slide>
 					</carousel>
+					<v-layout wrap v-if="view=='grid'">
+						<v-flex xs12 sm6 md4 lg3 v-for="fact in sortedFacts" :key="fact.id">
+							<v-card class="ma-3" :class="{'red darken-4':isAdmin&&fact.report!=null}">
+								<div class="empty-img">
+									<v-icon style="font-size:60px">photo</v-icon>
+								</div>
+								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
+								</v-card-media>
+								<v-card-title primary-title style="height:250px;align-items:stretch;overflow:hidden">
+									<div>
+										<h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
+										<p class="truncate white--text mb-0">{{fact.description}}</p>
+									</div>
+								</v-card-title>
+								<v-divider></v-divider>
+								<v-card-title class="caption pb-0">Created {{fact.moment}}</v-card-title>
+								<v-card-actions class="pb-3">
+									<v-layout>
+										<v-flex xs12 sm6>
+											<v-tooltip top>
+												<v-chip slot="activator" outline class="mx-2" color="white">
+													<v-avatar>
+														<v-icon>remove_red_eye</v-icon>
+													</v-avatar>
+													<span v-if="!fact.numOfView">0</span>
+													<span v-if="fact.numOfView">{{fact.numOfView}}</span>
+												</v-chip>
+												<span>Views</span>
+											</v-tooltip>
+											<v-tooltip top>
+												<v-chip slot="activator" outline class="mx-2" color="white">
+													<v-avatar>
+														<v-icon>explicit</v-icon>
+													</v-avatar>
+													<span v-if="!fact.numOfEvidence">0</span>
+													<span v-if="fact.numOfEvidence">{{fact.numOfEvidence}}</span>
+												</v-chip>
+												<span>Related Evidence</span>
+											</v-tooltip>
+										</v-flex>
+										<v-flex xs12 sm6 class="pr-4">
+											<trustCounter :againstTrust="fact.against_trust_count" :supportTrust="fact.support_trust_count"></trustCounter>
+										</v-flex>
+									</v-layout>
+								</v-card-actions>
+								<v-card-actions v-if="isAdmin">
+									<span>{{fact.reported}}</span>
+									<v-btn color="red" @click="openDeletionDialog({type:'fact',id:fact.id})">Delete</v-btn>
+									<span class="ml-2" v-if="fact.report!=null">Report: {{fact.report}}</span>
+								</v-card-actions>
+							</v-card>
+						</v-flex>
+					</v-layout>
 				</v-flex>
 			</v-layout>
 		</v-container>
@@ -130,6 +195,7 @@
 				id: Number,
 				type: String
 			},
+			view: 'carousel'
 		}),
 		computed: {
 			sortedFacts: function() {
@@ -238,6 +304,9 @@
 			actionComplete() {
 				this.resetAllDialog();
 				this.getFacts();
+			},
+			changeView(view) {
+				this.view = view;
 			}
 		},
 		mounted() {
@@ -250,15 +319,15 @@
 
 <style>
 	.slide {
-		display:flex;
-		justify-content:center
+		display: flex;
+		justify-content: center
 	}
-
+	
 	.slide-card {
-		max-width:500px;
-		width:100%
+		max-width: 500px;
+		width: 100%
 	}
-
+	
 	.empty-img {
 		position: absolute;
 		top: 0px;
