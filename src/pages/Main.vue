@@ -36,9 +36,9 @@
 								</div>
 								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
 								</v-card-media>
-								<v-card-title primary-title style="height:250px;align-items:stretch">
+								<v-card-title primary-title style="height:250px;align-items:stretch;overflow:hidden">
 									<div>
-										<h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
+										<h3 class="headline white--text mb-3 truncate" >#{{fact.id}} - {{fact.title}}</h3>
 										<p class="truncate white--text mb-0">{{fact.description}}</p>
 									</div>
 								</v-card-title>
