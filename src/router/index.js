@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Main from '@/pages/Main.vue';
 import Fact from '@/pages/Fact.vue';
+import Bookmark from '@/pages/Bookmark.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -13,6 +14,10 @@ export default new Router({
         path: '/fact/:id',
         name: 'Fact',
         component: Fact,
+    }, {
+        path: '/bookmark',
+        name: 'Bookmark',
+        component: Bookmark,
     }],
     mode: 'hash',
 });
