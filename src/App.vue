@@ -42,6 +42,9 @@
       <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" append-icon="clear" @click:append="clearSearch" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
       <v-spacer></v-spacer>
       <v-btn flat v-if="isAdmin" @click="isAdmin=false">I am Admin</v-btn>
+      <v-btn flat icon @click="goToBookmark()">
+        <v-icon>bookmarks</v-icon>
+      </v-btn>
       <admin-notification :isAdmin="isAdmin"></admin-notification>
     </v-toolbar>
     <router-view :search="search" :tagFilter="selectedTag" :isAdmin="isAdmin"></router-view>
@@ -74,7 +77,7 @@
       search: null,
       isAdmin: false,
       tags: [],
-      color: ['blue', 'pink', 'teal', 'orange', 'purple', 'deep-purple', 'indigo','cyan','brown','deep-orange'],
+      color: ['blue', 'pink', 'teal', 'orange', 'purple', 'deep-purple', 'indigo', 'cyan', 'brown', 'deep-orange'],
       selectedTag: 'all',
     }),
     methods: {
@@ -100,26 +103,31 @@
           })
         })
       },
-      checkMobile(){
+      checkMobile() {
         let self = this;
-        if (window.innerWidth<1024){
+        if (window.innerWidth < 1024) {
           self.drawer = false;
         } else {
           self.drawer = true;
         }
       },
-      selectTag(tag){
+      selectTag(tag) {
         let self = this;
         self.selectedTag = tag;
-        if (window.innerWidth<1024) {
+        if (window.innerWidth < 1024) {
           self.drawer = false;
         }
-      }
+      },
+      goToBookmark() {
+        this.$router.push({
+          name: "Bookmark"
+        });
+      },
     },
     mounted() {
       this.getTags();
     },
-    created(){
+    created() {
       this.checkMobile();
     }
   };

@@ -47,6 +47,12 @@
 								</v-tooltip>
 								<span class="caption ma-3">Created {{fact.moment}}</span>
 								<v-spacer></v-spacer>
+								<v-tooltip top>
+									<v-btn slot="activator" fab flat :class="{'pink--text':bookmarked}" @click="bookmark(fact.id)">
+										<v-icon>bookmark</v-icon>
+									</v-btn>
+									<span>Bookmark</span>
+								</v-tooltip>
 								<social-sharing :url="'http://35.240.217.27/#/fact/'+$route.params.id" :quote="fact.title" hashtags="vuejs,javascript,framework" twitter-user="vuejs" inline-template>
 									<network network="facebook">
 										<v-btn fab flat>
@@ -150,18 +156,12 @@
 				</v-flex>
 			</v-layout>
 			<newEvidenceDialog :dialog="evidenceDialog" :factId="parseInt($route.params.id)" :done="actionComplete"></newEvidenceDialog>
-			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem" :isAdmin="isAdmin" :done="()=>{reportedSnackbar=true;reportDialog=false}"></reportDialog>
+			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem" :isAdmin="isAdmin" :done="()=>{snackbar=true;snackbarMessage='This case has been reported. Thank you for the effort!';reportDialog=false}"></reportDialog>
 			<mediaDialog :media="selectedMedia" :dialog="mediaDialog" :done="resetAllDialog"></mediaDialog>
 			<deletionDialog :deletedItem="deletedItem" :dialog="deletionDialog" :done="actionComplete"></deletionDialog>
-			<v-snackbar v-model="trustedSnackbar" :bottom="true" :right="true" :timeout="6000">
-				Trusted! The truth will finally be exposed!
-				<v-btn color="pink" flat @click="trustedSnackbar = false">
-					Close
-				</v-btn>
-			</v-snackbar>
-			<v-snackbar v-model="reportedSnackbar" :bottom="true" :right="true" :timeout="6000">
-				This case has been reported. Thank you for the effort!
-				<v-btn color="pink" flat @click="reportedSnackbar = false">
+			<v-snackbar v-model="snackbar" :bottom="true" :right="true" :timeout="6000">
+				{{snackbarMessage}}
+				<v-btn color="pink" flat @click="snackbar = false">
 					Close
 				</v-btn>
 			</v-snackbar>
@@ -205,11 +205,12 @@
 			sortList: ['Created at', 'Number of Trust', 'Support', 'Aginst'],
 			sortOrder: 1,
 			selectedSortIndex: 0,
-			trustedSnackbar: false,
-			reportedSnackbar: false,
+			snackbar: false,
+			snackbarMessage: false,
 			fullscreen: false,
 			selectedMedia: {},
-			deletedItem: {}
+			deletedItem: {},
+			bookmarked: false,
 		}),
 		computed: {
 			sortedEvidences: function() {
@@ -302,8 +303,36 @@
 						evidence.trust_count++;
 					});
 				}
-				self.trustedSnackbar = true;
+				self.snackbar = true;
+				self.snackbarMessage = 'Trusted! The truth will finally be exposed!';
 				evidence.trusted = true;
+			},
+			bookmark(factId) {
+				let self = this;
+				if (!self.bookmarked) {
+					let bookmarks = [];
+					if (localStorage.getItem("factchecker_bookmarks") != null) {
+						bookmarks = localStorage.getItem("factchecker_bookmarks").split(',');
+					}
+					bookmarks.unshift(factId);
+					console.log(bookmarks);
+					localStorage.setItem("factchecker_bookmarks", bookmarks.toString())
+					self.bookmarked = true;
+					self.snackbar = true;
+					self.snackbarMessage = 'Bookmarked';
+				} else {
+					//Debookmark
+				}
+			},
+			checkBookmarked() {
+				let self = this;
+				let bookmarks = [];
+				if (localStorage.getItem("factchecker_bookmarks") != null) {
+					bookmarks = localStorage.getItem("factchecker_bookmarks").split(',');
+				}
+				self.bookmarked = (bookmarks.find((bookmark) => {
+					return bookmark == parseInt(self.$route.params.id)
+				}) != null);
 			},
 			resetAllDialog() {
 				this.reportDialog = false;
@@ -346,6 +375,7 @@
 		mounted() {
 			this.getFact();
 			this.getEvidences();
+			this.checkBookmarked();
 			this.addView();
 			// window.alert(typeof this.$route.params.id)
 		}

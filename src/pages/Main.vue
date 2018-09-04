@@ -218,7 +218,7 @@
 				}
 				if (self.tagFilter == 'hot') {
 					results = self.facts.sort(function(a, b) {
-						return ((b.numOfEvidence + b.numOfView) - (a.numOfEvidence + a.numOfView));
+						return ((b.numOfEvidence + b.against_trust_count + b.support_trust_count + b.numOfView) - (a.numOfEvidence + a.against_trust_count + a.support_trust_count + a.numOfView));
 					});
 				}
 				if (self.tagFilter == 'all' || self.tagFilter == 'hot') {
