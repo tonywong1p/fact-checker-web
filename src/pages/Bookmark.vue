@@ -48,36 +48,16 @@
 		methods: {
 			getFacts() {
 				const self = this;
-				let api = self.api_url + "/facts";
-				self.axios.get(api)
-					.then((res) => {
-						let facts = res.data;
-						facts.forEach(fact => {
-							fact.moment = moment(parseInt(fact.createdAt)).fromNow();
-							if (!fact.against_trust_count) {
-								fact.against_trust_count = 0;
-							}
-							if (!fact.support_trust_count) {
-								fact.support_trust_count = 0;
-							}
-						});
-						self.facts = facts;
+				let bookmarks = localStorage.getItem("factchecker_bookmarks").split(',');
+				bookmarks.splice(-1,1);
+				bookmarks.forEach((bookmark) => {
+					let api = self.api_url + "/facts/" + bookmark;
+					this.axios.get(api).then(res => {
+						let fact = res.data;
+						fact.moment = moment(parseInt(fact.createdAt)).fromNow();
+						self.facts.push(fact);
 						self.isLoading = false;
-					})
-					.catch(error => {
-						// eslint-disable-next-line
-						console.log(error);
-					})
-			},
-			getEvidences() {
-				const self = this;
-				let api = self.api_url + "/facts/" + this.$route.params.id + "/evidences";
-				this.axios.get(api).then(res => {
-					self.evidences = res.data;
-					self.evidences.forEach((evidence) => {
-						evidence.moment = moment(parseInt(evidence.createdAt)).fromNow();
 					});
-					self.isLoading = false;
 				});
 			},
 			goToFact(factId) {
@@ -91,7 +71,6 @@
 		},
 		mounted() {
 			this.getFacts();
-			this.getEvidences();
 		}
 	};
 </script>

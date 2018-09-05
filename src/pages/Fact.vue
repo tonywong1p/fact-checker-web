@@ -315,13 +315,11 @@
 				}
 				if (!self.bookmarked) {
 					bookmarks.unshift(factId);
-					console.log(bookmarks);
 					localStorage.setItem("factchecker_bookmarks", bookmarks.toString())
 					self.bookmarked = true;
 					self.snackbar = true;
 					self.snackbarMessage = 'Bookmarked';
 				} else {
-					//Debookmark
 					bookmarks.splice(bookmarks.findIndex((bookmark)=>{return bookmark == factId}), 1);
 					localStorage.setItem("factchecker_bookmarks", bookmarks.toString());
 					self.bookmarked = false;
