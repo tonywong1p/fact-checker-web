@@ -309,11 +309,11 @@
 			},
 			bookmark(factId) {
 				let self = this;
+				let bookmarks = [];
+				if (localStorage.getItem("factchecker_bookmarks") != null) {
+					bookmarks = localStorage.getItem("factchecker_bookmarks").split(',');
+				}
 				if (!self.bookmarked) {
-					let bookmarks = [];
-					if (localStorage.getItem("factchecker_bookmarks") != null) {
-						bookmarks = localStorage.getItem("factchecker_bookmarks").split(',');
-					}
 					bookmarks.unshift(factId);
 					console.log(bookmarks);
 					localStorage.setItem("factchecker_bookmarks", bookmarks.toString())
@@ -322,6 +322,11 @@
 					self.snackbarMessage = 'Bookmarked';
 				} else {
 					//Debookmark
+					bookmarks.splice(bookmarks.findIndex((bookmark)=>{return bookmark == factId}), 1);
+					localStorage.setItem("factchecker_bookmarks", bookmarks.toString());
+					self.bookmarked = false;
+					self.snackbar = true;
+					self.snackbarMessage = 'Undo bookmarked';
 				}
 			},
 			checkBookmarked() {
