@@ -42,6 +42,9 @@
       <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" append-icon="clear" @click:append="clearSearch" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
       <v-spacer></v-spacer>
       <v-btn flat v-if="isAdmin" @click="isAdmin=false">I am Admin</v-btn>
+      <v-btn flat icon @click="goToFaq()">
+        <v-icon>contact_support</v-icon>
+      </v-btn>
       <v-btn flat icon @click="goToBookmark()">
         <v-icon>bookmarks</v-icon>
       </v-btn>
@@ -121,6 +124,11 @@
       goToBookmark() {
         this.$router.push({
           name: "Bookmark"
+        });
+      },
+      goToFaq() {
+        this.$router.push({
+          name: "About"
         });
       },
     },

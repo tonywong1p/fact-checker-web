@@ -1,6 +1,7 @@
 import '@babel/polyfill'
 import Vue from 'vue'
 import './plugins/vuetify'
+import Vuetify from 'vuetify'
 import App from './App.vue'
 import router from '@/router';
 
@@ -12,6 +13,12 @@ import 'animate.css/animate.css'
 
 import SocialSharing from 'vue-social-sharing'
 Vue.use(SocialSharing);
+
+import '@fortawesome/fontawesome-free/css/all.css'
+Vue.use(Vuetify, {
+    iconfont: 'fa'
+})
+
 
 Vue.config.productionTip = false
 
