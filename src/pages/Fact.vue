@@ -53,7 +53,7 @@
 									</v-btn>
 									<span>Bookmark</span>
 								</v-tooltip>
-								<social-sharing :url="'http://35.240.217.27/#/fact/'+$route.params.id" :quote="fact.title" hashtags="vuejs,javascript,framework" twitter-user="vuejs" inline-template>
+								<social-sharing :url="'https://factchecker.xyz/#/fact/'+$route.params.id" :quote="fact.title" inline-template>
 									<network network="facebook">
 										<v-btn fab flat>
 											<v-icon dark>share</v-icon>
@@ -176,6 +176,7 @@
 	import reportDialog from "@/components/reportDialog.vue";
 	import mediaDialog from "@/components/mediaDialog.vue";
 	import deletionDialog from "@/components/deletionDialog.vue";
+	import SocialSharing from 'vue-social-sharing'
 	var moment = require('moment');
 	
 	export default {
@@ -185,7 +186,8 @@
 			trustCounter,
 			reportDialog,
 			mediaDialog,
-			deletionDialog
+			deletionDialog,
+			SocialSharing
 		},
 		props: {
 			isAdmin: Boolean
@@ -320,7 +322,9 @@
 					self.snackbar = true;
 					self.snackbarMessage = 'Bookmarked';
 				} else {
-					bookmarks.splice(bookmarks.findIndex((bookmark)=>{return bookmark == factId}), 1);
+					bookmarks.splice(bookmarks.findIndex((bookmark) => {
+						return bookmark == factId
+					}), 1);
 					localStorage.setItem("factchecker_bookmarks", bookmarks.toString());
 					self.bookmarked = false;
 					self.snackbar = true;

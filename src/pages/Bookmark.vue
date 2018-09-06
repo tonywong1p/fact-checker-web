@@ -11,7 +11,8 @@
 							<v-toolbar-title>Bookmark</v-toolbar-title>
 						</v-toolbar>
 						<v-list two-line subheader>
-							<v-subheader inset>Facts</v-subheader>
+							<v-subheader inset v-if="facts.length!=0">Facts</v-subheader>
+							<v-subheader class="subtitle" v-if="facts.length==0">No bookmark yet.</v-subheader>
 							<v-list-tile avatar v-for="fact in facts" :key="fact.id" @click="goToFact(fact.id)">
 								<v-list-tile-avatar>
 									<img :src="fact.image_url">
@@ -48,17 +49,22 @@
 		methods: {
 			getFacts() {
 				const self = this;
-				let bookmarks = localStorage.getItem("factchecker_bookmarks").split(',');
-				bookmarks.splice(-1,1);
-				bookmarks.forEach((bookmark) => {
-					let api = self.api_url + "/facts/" + bookmark;
-					this.axios.get(api).then(res => {
-						let fact = res.data;
-						fact.moment = moment(parseInt(fact.createdAt)).fromNow();
-						self.facts.push(fact);
-						self.isLoading = false;
-					});
+				let bookmarks = localStorage.getItem("factchecker_bookmarks").split(',').filter((bookmark)=>{
+					return bookmark!='';
 				});
+				if (bookmarks.length != 0) {
+					bookmarks.forEach((bookmark) => {
+						let api = self.api_url + "/facts/" + bookmark;
+						this.axios.get(api).then(res => {
+							let fact = res.data;
+							fact.moment = moment(parseInt(fact.createdAt)).fromNow();
+							self.facts.push(fact);
+							self.isLoading = false;
+						});
+					});
+				} else {
+					self.isLoading = false;
+				}
 			},
 			goToFact(factId) {
 				this.$router.push({
