@@ -113,6 +113,9 @@
         } else {
           self.drawer = true;
         }
+        if (window.innerWidth <= 425) {
+          window.location.replace("https://m."+self.domain);
+        }
       },
       selectTag(tag) {
         let self = this;
