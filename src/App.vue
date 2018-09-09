@@ -21,7 +21,7 @@
         <v-divider></v-divider>
         <v-subheader class="subtitle">Topics</v-subheader>
         <v-list-tile v-for="tag in tags" :key="tag.id" @click="selectTag(tag)" avatar ripple :class="{'grey darken-2':selectedTag==tag}">
-          <v-list-tile-avatar :color="color[(tag.charCodeAt(0)+tag.charCodeAt(1))%color.length]">
+          <v-list-tile-avatar :color="color[(tag.charCodeAt(0)+tag.charCodeAt(tag.length-1))%color.length]">
             <span class="white--text headline">{{tag[0].toUpperCase()}}</span>
           </v-list-tile-avatar>
           <v-list-tile-content>
@@ -140,7 +140,7 @@
     },
     created() {
       this.checkMobile();
-    }
+    },
   };
 </script>
 

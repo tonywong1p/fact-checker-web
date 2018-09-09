@@ -22,9 +22,10 @@ Vue.use(Vuetify, {
 
 Vue.config.productionTip = false
 
-Vue.prototype.domain = 'factchecker.xyz'
-Vue.prototype.api_url = 'https://factchecker.xyz:4433/api'
-Vue.prototype.media_server_url = 'https://factchecker.xyz:8080/uploads'
+const domain = 'factchecker.xyz'
+Vue.prototype.domain = domain
+Vue.prototype.api_url = `https://${domain}:4433/api`
+Vue.prototype.media_server_url = `https://${domain}:8080/uploads`
 
 new Vue({
     router,

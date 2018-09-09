@@ -53,7 +53,7 @@
 									</v-btn>
 									<span>Bookmark</span>
 								</v-tooltip>
-								<social-sharing :url="'https://factchecker.xyz/#/fact/'+$route.params.id" :quote="fact.title" inline-template>
+								<social-sharing :url="`https://${domain}/#/fact/`+$route.params.id" :quote="fact.title" inline-template>
 									<network network="facebook">
 										<v-btn fab flat>
 											<v-icon dark>share</v-icon>
