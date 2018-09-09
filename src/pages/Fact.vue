@@ -55,17 +55,17 @@
 							</v-tooltip>
 							<span class="caption ma-3">Created {{fact.moment}}</span>
 							<v-spacer></v-spacer>
+							<v-tooltip top>
+								<v-btn slot="activator" flat icon :class="{'pink--text':bookmarked}" @click="bookmark(fact.id)">
+									<v-icon>bookmark</v-icon>
+								</v-btn>
+								<span>Bookmark</span>
+							</v-tooltip>
 							<v-menu offset-y>
 								<v-btn slot="activator" flat icon dark>
 									<v-icon>more_vert</v-icon>
 								</v-btn>
 								<v-list>
-									<v-tooltip top>
-										<v-btn slot="activator" fab flat :class="{'pink--text':bookmarked}" @click="bookmark(fact.id)">
-											<v-icon>bookmark</v-icon>
-										</v-btn>
-										<span>Bookmark</span>
-									</v-tooltip>
 									<social-sharing :url="`https://${domain}/#/fact/`+$route.params.id" :quote="fact.title" inline-template>
 										<network network="facebook">
 											<v-btn fab flat>

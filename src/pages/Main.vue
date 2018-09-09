@@ -49,7 +49,7 @@
 		position: fixed;
 		bottom: 0px;
 		z-index: 1;
-		width: 100%
+		width: 100%;
 	}
 
 	.bottom-tab {
@@ -57,6 +57,6 @@
 	}
 
 	.bottom-tab-slider {
-		height:5px
+		height:3px
 	}
 </style>

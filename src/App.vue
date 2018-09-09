@@ -2,6 +2,7 @@
   <v-app id="fact-cracker" dark>
     <v-navigation-drawer clipped app dark v-if="$route.path=='/'" v-model="drawer">
       <v-list>
+        <v-text-field class="ma-2" flat solo-inverted prepend-inner-icon="search" append-icon="clear" @click:append="clearSearch" @click:prepend="drawer = !drawer" label="Search for title, fact ID" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
         <v-list-tile @click="selectTag('all')" avatar ripple :class="{'grey darken-2':selectedTag=='all'}">
           <v-list-tile-avatar color="grey">
             <v-icon>all_inclusive</v-icon>
@@ -40,18 +41,16 @@
       <v-btn flat icon @click="goToFaq()">
         <v-icon>contact_support</v-icon>
       </v-btn>
-      <admin-notification :isAdmin="isAdmin"></admin-notification>
+      <v-btn flat icon @click="goToNotification()">
+        <v-icon>notifications</v-icon>
+      </v-btn>
     </v-toolbar>
     <router-view :search="search" :tagFilter="selectedTag" :isAdmin="isAdmin"></router-view>
   </v-app>
 </template>
 
 <script>
-  import adminNotification from '@/components/adminNotification.vue';
   export default {
-    components: {
-      adminNotification
-    },
     props: {
       source: String
     },
@@ -74,6 +73,7 @@
           self.isAdmin = true;
           self.search = '';
         }
+        self.drawer = !self.drawer;
       },
       clearSearch() {
         this.search = null;
@@ -99,9 +99,14 @@
           name: "About"
         });
       },
+      goToNotification() {
+        this.$router.push({
+          name: "Notification"
+        });
+      },
       checkDesktop() {
         if (window.innerWidth > 425) {
-          window.location.replace("https://www."+this.domain);
+          window.location.replace("https://www." + this.domain);
         }
       }
     },
@@ -109,8 +114,7 @@
       this.getTags();
       this.checkDesktop();
     },
-    created() {
-    }
+    created() {}
   };
 </script>
 

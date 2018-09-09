@@ -226,7 +226,7 @@
 	}
 	
 	.card-wrapper {
-		padding-bottom: 65px
+		padding-bottom: 140px
 	}
 	
 	.card-detail-wrapper {
