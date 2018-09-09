@@ -1,16 +1,14 @@
 <template>
-	<v-dialog v-model="dialog" width="800px" lazy>
+	<v-dialog v-model="dialog" width="800px" lazy fullscreen>
 		<v-card>
 			<v-card-title>
 				<h3 class="headline">New Evidence</h3>
 				<v-spacer></v-spacer>
-				<v-btn color="primary" flat @click="done()">
-					Cancel
-				</v-btn>
-				<v-btn color="primary" dark @click="addEvidence()" :disabled="!valid || !newEvidence.support">Create
-					<v-icon right dark>send</v-icon>
+				<v-btn flat icon @click="done()">
+					<v-icon>clear</v-icon>
 				</v-btn>
 			</v-card-title>
+			<v-divider></v-divider>
 			<v-container>
 				<v-form ref="form" v-model="valid" lazy-validation>
 					<v-layout row wrap>
@@ -54,6 +52,11 @@
 					</v-layout>
 				</v-form>
 			</v-container>
+			<v-card-actions class="pb-3 px-3">
+				<v-btn color="primary" style="width:100%" dark @click="addEvidence()" :disabled="!valid || !newEvidence.support">Create
+					<v-icon right dark>send</v-icon>
+				</v-btn>
+			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
@@ -102,7 +105,7 @@
 		computed: {
 			urlArray: function() {
 				return this.newEvidence.ref_url.map((el) => {
-					if (RegExp('^(http|https)://').test(el.value) || el.value=='') {
+					if (RegExp('^(http|https)://').test(el.value) || el.value == '') {
 						return el.value
 					} else {
 						return 'http://' + el.value
@@ -123,7 +126,7 @@
 					ref_url: self.urlArray,
 					support: self.newEvidence.support,
 				};
-				evidence.ref_url = evidence.ref_url.filter((url)=>{
+				evidence.ref_url = evidence.ref_url.filter((url) => {
 					return url != '';
 				})
 				// eslint-disable-next-line

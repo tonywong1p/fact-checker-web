@@ -1,6 +1,6 @@
 <template>
 	<v-content>
-		<v-container grid-list-xl class="mt-3">
+		<v-container>
 			<v-layout justify-center align-center wrap v-if="isLoading">
 				<v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
 			</v-layout>
@@ -10,10 +10,9 @@
 						<v-toolbar>
 							<v-toolbar-title>Bookmark</v-toolbar-title>
 						</v-toolbar>
-						<v-list two-line subheader>
-							<v-subheader inset v-if="facts.length!=0">Facts</v-subheader>
-							<v-subheader class="subtitle" v-if="facts.length==0">No bookmark yet.</v-subheader>
-							<v-list-tile avatar v-for="fact in facts" :key="fact.id" @click="goToFact(fact.id)">
+						<v-list two-line>
+							<v-subheader class="subtitle" v-if="bookmarkedFacts.length==0">No bookmark yet.</v-subheader>
+							<v-list-tile avatar v-for="fact in bookmarkedFacts" :key="fact.id" @click="goToFact(fact.id)">
 								<v-list-tile-avatar>
 									<img :src="fact.image_url">
 								</v-list-tile-avatar>
@@ -42,23 +41,23 @@
 			isAdmin: Boolean
 		},
 		data: () => ({
-			facts: [],
-			evidences: [],
+			bookmarkedFacts: [],
 			isLoading: true,
 		}),
 		methods: {
-			getFacts() {
+			getBookmarkedFacts() {
 				const self = this;
-				let bookmarks = localStorage.getItem("factchecker_bookmarks").split(',').filter((bookmark)=>{
-					return bookmark!='';
-				});
-				if (bookmarks.length != 0) {
+				let bookmarks = localStorage.getItem("factchecker_bookmarks");
+				if (bookmarks != null && bookmarks.length!=0) {
+					bookmarks = bookmarks.split(',').filter((bookmark) => {
+						return bookmark != '';
+					});
 					bookmarks.forEach((bookmark) => {
 						let api = self.api_url + "/facts/" + bookmark;
 						this.axios.get(api).then(res => {
 							let fact = res.data;
 							fact.moment = moment(parseInt(fact.createdAt)).fromNow();
-							self.facts.push(fact);
+							self.bookmarkedFacts.push(fact);
 							self.isLoading = false;
 						});
 					});
@@ -76,7 +75,7 @@
 			},
 		},
 		mounted() {
-			this.getFacts();
+			this.getBookmarkedFacts();
 		}
 	};
 </script>

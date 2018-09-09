@@ -1,17 +1,15 @@
 <template>
-	<v-dialog v-model="dialog" width="800px" lazy>
+	<v-dialog v-model="dialog" width="800px" lazy fullscreen>
 		<v-card>
 			<v-card-title>
 				<h3 class="headline">New Case</h3>
 				<v-spacer></v-spacer>
-				<v-btn color="primary" flat @click="done()">
-					Cancel
-				</v-btn>
-				<v-btn color="primary" dark @click="addFact()" :disabled="!valid">Create
-					<v-icon right dark>send</v-icon>
+				<v-btn flat icon @click="done()">
+					<v-icon>clear</v-icon>
 				</v-btn>
 			</v-card-title>
-			<v-container>
+			<v-divider></v-divider>
+			<v-container class="pb-0">
 				<v-form ref="form" v-model="valid" lazy-validation>
 					<v-layout row wrap>
 						<v-flex xs12>
@@ -37,15 +35,15 @@
 						</v-flex>
 					</v-layout>
 					<v-layout row wrap>
-						<v-flex xs10>
+						<v-flex xs8>
 							<v-text-field box label="Reference URL (optional)" append-icon="link" v-for="link in newFact.ref_url" :key="link.id" v-model="link.value"></v-text-field>
 						</v-flex>
-						<v-flex xs1>
+						<v-flex xs2>
 							<v-btn flat icon @click="addRef()">
 								<v-icon>add</v-icon>
 							</v-btn>
 						</v-flex>
-						<v-flex xs1 v-if="newFact.ref_url.length > 1">
+						<v-flex xs2 v-if="newFact.ref_url.length > 1">
 							<v-btn flat icon @click="removeRef()">
 								<v-icon>remove</v-icon>
 							</v-btn>
@@ -53,6 +51,11 @@
 					</v-layout>
 				</v-form>
 			</v-container>
+			<v-card-actions class="pb-3 px-3">
+				<v-btn color="primary" style="width:100%" dark @click="addFact()" :disabled="!valid">Create
+					<v-icon right dark>send</v-icon>
+				</v-btn>
+			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
@@ -105,7 +108,7 @@
 		computed: {
 			urlArray: function() {
 				return this.newFact.ref_url.map((el) => {
-					if (RegExp('^(http|https)://').test(el.value) || el.value=='') {
+					if (RegExp('^(http|https)://').test(el.value) || el.value == '') {
 						return el.value
 					} else {
 						return 'http://' + el.value
@@ -126,7 +129,7 @@
 					image_url: self.newFact.image_url,
 					tags: self.selectedTags,
 				};
-				fact.ref_url = fact.ref_url.filter((url)=>{
+				fact.ref_url = fact.ref_url.filter((url) => {
 					return url != '';
 				})
 				let api = self.api_url + "/facts";
@@ -141,8 +144,8 @@
 			getTags() {
 				const self = this;
 				let api = self.api_url + "/tags";
-				self.axios.get(api).then((res)=>{
-					self.tags = res.data.map((tag)=>{
+				self.axios.get(api).then((res) => {
+					self.tags = res.data.map((tag) => {
 						return tag.tag
 					})
 				})
