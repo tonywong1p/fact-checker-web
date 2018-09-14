@@ -10,11 +10,11 @@
 						<v-layout justify-start>
 							<v-btn flat color="pink" v-if="view=='carousel'" @click="changeView('grid')">
 								<v-icon left>view_module</v-icon>
-								Grid View
+								{{$t('view.gridView')}}
 							</v-btn>
 							<v-btn flat color="pink" v-if="view=='grid'" @click="changeView('carousel')">
 								<v-icon left>view_array</v-icon>
-								Slide View
+								{{$t('view.slideView')}}
 							</v-btn>
 						</v-layout>
 						<v-layout justify-end>
@@ -55,7 +55,7 @@
 									</div>
 								</v-card-title>
 								<v-divider></v-divider>
-								<v-card-title class="caption pb-0">Created {{fact.moment}}</v-card-title>
+								<v-card-title class="caption pb-0">{{$t('text.created')}} {{fact.moment}}</v-card-title>
 								<v-card-actions class="pb-3">
 									<v-layout>
 										<v-flex xs12 sm6>
@@ -67,7 +67,7 @@
 													<span v-if="!fact.numOfView">0</span>
 													<span v-if="fact.numOfView">{{fact.numOfView}}</span>
 												</v-chip>
-												<span>Views</span>
+												<span>{{$t('tooltips.views')}}</span>
 											</v-tooltip>
 											<v-tooltip top>
 												<v-chip slot="activator" outline class="mx-2" color="white">
@@ -77,7 +77,7 @@
 													<span v-if="!fact.numOfEvidence">0</span>
 													<span v-if="fact.numOfEvidence">{{fact.numOfEvidence}}</span>
 												</v-chip>
-												<span>Related Evidence</span>
+												<span>{{$t('tooltips.evidence')}}</span>
 											</v-tooltip>
 										</v-flex>
 										<v-flex xs12 sm6 class="pr-4">
@@ -153,7 +153,7 @@
 			<v-btn slot="activator" fab bottom right color="pink" dark fixed @click.stop="openFactDialog()">
 				<v-icon>add</v-icon>
 			</v-btn>
-			<span>Create a new Fact</span>
+			<span>{{$t('tooltips.newFact')}}</span>
 		</v-tooltip>
 		<newFactDialog :dialog="newFactDialog" :done="resetAllDialog" @close="resetAllDialog"></newFactDialog>
 		<deletionDialog :dialog="deletionDialog" :deletedItem="deletedFact" :done="actionComplete"></deletionDialog>
@@ -169,6 +169,7 @@
 	import deletionDialog from "@/components/deletionDialog.vue";
 	import trustCounter from "@/components/trustCounter.vue";
 	var moment = require("moment");
+	require('moment/locale/zh-cn');
 	
 	export default {
 		components: {
@@ -187,7 +188,6 @@
 			newFactDialog: false,
 			deletionDialog: false,
 			facts: [],
-			sortList: ["Created at", "Views", "Evidence"],
 			sortOrder: 1,
 			selectedSortIndex: 0,
 			isLoading: true,
@@ -198,6 +198,9 @@
 			view: 'carousel'
 		}),
 		computed: {
+			sortList: function() {
+				return [this.$t('sort.createdAt'), this.$t('sort.views'),this.$t('sort.evidence')];
+			},
 			sortedFacts: function() {
 				let self = this;
 				let results = [];
