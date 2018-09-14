@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" width="800px" lazy>
+	<v-dialog v-model="dialog" width="800px" persistent scrollable>
 		<v-card>
 			<v-card-title>
 				<h3 class="headline">New Evidence</h3>
@@ -11,7 +11,7 @@
 					<v-icon right dark>send</v-icon>
 				</v-btn>
 			</v-card-title>
-			<v-container>
+			<v-card-text style="max-height:700px">
 				<v-form ref="form" v-model="valid" lazy-validation>
 					<v-layout row wrap>
 						<v-flex xs12>
@@ -53,7 +53,7 @@
 						</v-flex>
 					</v-layout>
 				</v-form>
-			</v-container>
+			</v-card-text>
 		</v-card>
 	</v-dialog>
 </template>

@@ -155,7 +155,7 @@
 			</v-btn>
 			<span>Create a new Fact</span>
 		</v-tooltip>
-		<newFactDialog :dialog="newFactDialog" :done="resetAllDialog"></newFactDialog>
+		<newFactDialog :dialog="newFactDialog" :done="resetAllDialog" @close="resetAllDialog"></newFactDialog>
 		<deletionDialog :dialog="deletionDialog" :deletedItem="deletedFact" :done="actionComplete"></deletionDialog>
 	</v-content>
 </template>
@@ -288,18 +288,18 @@
 					el.createdAt = moment(el.createdAt).fromNow();
 				});
 			},
-			resetAllDialog() {
-				this.deletionDialog = false;
-				this.newFactDialog = false;
-			},
 			openFactDialog() {
 				this.resetAllDialog();
 				this.newFactDialog = true;
-			},
+			},			
 			openDeletionDialog(item) {
 				this.resetAllDialog();
 				this.deletedFact = item;
 				this.deletionDialog = true;
+			},
+			resetAllDialog() {
+				this.deletionDialog = false;
+				this.newFactDialog = false;
 			},
 			actionComplete() {
 				this.resetAllDialog();

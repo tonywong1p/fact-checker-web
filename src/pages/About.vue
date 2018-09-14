@@ -1,7 +1,7 @@
 <template>
 	<v-content>
 		<v-container grid-list-xl class="mt-3">
-			<v-layout justify-center wrap v-if="!isLoading" class="animated fadeIn">
+			<v-layout justify-center wrap class="animated fadeIn">
 				<v-flex xs12 sm8 md6>
 					<h3 class="display-1 mb-3 grey--text">What is Fact Checking?</h3>
 					<p class="body-1">Fact checking is the act of checking factual assertions in non-fictional text in order to determine the veracity and correctness of the factual statements in the text. This may be done either before (ante hoc) or after (post hoc) the text has been

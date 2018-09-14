@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" width="800px" lazy>
+	<v-dialog v-model="dialog" width="800px" persistent scrollable>
 		<v-card>
 			<v-card-title>
 				<h3 class="headline">New Case</h3>
@@ -11,7 +11,7 @@
 					<v-icon right dark>send</v-icon>
 				</v-btn>
 			</v-card-title>
-			<v-container>
+			<v-card-text style="max-height:700px">
 				<v-form ref="form" v-model="valid" lazy-validation>
 					<v-layout row wrap>
 						<v-flex xs12>
@@ -52,7 +52,7 @@
 						</v-flex>
 					</v-layout>
 				</v-form>
-			</v-container>
+			</v-card-text>
 		</v-card>
 	</v-dialog>
 </template>
@@ -105,7 +105,7 @@
 		computed: {
 			urlArray: function() {
 				return this.newFact.ref_url.map((el) => {
-					if (RegExp('^(http|https)://').test(el.value) || el.value=='') {
+					if (RegExp('^(http|https)://').test(el.value) || el.value == '') {
 						return el.value
 					} else {
 						return 'http://' + el.value
@@ -126,7 +126,7 @@
 					image_url: self.newFact.image_url,
 					tags: self.selectedTags,
 				};
-				fact.ref_url = fact.ref_url.filter((url)=>{
+				fact.ref_url = fact.ref_url.filter((url) => {
 					return url != '';
 				})
 				let api = self.api_url + "/facts";
@@ -141,8 +141,8 @@
 			getTags() {
 				const self = this;
 				let api = self.api_url + "/tags";
-				self.axios.get(api).then((res)=>{
-					self.tags = res.data.map((tag)=>{
+				self.axios.get(api).then((res) => {
+					self.tags = res.data.map((tag) => {
 						return tag.tag
 					})
 				})
