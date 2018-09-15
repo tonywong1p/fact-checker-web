@@ -15,7 +15,7 @@
       <v-list-tile v-if="notifications.length==0">No recent nofication</v-list-tile>
       <v-list-tile v-for="notification in notifications" :key="notification.id" avatar class="py-2">
         <v-list-tile-avatar>
-          <img src="@/assets/avatar.png">
+          <img src="@/assets/avatar.jpg">
         </v-list-tile-avatar>
         <v-list-tile-content>
           <v-list-tile-sub-title class="white--text">{{notification.text}}</v-list-tile-sub-title>
