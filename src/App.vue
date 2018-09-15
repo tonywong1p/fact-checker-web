@@ -7,7 +7,7 @@
             <v-icon>all_inclusive</v-icon>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>All</v-list-tile-title>
+            <v-list-tile-title>{{$t('tags.all')}}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
         <v-list-tile @click="selectTag('hot')" avatar ripple :class="{'grey darken-2':selectedTag=='hot'}">
@@ -15,11 +15,11 @@
             <v-icon>whatshot</v-icon>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>Hottest</v-list-tile-title>
+            <v-list-tile-title>{{$t('tags.hottest')}}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
         <v-divider></v-divider>
-        <v-subheader class="subtitle">Topics</v-subheader>
+        <v-subheader class="subtitle">{{$t('tags.topics')}}</v-subheader>
         <v-list-tile v-for="tag in tags" :key="tag.id" @click="selectTag(tag)" avatar ripple :class="{'grey darken-2':selectedTag==tag}">
           <v-list-tile-avatar :color="color[(tag.charCodeAt(0)+tag.charCodeAt(tag.length-1))%color.length]">
             <span class="white--text headline">{{tag[0].toUpperCase()}}</span>
@@ -39,14 +39,14 @@
       <v-toolbar-title style="width: 300px" class="ml-0 pl-1">
         <span class="hidden-sm-and-down grey--text" style="font-size:18px">Fact Checker</span>
       </v-toolbar-title>
-      <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" append-icon="clear" @click:append="clearSearch" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
+      <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" append-icon="clear" @click:append="clearSearch" :label="$t('search')" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
       <v-spacer></v-spacer>
       <v-menu offset-y>
-        <v-btn flat slot="activator" color="primary" dark>
-          {{selectedLang}}
+        <v-btn flat slot="activator" color="white" dark>
+          {{selectedLang.name}}
         </v-btn>
         <v-list>
-          <v-list-tile v-for="(lang, i) in langs" :key="`Lang${i}`" @click="changeLang(lang)">
+          <v-list-tile v-for="(lang, i) in langs" :key="`Lang${i}`" @click="selectLang(lang)">
             <v-list-tile-title>{{ lang.name }}</v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -80,14 +80,16 @@
       source: String
     },
     data: () => ({
-      selectedLang: '繁體中文',
       langs: [{
         name: '繁體中文',
-        value: 'ch'
+        value: 'ch',
+        moment: 'zh-cn'
       }, {
         name: 'English',
-        value: 'en'
+        value: 'en',
+        moment: 'en-au'
       }],
+      selectedLang: JSON.parse(localStorage.getItem("factchecker_language")),
       dialog: false,
       drawer: true,
       items: [{
@@ -101,6 +103,7 @@
       color: ['blue', 'pink', 'teal', 'orange', 'purple', 'deep-purple', 'indigo', 'cyan', 'brown', 'deep-orange'],
       selectedTag: 'all',
     }),
+    computed: {},
     methods: {
       goBack() {
         window.history.back();
@@ -153,12 +156,25 @@
         });
       },
       changeLang(lang) {
-        this.$i18n.locale= lang.value;
-        this.selectedLang = lang.name;
+        this.$i18n.locale = lang.value;
+        this.$moment.locale(lang.moment);
+        this.$forceUpdate();
+      },
+      selectLang(lang) {
+        localStorage.setItem("factchecker_language", JSON.stringify(lang));
+        location.reload();
+      },
+      initLang() {
+        if (this.selectedLang == null) {
+          this.selectedLang = this.langs[0];
+        }
+        this.$i18n.locale = this.selectedLang.value;
+        this.$moment.locale(this.selectedLang.moment);
       }
     },
     mounted() {
       this.getTags();
+      this.initLang();
     },
     created() {
       this.checkMobile();

@@ -1,13 +1,14 @@
 <template>
-	<v-dialog v-model="dialog" width="800px" persistent scrollable>
+	<v-dialog v-model="dialog" width="800px" lazy persistent scrollable>
 		<v-card>
 			<v-card-title>
 				<h3 class="headline">New Evidence</h3>
 				<v-spacer></v-spacer>
 				<v-btn color="primary" flat @click="done()">
-					Cancel
+					{{$t('form.cancel')}}
 				</v-btn>
-				<v-btn color="primary" dark @click="addEvidence()" :disabled="!valid || !newEvidence.support">Create
+				<v-btn color="primary" dark @click="addEvidence()" :disabled="!valid || !newEvidence.support">
+					{{$t('form.submit')}}
 					<v-icon right dark>send</v-icon>
 				</v-btn>
 			</v-card-title>
@@ -15,31 +16,31 @@
 				<v-form ref="form" v-model="valid" lazy-validation>
 					<v-layout row wrap>
 						<v-flex xs12>
-							<p class="grey--text">Standpoint (required)</p>
+							<p class="grey--text">{{$t('form.standpoint')+$t('form.required')}}</p>
 							<v-radio-group v-model="newEvidence.support" required row class="mt-0">
-								<v-radio label="Support" color="success" value="1"></v-radio>
-								<v-radio label="Against" color="error" value="0"></v-radio>
+								<v-radio :label="$t('form.support')" color="success" value="1"></v-radio>
+								<v-radio :label="$t('form.against')" color="error" value="0"></v-radio>
 							</v-radio-group>
 							<v-tabs dark slider-color="pink">
 								<v-tab ripple key="0">
-									Upload
+									{{$t('form.imageUpload')}}
 								</v-tab>
 								<v-tab ripple>
-									URL
+									{{$t('form.imageUrl')}}
 								</v-tab>
 								<v-tab-item>
 									<vue-dropzone id="coverImage" :options="dropzoneOptions" class="mb-4" @vdropzone-success="finishUpload"></vue-dropzone>
 								</v-tab-item>
 								<v-tab-item>
-									<v-text-field box label="Image URL (optional)" v-model="newEvidence.image_url" maxlength="100"></v-text-field>
+									<v-text-field box :label="$t('form.imageUrlPlaceholder')+$t('form.optional')" v-model="newEvidence.image_url" maxlength="100"></v-text-field>
 								</v-tab-item>
 							</v-tabs>
-							<v-textarea box name="input-7-4" label="Description" :counter="1000" maxlength="1000" v-model="newEvidence.text" :rules="descriptionRules" required></v-textarea>
+							<v-textarea box name="input-7-4" :label="$t('form.description')" :counter="1000" maxlength="1000" v-model="newEvidence.text" :rules="descriptionRules" required></v-textarea>
 						</v-flex>
 					</v-layout>
 					<v-layout row wrap>
 						<v-flex xs10>
-							<v-text-field box label="Reference URL (optional)" append-icon="link" v-for="link in newEvidence.ref_url" :key="link.id" v-model="link.value"></v-text-field>
+							<v-text-field box :label="$t('form.referenceUrl')+$t('form.optional')" append-icon="link" v-for="link in newEvidence.ref_url" :key="link.id" v-model="link.value"></v-text-field>
 						</v-flex>
 						<v-flex xs1>
 							<v-btn flat icon @click="addRef()">
@@ -71,15 +72,6 @@
 			done: Function
 		},
 		data: () => ({
-			dropzoneOptions: {
-				paramName: "coverImage",
-				thumbnailWidth: 200,
-				maxFiles: 1,
-				maxFilesize: 10,
-				dictDefaultMessage: "<i class='material-icons' style='font-size:80px'>add_photo_alternate</i><br>Drop to upload the cover image here (optional) (max 10MB)",
-				addRemoveLinks: true,
-				acceptedFiles: 'image/*'
-			},
 			newEvidence: {
 				image_url: "",
 				text: "",
@@ -100,9 +92,20 @@
 			this.dropzoneOptions.url = this.api_url + '/upload';
 		},
 		computed: {
+			dropzoneOptions: function() {
+				return ({
+					paramName: "coverImage",
+					thumbnailWidth: 200,
+					maxFiles: 1,
+					maxFilesize: 10,
+					dictDefaultMessage: `<i class='material-icons' style='font-size:80px'>add_photo_alternate</i><br>${this.$t('form.dropzone')}${this.$t('form.optional')}`,
+					addRemoveLinks: true,
+					acceptedFiles: 'image/*'
+				})
+			},
 			urlArray: function() {
 				return this.newEvidence.ref_url.map((el) => {
-					if (RegExp('^(http|https)://').test(el.value) || el.value=='') {
+					if (RegExp('^(http|https)://').test(el.value) || el.value == '') {
 						return el.value
 					} else {
 						return 'http://' + el.value
@@ -123,7 +126,7 @@
 					ref_url: self.urlArray,
 					support: self.newEvidence.support,
 				};
-				evidence.ref_url = evidence.ref_url.filter((url)=>{
+				evidence.ref_url = evidence.ref_url.filter((url) => {
 					return url != '';
 				})
 				// eslint-disable-next-line

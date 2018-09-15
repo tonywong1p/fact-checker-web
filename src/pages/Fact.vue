@@ -26,9 +26,9 @@
 						<v-card-title primary-title>
 							<div style="width:100%">
 								<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
-								<h3 class="subtitle mb-0 mt-3 grey--text">Description</h3>
+								<h3 class="subtitle mb-0 mt-3 grey--text">{{$t('text.description')}}</h3>
 								<p>{{fact.description}}</p>
-								<h3 class="subtitle mb-0 mt-3 grey--text" v-if="fact.ref_url!=''">Reference Link</h3>
+								<h3 class="subtitle mb-0 mt-3 grey--text" v-if="fact.ref_url!=''">{{$t('text.referenceLink')}}</h3>
 								<a class="truncate" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
 							</div>
 						</v-card-title>
@@ -43,15 +43,15 @@
 										<span v-if="!fact.numOfView">0</span>
 										<span v-if="fact.numOfView">{{fact.numOfView}}</span>
 									</v-chip>
-									<span>Views</span>
+									<span>{{$t('tooltips.views')}}</span>
 								</v-tooltip>
-								<span class="caption ma-3">Created {{fact.moment}}</span>
+								<span class="caption ma-3">{{$t('text.created')}} {{fact.moment}}</span>
 								<v-spacer></v-spacer>
 								<v-tooltip top>
 									<v-btn slot="activator" fab flat :class="{'pink--text':bookmarked}" @click="bookmark(fact.id)">
 										<v-icon>bookmark</v-icon>
 									</v-btn>
-									<span>Bookmark</span>
+									<span>{{$t('tooltips.bookmark')}}</span>
 								</v-tooltip>
 								<social-sharing :url="`https://${domain}/#/fact/`+$route.params.id" :quote="fact.title" inline-template>
 									<network network="facebook">
@@ -64,7 +64,7 @@
 									<v-btn slot="activator" fab flat color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
 										<v-icon>warning</v-icon>
 									</v-btn>
-									<span>Report</span>
+									<span>{{$t('tooltips.report')}}</span>
 								</v-tooltip>
 							</v-layout>
 						</v-card-text>
@@ -72,12 +72,12 @@
 				</v-flex>
 				<v-flex xs12 sm6>
 					<v-layout class="px-4 mb-2">
-						<h3 class="display-1">Evidence</h3>
+						<h3 class="display-1">{{$t('text.evidence')}}</h3>
 						<v-tooltip right>
 							<v-btn slot="activator" icon color="pink" style="top:-5px" @click="openEvidenceDialog()">
 								<v-icon>add</v-icon>
 							</v-btn>
-							<span>Expose an Evidence</span>
+							<span>{{$t('tooltips.newEvidence')}}</span>
 						</v-tooltip>
 						<v-spacer></v-spacer>
 						<v-btn flat icon color="pink" @click="changeSortOrder()" v-if="selectedSortIndex<2">
@@ -104,12 +104,12 @@
 						<h3 class="subtitle" v-if="sortedEvidences.length==0">No related evidence raised yet.</h3>
 						<v-expansion-panel-content v-for="evidence in sortedEvidences" :key="evidence.id" :class="{'red darken-4':evidence.report!=null && isAdmin}">
 							<div slot="header" v-if="evidence.support=='1'">
-								Evidence #{{evidence.id}} -
-								<span class="green--text">Support</span> with {{evidence.trust_count}} trust<span v-if="evidence.trust_count>1">s</span>
+								{{$t('text.evidence')}} #{{evidence.id}} -
+								<span class="green--text">{{$t('form.support')}}</span> {{$t('text.with_trust', { count: evidence.trust_count })+$t('text.trust')}} 
 							</div>
 							<div slot="header" v-if="evidence.support=='0'">
-								Evidence #{{evidence.id}} -
-								<span class="red--text">Aginst</span> with {{evidence.trust_count}} trust<span v-if="evidence.trust_count>1">s</span>
+								{{$t('text.evidence')}} #{{evidence.id}} -
+								<span class="red--text">{{$t('form.against')}}</span> {{$t('text.with_trust', { count: evidence.trust_count })+$t('text.trust')}}
 							</div>
 							<v-card>
 								<div class="empty-img" style="height:150px" v-if="evidence.image_url!=''">
@@ -123,29 +123,29 @@
 												<v-btn slot="activator" fab @click="openMediaDialog(evidence)" style="display:block">
 													<v-icon>zoom_in</v-icon>
 												</v-btn>
-												<span>Fullscreen</span>
+												<span>{{$t('tooltips.fullscreen')}}</span>
 											</v-tooltip>
 										</div>
 									</v-layout>
 								</v-card-media>
 								<v-card-text>{{evidence.text}}
-									<h3 class="subtitle mb-0 mt-3" v-if="evidence.ref_url.length!=0&&evidence.ref_url[0]!=''">Reference Link</h3>
+									<h3 class="subtitle mb-0 mt-3 grey--text" v-if="evidence.ref_url.length!=0&&evidence.ref_url[0]!=''">{{$t('text.referenceLink')}}</h3>
 									<a style="display:block" class="truncate" :href="url" target="_blank" v-for="url in evidence.ref_url" :key="url.id">{{url}}</a>
 								</v-card-text>
 								<v-divider></v-divider>
 								<v-card-text>
 									<v-layout>
-										<span class="caption ma-3">Created {{evidence.moment}}</span>
+										<span class="caption ma-3">{{$t('text.created')}} {{evidence.moment}}</span>
 										<v-spacer></v-spacer>
 										<v-tooltip top>
 											<v-btn slot="activator" fab small flat dark color="white" @click="openReportDialog({type:'evidence',id:evidence.id})">
 												<v-icon>warning</v-icon>
 											</v-btn>
-											<span>Report</span>
+											<span>{{$t('tooltips.report')}}</span>
 										</v-tooltip>
 										<v-btn @click="addTrust(evidence)" :class="{'green':evidence.trusted && evidence.support=='1','red':evidence.trusted && evidence.support=='0'}">
 											<v-icon left>thumb_up</v-icon>
-											I trust it
+											{{$t('i_trust_it')+'!'}}
 										</v-btn>
 										<v-btn color="red" v-if="isAdmin" @click="openDeletionDialog({type:'evidence',id:evidence.id})">Delete</v-btn>
 									</v-layout>
@@ -204,7 +204,6 @@
 			},
 			evidences: [],
 			isLoading: true,
-			sortList: ['Created at', 'Number of Trust', 'Support', 'Aginst'],
 			sortOrder: 1,
 			selectedSortIndex: 0,
 			snackbar: false,
@@ -215,6 +214,9 @@
 			bookmarked: false,
 		}),
 		computed: {
+			sortList: function() {
+				return [this.$t('sort.createdAt'), this.$t('sort.trust'), this.$t('sort.support'), this.$t('sort.against')];
+			},
 			sortedEvidences: function() {
 				let self = this;
 				if (self.selectedSortIndex == 0) {

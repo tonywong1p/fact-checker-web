@@ -23,7 +23,7 @@
 								<v-icon v-if="sortOrder==-1">arrow_upward</v-icon>
 							</v-btn>
 							<v-btn flat color="primary" dark v-if="tagFilter=='hot'">
-								Hottest
+								{{$t('tags.hottest')}}
 							</v-btn>
 						</v-layout>
 						<v-menu offset-y v-if="tagFilter!='hot'">
@@ -49,7 +49,7 @@
 								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
 								</v-card-media>
 								<v-card-title primary-title style="height:250px;align-items:stretch;overflow:hidden">
-									<div>
+									<div style="width:100%">
 										<h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
 										<p class="truncate white--text mb-0">{{fact.description}}</p>
 									</div>
@@ -102,7 +102,7 @@
 								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
 								</v-card-media>
 								<v-card-title primary-title style="height:250px;align-items:stretch;overflow:hidden">
-									<div>
+									<div style="width:100%">
 										<h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
 										<p class="truncate white--text mb-0">{{fact.description}}</p>
 									</div>
@@ -168,8 +168,9 @@
 	import newFactDialog from "@/components/newFactDialog.vue";
 	import deletionDialog from "@/components/deletionDialog.vue";
 	import trustCounter from "@/components/trustCounter.vue";
-	var moment = require("moment");
-	require('moment/locale/zh-cn');
+	// const moment = require("moment");
+	// require(`moment/locale/zh-cn`);
+	// en-au, zh-cn
 	
 	export default {
 		components: {
@@ -182,7 +183,7 @@
 		props: {
 			search: String,
 			tagFilter: String,
-			isAdmin: Boolean
+			isAdmin: Boolean,
 		},
 		data: () => ({
 			newFactDialog: false,
@@ -199,7 +200,7 @@
 		}),
 		computed: {
 			sortList: function() {
-				return [this.$t('sort.createdAt'), this.$t('sort.views'),this.$t('sort.evidence')];
+				return [this.$t('sort.createdAt'), this.$t('sort.views'), this.$t('sort.evidence')];
 			},
 			sortedFacts: function() {
 				let self = this;
@@ -256,7 +257,7 @@
 					.then((res) => {
 						let facts = res.data;
 						facts.forEach(fact => {
-							fact.moment = moment(parseInt(fact.createdAt)).fromNow();
+							fact.moment = this.$moment(parseInt(fact.createdAt)).fromNow();
 							if (!fact.against_trust_count) {
 								fact.against_trust_count = 0;
 							}
@@ -288,13 +289,13 @@
 			},
 			timeFromNow(arr) {
 				arr.forEach(el => {
-					el.createdAt = moment(el.createdAt).fromNow();
+					el.createdAt = this.$moment(el.createdAt).fromNow();
 				});
 			},
 			openFactDialog() {
 				this.resetAllDialog();
 				this.newFactDialog = true;
-			},			
+			},
 			openDeletionDialog(item) {
 				this.resetAllDialog();
 				this.deletedFact = item;
@@ -316,7 +317,7 @@
 			this.getFacts();
 			// eslint-disable-next-line
 			console.log(this);
-		}
+		},
 	};
 </script>
 

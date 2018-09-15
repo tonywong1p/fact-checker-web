@@ -22,6 +22,13 @@ Vue.use(Vuetify, {
 import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)
 
+const moment = require('moment')
+require('moment/locale/en-au')
+require('moment/locale/zh-cn')
+Vue.use(require('vue-moment'), {
+    moment
+})
+
 Vue.config.productionTip = false
 
 const domain = 'factchecker.xyz'
@@ -48,7 +55,11 @@ const messages = {
             trust: 'Trust',
             link: 'Related Link',
             vs: "vs",
-            created: 'Created at'
+            created: 'Created at',
+            description: 'Description',
+            referenceLink: 'Reference Link',
+            evidence: 'Evidence',
+            with_trust: 'with {count} '
         },
         tooltips: {
             evidence: 'Related Evidence',
@@ -57,7 +68,8 @@ const messages = {
             share: 'Share',
             views: 'Views',
             report: 'Report',
-            bookmark: 'Bookmark'
+            bookmark: 'Bookmark',
+            fullscreen: 'Fullscreen'
         },
         snackbars: {
             bookmark: 'Bookmarked',
@@ -66,16 +78,28 @@ const messages = {
         form: {
             newCase: 'New Case',
             imageUpload: 'Upload',
-            dropzone: 'Drop to upload the cover image here (required) (max 10MB)',
+            dropzone: 'Drop to upload the cover image here(max 10MB)',
             imageUrl: 'URL',
             imageUrlPlaceholder: 'Cover image URL',
             title: 'Title',
             topic: 'Related topic',
             description: 'Description',
-            referenceUrl: 'Reference URL (optional)',
+            referenceUrl: 'Reference URL',
             cancel: 'Cancel',
             submit: 'Submit',
-        }
+            support: 'Support',
+            against: 'Against',
+            standpoint: 'Standpoint',
+            required: '(required)',
+            optional: '(optional)'
+        },
+        tags: {
+            all: 'All',
+            hottest: 'Hottest',
+            topics: 'Topics'
+        },
+        search: 'Search for title or fact ID',
+        i_trust_it: 'I trust it',
     },
     ch: {
         sort: {
@@ -94,7 +118,11 @@ const messages = {
             trust: '相任',
             link: '相關網頁',
             vs: "比",
-            created: '創建於'
+            created: '創建於',
+            description: '相關描述',
+            referenceLink: '參考網址',
+            evidence: '證據',
+            with_trust: '有 {count} 個'
         },
         tooltips: {
             evidence: '相關證據',
@@ -103,7 +131,8 @@ const messages = {
             share: '分享',
             views: '觀見次數',
             report: '報告',
-            bookmark: '加入書籤'
+            bookmark: '加入書籤',
+            fullscreen: '全螢幕顯示'
         },
         snackbars: {
             bookmark: '已加入書籤',
@@ -112,16 +141,28 @@ const messages = {
         form: {
             newCase: '新事件',
             imageUpload: '上傳',
-            dropzone: '拖拉封面相片以上傳(必須)(最大10MB)',
+            dropzone: '拖拉封面相片以上傳(最大10MB)',
             imageUrl: '網址',
             imageUrlPlaceholder: '封面相片網址',
             title: '標題',
             topic: '相關主題',
             description: '描述',
-            referenceUrl: '參考網址(可選)',
+            referenceUrl: '參考網址',
             cancel: '取消',
             submit: '提交',
-        }
+            support: '支持',
+            against: '反對',
+            standpoint: '立場',
+            required: '(必須)',
+            optional: '(可選)'
+        },
+        tags: {
+            all: '所有',
+            hottest: '熱門',
+            topics: '主題'
+        },
+        search: '搜尋事件標題或ID',
+        i_trust_it: '我相信',
     }
 }
 

@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" width="800px" persistent scrollable>
+	<v-dialog v-model="dialog" width="800px" lazy persistent scrollable>
 		<v-card>
 			<v-card-title>
 				<h3 class="headline">{{$t('form.newCase')}}</h3>
@@ -32,14 +32,14 @@
 							</v-tabs>
 							<v-text-field box :label="$t('form.title')" :rules="titleRules" v-model="newFact.title" maxlength="100" required></v-text-field>
 							<v-flex xs12>
-								<v-combobox v-model="selectedTags" :items="tags" :label="$t('form.topic')" multiple chips></v-combobox>
+								<v-combobox v-model="selectedTags" :items="tags" :label="$t('form.topic')+$t('form.optional')" multiple chips></v-combobox>
 							</v-flex>
 							<v-textarea box name="input-7-4" :label="$t('form.description')" :rules="descriptionRules" :counter="1000" maxlength="1000" v-model="newFact.description" required></v-textarea>
 						</v-flex>
 					</v-layout>
 					<v-layout row wrap>
 						<v-flex xs10>
-							<v-text-field box :label="$t('form.referenceUrl')" append-icon="link" v-for="link in newFact.ref_url" :key="link.id" v-model="link.value"></v-text-field>
+							<v-text-field box :label="$t('form.referenceUrl')+$t('form.optional')" append-icon="link" v-for="link in newFact.ref_url" :key="link.id" v-model="link.value"></v-text-field>
 						</v-flex>
 						<v-flex xs1>
 							<v-btn flat icon @click="addRef()">
@@ -101,7 +101,7 @@
 					thumbnailWidth: 200,
 					maxFiles: 1,
 					maxFilesize: 10,
-					dictDefaultMessage: `<i class='material-icons' style='font-size:80px'>add_photo_alternate</i><br>${this.$t('form.dropzone')}`,
+					dictDefaultMessage: `<i class='material-icons' style='font-size:80px'>add_photo_alternate</i><br>${this.$t('form.dropzone')}${this.$t('form.required')}`,
 					addRemoveLinks: true,
 					acceptedFiles: 'image/*'
 				})
