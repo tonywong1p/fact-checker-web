@@ -2,12 +2,13 @@
 	<v-dialog v-model="dialog" width="800px" persistent scrollable>
 		<v-card>
 			<v-card-title>
-				<h3 class="headline">New Case</h3>
+				<h3 class="headline">{{$t('form.newCase')}}</h3>
 				<v-spacer></v-spacer>
 				<v-btn color="primary" flat @click="done()">
-					Cancel
+					{{$t('form.cancel')}}
 				</v-btn>
-				<v-btn color="primary" dark @click="addFact()" :disabled="!valid">Create
+				<v-btn color="primary" dark @click="addFact()" :disabled="!valid">
+					{{$t('form.submit')}}
 					<v-icon right dark>send</v-icon>
 				</v-btn>
 			</v-card-title>
@@ -17,28 +18,28 @@
 						<v-flex xs12>
 							<v-tabs dark slider-color="pink">
 								<v-tab ripple key="0">
-									Upload
+									{{$t('form.imageUpload')}}
 								</v-tab>
 								<v-tab ripple>
-									URL
+									{{$t('form.imageUrl')}}
 								</v-tab>
 								<v-tab-item>
 									<vue-dropzone id="coverImage" :options="dropzoneOptions" class="mb-4" @vdropzone-success="finishUpload"></vue-dropzone>
 								</v-tab-item>
 								<v-tab-item>
-									<v-text-field box label="Cover image URL" :rules="imageUrlRules" v-model="newFact.image_url" maxlength="100" required></v-text-field>
+									<v-text-field box :label="$t('form.imageUrlPlaceholder')" :rules="imageUrlRules" v-model="newFact.image_url" maxlength="100" required></v-text-field>
 								</v-tab-item>
 							</v-tabs>
-							<v-text-field box label="Title" :rules="titleRules" v-model="newFact.title" maxlength="100" required></v-text-field>
+							<v-text-field box :label="$t('form.title')" :rules="titleRules" v-model="newFact.title" maxlength="100" required></v-text-field>
 							<v-flex xs12>
-								<v-combobox v-model="selectedTags" :items="tags" label="Related Topic" multiple chips></v-combobox>
+								<v-combobox v-model="selectedTags" :items="tags" :label="$t('form.topic')" multiple chips></v-combobox>
 							</v-flex>
-							<v-textarea box name="input-7-4" label="Description" :rules="descriptionRules" :counter="1000" maxlength="1000" v-model="newFact.description" required></v-textarea>
+							<v-textarea box name="input-7-4" :label="$t('form.description')" :rules="descriptionRules" :counter="1000" maxlength="1000" v-model="newFact.description" required></v-textarea>
 						</v-flex>
 					</v-layout>
 					<v-layout row wrap>
 						<v-flex xs10>
-							<v-text-field box label="Reference URL (optional)" append-icon="link" v-for="link in newFact.ref_url" :key="link.id" v-model="link.value"></v-text-field>
+							<v-text-field box :label="$t('form.referenceUrl')" append-icon="link" v-for="link in newFact.ref_url" :key="link.id" v-model="link.value"></v-text-field>
 						</v-flex>
 						<v-flex xs1>
 							<v-btn flat icon @click="addRef()">
@@ -69,15 +70,6 @@
 			done: Function
 		},
 		data: () => ({
-			dropzoneOptions: {
-				paramName: "coverImage",
-				thumbnailWidth: 200,
-				maxFiles: 1,
-				maxFilesize: 10,
-				dictDefaultMessage: "<i class='material-icons' style='font-size:80px'>add_photo_alternate</i><br>Drop to upload the cover image here (required) (max 10MB)",
-				addRemoveLinks: true,
-				acceptedFiles: 'image/*'
-			},
 			newFact: {
 				title: "",
 				description: "",
@@ -103,6 +95,17 @@
 			this.dropzoneOptions.url = this.api_url + '/upload';
 		},
 		computed: {
+			dropzoneOptions: function() {
+				return ({
+					paramName: "coverImage",
+					thumbnailWidth: 200,
+					maxFiles: 1,
+					maxFilesize: 10,
+					dictDefaultMessage: `<i class='material-icons' style='font-size:80px'>add_photo_alternate</i><br>${this.$t('form.dropzone')}`,
+					addRemoveLinks: true,
+					acceptedFiles: 'image/*'
+				})
+			},
 			urlArray: function() {
 				return this.newFact.ref_url.map((el) => {
 					if (RegExp('^(http|https)://').test(el.value) || el.value == '') {

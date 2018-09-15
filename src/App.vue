@@ -41,6 +41,16 @@
       </v-toolbar-title>
       <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" append-icon="clear" @click:append="clearSearch" label="Search for title, fact ID" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
       <v-spacer></v-spacer>
+      <v-menu offset-y>
+        <v-btn flat slot="activator" color="primary" dark>
+          {{selectedLang}}
+        </v-btn>
+        <v-list>
+          <v-list-tile v-for="(lang, i) in langs" :key="`Lang${i}`" @click="changeLang(lang)">
+            <v-list-tile-title>{{ lang.name }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
       <v-btn flat v-if="isAdmin" @click="isAdmin=false">I am Admin</v-btn>
       <v-btn flat icon @click="goToFaq()">
         <v-icon>contact_support</v-icon>
@@ -70,6 +80,14 @@
       source: String
     },
     data: () => ({
+      selectedLang: '繁體中文',
+      langs: [{
+        name: '繁體中文',
+        value: 'ch'
+      }, {
+        name: 'English',
+        value: 'en'
+      }],
       dialog: false,
       drawer: true,
       items: [{
@@ -134,6 +152,10 @@
           name: "About"
         });
       },
+      changeLang(lang) {
+        this.$i18n.locale= lang.value;
+        this.selectedLang = lang.name;
+      }
     },
     mounted() {
       this.getTags();

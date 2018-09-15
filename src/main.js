@@ -46,7 +46,9 @@ const messages = {
         },
         text: {
             trust: 'Trust',
-            link: 'Related Link'
+            link: 'Related Link',
+            vs: "vs",
+            created: 'Created at'
         },
         tooltips: {
             evidence: 'Related Evidence',
@@ -60,6 +62,19 @@ const messages = {
         snackbars: {
             bookmark: 'Bookmarked',
             undoBookmark: 'Undo bookmark',
+        },
+        form: {
+            newCase: 'New Case',
+            imageUpload: 'Upload',
+            dropzone: 'Drop to upload the cover image here (required) (max 10MB)',
+            imageUrl: 'URL',
+            imageUrlPlaceholder: 'Cover image URL',
+            title: 'Title',
+            topic: 'Related topic',
+            description: 'Description',
+            referenceUrl: 'Reference URL (optional)',
+            cancel: 'Cancel',
+            submit: 'Submit',
         }
     },
     ch: {
@@ -93,6 +108,19 @@ const messages = {
         snackbars: {
             bookmark: '已加入書籤',
             undoBookmark: '復原加入書籤',
+        },
+        form: {
+            newCase: '新事件',
+            imageUpload: '上傳',
+            dropzone: '拖拉封面相片以上傳(必須)(最大10MB)',
+            imageUrl: '網址',
+            imageUrlPlaceholder: '封面相片網址',
+            title: '標題',
+            topic: '相關主題',
+            description: '描述',
+            referenceUrl: '參考網址(可選)',
+            cancel: '取消',
+            submit: '提交',
         }
     }
 }
