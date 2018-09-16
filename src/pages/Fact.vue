@@ -45,7 +45,7 @@
 									</v-chip>
 									<span>{{$t('tooltips.views')}}</span>
 								</v-tooltip>
-								<span class="caption ma-3">{{$t('text.created')}} {{fact.moment}}</span>
+								<span class="caption ma-3">{{$t('text.created')}} {{fact.moment}} by {{fact.creator}}</span>
 								<v-spacer></v-spacer>
 								<v-tooltip top>
 									<v-btn slot="activator" fab flat :class="{'pink--text':bookmarked}" @click="bookmark(fact.id)">
@@ -135,7 +135,7 @@
 								<v-divider></v-divider>
 								<v-card-text>
 									<v-layout>
-										<span class="caption ma-3">{{$t('text.created')}} {{evidence.moment}}</span>
+										<span class="caption ma-3">{{$t('text.created')}} {{evidence.moment}} by {{evidence.creator}}</span>
 										<v-spacer></v-spacer>
 										<v-tooltip top>
 											<v-btn slot="activator" fab small flat dark color="white" @click="openReportDialog({type:'evidence',id:evidence.id})">
@@ -155,7 +155,7 @@
 					</v-expansion-panel>
 				</v-flex>
 			</v-layout>
-			<newEvidenceDialog :dialog="evidenceDialog" :factId="parseInt($route.params.id)" :done="actionComplete"></newEvidenceDialog>
+			<newEvidenceDialog :profile="profile" :dialog="evidenceDialog" :factId="parseInt($route.params.id)" :done="actionComplete"></newEvidenceDialog>
 			<reportDialog :dialog="reportDialog" :reportedItem="reportedItem" :isAdmin="isAdmin" :done="()=>{snackbar=true;snackbarMessage='This case has been reported. Thank you for the effort!';reportDialog=false}"></reportDialog>
 			<mediaDialog :media="selectedMedia" :dialog="mediaDialog" :done="resetAllDialog"></mediaDialog>
 			<deletionDialog :deletedItem="deletedItem" :dialog="deletionDialog" :done="actionComplete"></deletionDialog>
@@ -190,7 +190,8 @@
 			SocialSharing
 		},
 		props: {
-			isAdmin: Boolean
+			isAdmin: Boolean,
+			profile: Object,
 		},
 		data: () => ({
 			evidenceDialog: false,

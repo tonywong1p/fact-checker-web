@@ -175,7 +175,6 @@
       vue2Dropzone: vue2Dropzone
     },
     props: {
-      source: String
     },
     data: () => ({
       selectedTab: 0,
@@ -192,7 +191,7 @@
         imageUrl: null,
       },
       googleSignInParams: {
-        client_id: '18039521998-t7fpreuiu7kr76imc1k4009d3qk39q4i.apps.googleusercontent.com'
+        client_id: '18039521998-g0ko2ashkdg14sbbi23gc940osdbe8vt.apps.googleusercontent.com', //http://localhost:8080
       },
       langs: [{
         name: '繁體中文',
@@ -206,11 +205,6 @@
       selectedLang: JSON.parse(localStorage.getItem("factchecker_language")),
       dialog: false,
       drawer: true,
-      items: [{
-        avatar: 'https://pbs.twimg.com/profile_images/538456309603913728/ihbvZL7s_400x400.jpeg',
-        title: 'Hi everyone!',
-        subtitle: "I'll be in your neighborhood doing errands this weekend. Do you want to hang out? I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?I'll be in your neighborhood doing errands this weekend. Do you want to hang out?"
-      }],
       search: null,
       isAdmin: false,
       tags: [],
@@ -276,14 +270,16 @@
         // `googleUser` is the GoogleUser object that represents the just-signed-in user.
         // See https://developers.google.com/identity/sign-in/web/reference#users
         let googleProfile = googleUser.getBasicProfile() // etc etc
-        let profile = {
+        this.registerForm = {
           username: googleProfile['Eea'],
           fullname: googleProfile['ig'],
+          password: '123123123',
           email: googleProfile['U3'],
           imageUrl: googleProfile['Paa'],
           type: 'google'
-        }
-        sessionStorage.setItem("factchecker_profile", JSON.stringify(profile));
+        };
+        this.userRegister();        
+        sessionStorage.setItem("factchecker_profile", JSON.stringify(this.registerForm));
         location.reload();
       },
       changeLang(lang) {

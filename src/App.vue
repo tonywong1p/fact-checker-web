@@ -51,7 +51,7 @@
       <admin-notification :isAdmin="isAdmin"></admin-notification>
     <profile></profile>
     </v-toolbar>
-    <router-view :search="search" :tagFilter="selectedTag" :isAdmin="isAdmin"></router-view>
+    <router-view :profile="profile" :search="search" :tagFilter="selectedTag" :isAdmin="isAdmin"></router-view>
   </v-app>
 </template>
 
@@ -84,9 +84,6 @@
         fullname: null,
         email: null,
         imageUrl: null,
-      },
-      googleSignInParams: {
-        client_id: '18039521998-t7fpreuiu7kr76imc1k4009d3qk39q4i.apps.googleusercontent.com'
       },
       langs: [{
         name: '繁體中文',

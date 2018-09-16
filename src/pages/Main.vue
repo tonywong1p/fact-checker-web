@@ -55,7 +55,7 @@
 									</div>
 								</v-card-title>
 								<v-divider></v-divider>
-								<v-card-title class="caption pb-0">{{$t('text.created')}} {{fact.moment}}</v-card-title>
+								<v-card-title class="caption pb-0">{{$t('text.created')}} {{fact.moment}} by {{fact.creator}}</v-card-title>
 								<v-card-actions class="pb-3">
 									<v-layout>
 										<v-flex xs12 sm6>
@@ -108,7 +108,7 @@
 									</div>
 								</v-card-title>
 								<v-divider></v-divider>
-								<v-card-title class="caption pb-0">Created {{fact.moment}}</v-card-title>
+								<v-card-title class="caption pb-0">Created {{fact.moment}} by {{fact.creator}}</v-card-title>
 								<v-card-actions class="pb-3">
 									<v-layout>
 										<v-flex xs12 sm6>
@@ -155,7 +155,7 @@
 			</v-btn>
 			<span>{{$t('tooltips.newFact')}}</span>
 		</v-tooltip>
-		<newFactDialog :dialog="newFactDialog" :done="resetAllDialog" @close="resetAllDialog"></newFactDialog>
+		<newFactDialog :profile="profile" :dialog="newFactDialog" :done="resetAllDialog" @close="resetAllDialog"></newFactDialog>
 		<deletionDialog :dialog="deletionDialog" :deletedItem="deletedFact" :done="actionComplete"></deletionDialog>
 	</v-content>
 </template>
@@ -184,6 +184,7 @@
 			search: String,
 			tagFilter: String,
 			isAdmin: Boolean,
+			profile: Object,
 		},
 		data: () => ({
 			newFactDialog: false,

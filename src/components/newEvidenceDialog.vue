@@ -69,7 +69,8 @@
 		props: {
 			dialog: Boolean,
 			factId: Number,
-			done: Function
+			done: Function,
+			profile: Object,
 		},
 		data: () => ({
 			newEvidence: {
@@ -125,6 +126,7 @@
 					image_url: self.newEvidence.image_url,
 					ref_url: self.urlArray,
 					support: self.newEvidence.support,
+					createdBy: self.profile.username,
 				};
 				evidence.ref_url = evidence.ref_url.filter((url) => {
 					return url != '';

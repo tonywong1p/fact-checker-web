@@ -67,7 +67,8 @@
 		},
 		props: {
 			dialog: Boolean,
-			done: Function
+			done: Function,
+			profile: Object
 		},
 		data: () => ({
 			newFact: {
@@ -128,6 +129,7 @@
 					ref_url: self.urlArray,
 					image_url: self.newFact.image_url,
 					tags: self.selectedTags,
+					createdBy: self.profile.username
 				};
 				fact.ref_url = fact.ref_url.filter((url) => {
 					return url != '';
