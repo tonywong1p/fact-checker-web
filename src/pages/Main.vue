@@ -311,7 +311,7 @@
 			},
 			changeView(view) {
 				this.view = view;
-			}
+			},
 		},
 		mounted() {
 			this.getFacts();

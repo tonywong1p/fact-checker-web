@@ -2,9 +2,6 @@
   <v-app id="fact-cracker" dark>
     <v-navigation-drawer clipped fixed app dark v-if="$route.path=='/'" mobile-break-point="1024" v-model="drawer" :value="selectedTag">
       <v-list dense>
-        {{profile}}
-        <g-signin-button class="g-signin2 pa-2" :params="googleSignInParams" @success="onSignInSuccess">
-        </g-signin-button>
         <v-list-tile @click="selectTag('all')" avatar ripple :class="{'grey darken-2':selectedTag=='all'}">
           <v-list-tile-avatar color="grey">
             <v-icon>all_inclusive</v-icon>
@@ -62,11 +59,44 @@
         <v-icon>bookmarks</v-icon>
       </v-btn>
       <admin-notification :isAdmin="isAdmin"></admin-notification>
-      <v-avatar class="ml-5">
-        <img :src="profile['Paa']" alt="John">
+      <v-avatar class="ml-4" @click="dialog = !dialog">
+        <v-btn fab>
+          <v-icon dark v-if="profile.imageUrl==''">account_circle</v-icon>
+          <img v-if="profile.imageUrl!=''" :src="profile.imageUrl">
+        </v-btn>
       </v-avatar>
     </v-toolbar>
     <router-view :search="search" :tagFilter="selectedTag" :isAdmin="isAdmin"></router-view>
+    <v-dialog v-model="dialog" persistent max-width="500px">
+      <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn>
+      <v-card>
+        <v-card-title>
+          <span class="headline">User Login</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            {{profile}}
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-text-field v-model="loginForm.username" label="Username" required></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field v-model="loginForm.password" label="Password" type="password" required></v-text-field>
+              </v-flex>
+            </v-layout>
+            <div class="mb-3">OR</div>
+            <g-signin-button class="g-signin2" :params="googleSignInParams" @success="onSignInSuccess">
+            </g-signin-button>
+          </v-container>
+          <small>*indicates required field</small>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
+          <v-btn color="blue darken-1" flat @click.native="userLogin()">Login</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -86,7 +116,11 @@
       source: String
     },
     data: () => ({
-      profile: {ha:1},
+      profile: JSON.parse(sessionStorage.getItem('factchecker_profile')),
+      loginForm: {
+        username: null,
+        password: null,
+      },
       googleSignInParams: {
         client_id: '18039521998-t7fpreuiu7kr76imc1k4009d3qk39q4i.apps.googleusercontent.com'
       },
@@ -115,10 +149,38 @@
     }),
     computed: {},
     methods: {
+      initUser() {
+        if (this.profile == null) {
+          this.profile = {
+            username: 'Guest',
+            fullname: 'Guest',
+            email: 'No email',
+            imageUrl: '',
+          };
+        }
+      },
+      userLogin() {
+        let self = this;
+        let api = self.api_url + "/users/login";
+        let credential = self.loginForm;
+        self.axios.post(api, credential).then(res => {
+          // eslint-disable-next-line
+          sessionStorage.setItem("factchecker_profile", JSON.stringify(res.data));
+          location.reload();
+        });
+      },
       onSignInSuccess(googleUser) {
         // `googleUser` is the GoogleUser object that represents the just-signed-in user.
         // See https://developers.google.com/identity/sign-in/web/reference#users
-        this.profile = googleUser.getBasicProfile() // etc etc
+        let profile = googleUser.getBasicProfile() // etc etc
+        this.profile = {
+          username: profile['Eea'],
+          fullname: profile['ig'],
+          email: profile['U3'],
+          imageUrl: profile['Paa']
+        }
+        sessionStorage.setItem("factchecker_profile", JSON.stringify(this.profile));
+        location.reload();
       },
       goBack() {
         window.history.back();
@@ -190,6 +252,7 @@
     mounted() {
       this.getTags();
       this.initLang();
+      this.initUser();
     },
     created() {
       this.checkMobile();
