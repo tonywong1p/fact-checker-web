@@ -2,6 +2,9 @@
   <v-app id="fact-cracker" dark>
     <v-navigation-drawer clipped fixed app dark v-if="$route.path=='/'" mobile-break-point="1024" v-model="drawer" :value="selectedTag">
       <v-list dense>
+        {{profile}}
+        <g-signin-button class="g-signin2 pa-2" :params="googleSignInParams" @success="onSignInSuccess">
+        </g-signin-button>
         <v-list-tile @click="selectTag('all')" avatar ripple :class="{'grey darken-2':selectedTag=='all'}">
           <v-list-tile-avatar color="grey">
             <v-icon>all_inclusive</v-icon>
@@ -59,6 +62,9 @@
         <v-icon>bookmarks</v-icon>
       </v-btn>
       <admin-notification :isAdmin="isAdmin"></admin-notification>
+      <v-avatar class="ml-5">
+        <img :src="profile['Paa']" alt="John">
+      </v-avatar>
     </v-toolbar>
     <router-view :search="search" :tagFilter="selectedTag" :isAdmin="isAdmin"></router-view>
   </v-app>
@@ -80,6 +86,10 @@
       source: String
     },
     data: () => ({
+      profile: {ha:1},
+      googleSignInParams: {
+        client_id: '18039521998-t7fpreuiu7kr76imc1k4009d3qk39q4i.apps.googleusercontent.com'
+      },
       langs: [{
         name: '繁體中文',
         value: 'ch',
@@ -105,6 +115,11 @@
     }),
     computed: {},
     methods: {
+      onSignInSuccess(googleUser) {
+        // `googleUser` is the GoogleUser object that represents the just-signed-in user.
+        // See https://developers.google.com/identity/sign-in/web/reference#users
+        this.profile = googleUser.getBasicProfile() // etc etc
+      },
       goBack() {
         window.history.back();
       },
@@ -186,5 +201,9 @@
   .app-logo {
     height: 40px;
     width: auto;
+  }
+  
+  .abcRioButton {
+    width: 100% !important;
   }
 </style>
