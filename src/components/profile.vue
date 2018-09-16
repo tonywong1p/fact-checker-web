@@ -297,7 +297,7 @@
       },
       initLang() {
         if (this.selectedLang == null) {
-          this.selectedLang = this.langs[0];
+          this.selectedLang = this.langs[1];
         }
         this.$i18n.locale = this.selectedLang.value;
         this.$moment.locale(this.selectedLang.moment);
