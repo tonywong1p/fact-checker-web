@@ -41,16 +41,6 @@
       </v-toolbar-title>
       <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" append-icon="clear" @click:append="clearSearch" :label="$t('search')" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
       <v-spacer></v-spacer>
-      <v-menu offset-y>
-        <v-btn flat slot="activator" color="white" dark>
-          {{selectedLang.name}}
-        </v-btn>
-        <v-list>
-          <v-list-tile v-for="(lang, i) in langs" :key="`Lang${i}`" @click="selectLang(lang)">
-            <v-list-tile-title>{{ lang.name }}</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
       <v-btn flat v-if="isAdmin" @click="isAdmin=false">I am Admin</v-btn>
       <v-btn flat icon @click="goToFaq()">
         <v-icon>contact_support</v-icon>
@@ -59,44 +49,9 @@
         <v-icon>bookmarks</v-icon>
       </v-btn>
       <admin-notification :isAdmin="isAdmin"></admin-notification>
-      <v-avatar class="ml-4" @click="dialog = !dialog">
-        <v-btn fab>
-          <v-icon dark v-if="profile.imageUrl==''">account_circle</v-icon>
-          <img v-if="profile.imageUrl!=''" :src="profile.imageUrl">
-        </v-btn>
-      </v-avatar>
+    <profile></profile>
     </v-toolbar>
     <router-view :search="search" :tagFilter="selectedTag" :isAdmin="isAdmin"></router-view>
-    <v-dialog v-model="dialog" persistent max-width="500px">
-      <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn>
-      <v-card>
-        <v-card-title>
-          <span class="headline">User Login</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            {{profile}}
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-text-field v-model="loginForm.username" label="Username" required></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field v-model="loginForm.password" label="Password" type="password" required></v-text-field>
-              </v-flex>
-            </v-layout>
-            <div class="mb-3">OR</div>
-            <g-signin-button class="g-signin2" :params="googleSignInParams" @success="onSignInSuccess">
-            </g-signin-button>
-          </v-container>
-          <small>*indicates required field</small>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="userLogin()">Login</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-app>
 </template>
 
@@ -106,11 +61,13 @@
     Slide
   } from "vue-carousel";
   import adminNotification from '@/components/adminNotification.vue';
+  import profile from '@/components/profile.vue';
   export default {
     components: {
       Carousel,
       Slide,
-      adminNotification
+      adminNotification,
+      profile
     },
     props: {
       source: String
@@ -120,6 +77,13 @@
       loginForm: {
         username: null,
         password: null,
+      },
+      registerForm: {
+        username: null,
+        password: null,
+        fullname: null,
+        email: null,
+        imageUrl: null,
       },
       googleSignInParams: {
         client_id: '18039521998-t7fpreuiu7kr76imc1k4009d3qk39q4i.apps.googleusercontent.com'
@@ -149,39 +113,6 @@
     }),
     computed: {},
     methods: {
-      initUser() {
-        if (this.profile == null) {
-          this.profile = {
-            username: 'Guest',
-            fullname: 'Guest',
-            email: 'No email',
-            imageUrl: '',
-          };
-        }
-      },
-      userLogin() {
-        let self = this;
-        let api = self.api_url + "/users/login";
-        let credential = self.loginForm;
-        self.axios.post(api, credential).then(res => {
-          // eslint-disable-next-line
-          sessionStorage.setItem("factchecker_profile", JSON.stringify(res.data));
-          location.reload();
-        });
-      },
-      onSignInSuccess(googleUser) {
-        // `googleUser` is the GoogleUser object that represents the just-signed-in user.
-        // See https://developers.google.com/identity/sign-in/web/reference#users
-        let profile = googleUser.getBasicProfile() // etc etc
-        this.profile = {
-          username: profile['Eea'],
-          fullname: profile['ig'],
-          email: profile['U3'],
-          imageUrl: profile['Paa']
-        }
-        sessionStorage.setItem("factchecker_profile", JSON.stringify(this.profile));
-        location.reload();
-      },
       goBack() {
         window.history.back();
       },
@@ -232,27 +163,9 @@
           name: "About"
         });
       },
-      changeLang(lang) {
-        this.$i18n.locale = lang.value;
-        this.$moment.locale(lang.moment);
-        this.$forceUpdate();
-      },
-      selectLang(lang) {
-        localStorage.setItem("factchecker_language", JSON.stringify(lang));
-        location.reload();
-      },
-      initLang() {
-        if (this.selectedLang == null) {
-          this.selectedLang = this.langs[0];
-        }
-        this.$i18n.locale = this.selectedLang.value;
-        this.$moment.locale(this.selectedLang.moment);
-      }
     },
     mounted() {
       this.getTags();
-      this.initLang();
-      this.initUser();
     },
     created() {
       this.checkMobile();

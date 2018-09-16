@@ -92,7 +92,6 @@
 			selectedTags: [],
 		}),
 		created() {
-			this.dropzoneOptions.url = this.api_url + '/upload';
 		},
 		computed: {
 			dropzoneOptions: function() {
@@ -103,7 +102,8 @@
 					maxFilesize: 10,
 					dictDefaultMessage: `<i class='material-icons' style='font-size:80px'>add_photo_alternate</i><br>${this.$t('form.dropzone')}${this.$t('form.required')}`,
 					addRemoveLinks: true,
-					acceptedFiles: 'image/*'
+					acceptedFiles: 'image/*',
+					url: this.api_url + '/upload',
 				})
 			},
 			urlArray: function() {
