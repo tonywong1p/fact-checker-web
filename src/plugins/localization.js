@@ -11,7 +11,6 @@ export const messages = {
         view: {
             gridView: 'Grid View',
             slideView: 'Slide View',
-            vs: "vs"
         },
         text: {
             trust: 'Trust',
@@ -22,6 +21,10 @@ export const messages = {
             referenceLink: 'Reference Link',
             evidence: 'Evidence',
             with_trust: 'with {count} '
+        },
+        counter: {
+            views: 'view | views',
+            trusts: 'Trust | Trusts',
         },
         tooltips: {
             evidence: 'Related Evidence',

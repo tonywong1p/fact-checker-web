@@ -49,7 +49,7 @@
         <v-icon>bookmarks</v-icon>
       </v-btn>
       <admin-notification :isAdmin="isAdmin"></admin-notification>
-    <profile></profile>
+      <profile></profile>
     </v-toolbar>
     <router-view :profile="profile" :search="search" :tagFilter="selectedTag" :isAdmin="isAdmin"></router-view>
   </v-app>
@@ -73,7 +73,6 @@
       source: String
     },
     data: () => ({
-      profile: JSON.parse(sessionStorage.getItem('factchecker_profile')),
       loginForm: {
         username: null,
         password: null,
@@ -108,7 +107,21 @@
       color: ['blue', 'pink', 'teal', 'orange', 'purple', 'deep-purple', 'indigo', 'cyan', 'brown', 'deep-orange'],
       selectedTag: 'all',
     }),
-    computed: {},
+    computed: {
+      profile: function() {
+        let profile = sessionStorage.getItem('factchecker_profile');
+        if (profile == null) {
+          return ({
+            username: 'guest',
+            fullname: 'Guest',
+            email: 'No email',
+            imageUrl: '',
+          })
+        } else {
+          return JSON.parse(profile);
+        }
+      }
+    },
     methods: {
       goBack() {
         window.history.back();

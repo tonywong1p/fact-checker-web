@@ -41,7 +41,7 @@
 				<v-flex xs12>
 					<h3 class="title text-xs-center" v-if="sortedFacts.length==0">No related topic raised yet.</h3>
 					<carousel v-if="view=='carousel'" :paginationEnabled="true" :navigateTo="0" :perPageCustom="[[0, 1], [768, 2],[1024,3],[1440,4]]">
-						<slide v-for="fact in sortedFacts" :key="fact.id" class="slide">
+						<slide v-for="fact in sortedFacts" :key="fact.id">
 							<v-card class="ma-3 slide-card" :class="{'red darken-4':isAdmin&&fact.report!=null}">
 								<div class="empty-img">
 									<v-icon style="font-size:60px">photo</v-icon>
@@ -54,36 +54,20 @@
 										<p class="truncate white--text mb-0">{{fact.description}}</p>
 									</div>
 								</v-card-title>
+								<v-card-title class="caption py-2 grey--text">{{fact.moment}} by <span class="font-weight-bold mx-1">{{fact.creator}}</span> | {{fact.numOfView}} {{$tc('counter.views',fact.numOfView)}}</v-card-title>
 								<v-divider></v-divider>
-								<v-card-title class="caption pb-0">{{$t('text.created')}} {{fact.moment}} by {{fact.creator}}</v-card-title>
-								<v-card-actions class="pb-3">
-									<v-layout>
-										<v-flex xs12 sm6>
-											<v-tooltip top>
-												<v-chip slot="activator" outline class="mx-2" color="white">
-													<v-avatar>
-														<v-icon>remove_red_eye</v-icon>
-													</v-avatar>
-													<span v-if="!fact.numOfView">0</span>
-													<span v-if="fact.numOfView">{{fact.numOfView}}</span>
-												</v-chip>
-												<span>{{$t('tooltips.views')}}</span>
-											</v-tooltip>
-											<v-tooltip top>
-												<v-chip slot="activator" outline class="mx-2" color="white">
-													<v-avatar>
-														<v-icon>explicit</v-icon>
-													</v-avatar>
-													<span v-if="!fact.numOfEvidence">0</span>
-													<span v-if="fact.numOfEvidence">{{fact.numOfEvidence}}</span>
-												</v-chip>
-												<span>{{$t('tooltips.evidence')}}</span>
-											</v-tooltip>
-										</v-flex>
-										<v-flex xs12 sm6 class="pr-4">
-											<trustCounter :againstTrust="fact.against_trust_count" :supportTrust="fact.support_trust_count"></trustCounter>
-										</v-flex>
-									</v-layout>
+								<v-card-actions class="mt-1">
+									<v-tooltip top>
+										<v-chip slot="activator" outline class="mx-2" color="white">
+											<v-avatar>
+												<v-icon>explicit</v-icon>
+											</v-avatar>
+											<span v-if="!fact.numOfEvidence">0</span>
+											<span v-if="fact.numOfEvidence">{{fact.numOfEvidence}}</span>
+										</v-chip>
+										<span>{{$t('tooltips.evidence')}}</span>
+									</v-tooltip>
+									<trustCounter style="width:100%" class="px-3" :againstTrust="fact.against_trust_count" :supportTrust="fact.support_trust_count"></trustCounter>
 								</v-card-actions>
 								<v-card-actions v-if="isAdmin">
 									<span>{{fact.reported}}</span>
@@ -107,36 +91,20 @@
 										<p class="truncate white--text mb-0">{{fact.description}}</p>
 									</div>
 								</v-card-title>
+								<v-card-title class="caption py-2 grey--text">{{fact.moment}} by <span class="font-weight-bold mx-1">{{fact.creator}}</span> | {{fact.numOfView}} {{$tc('counter.views',fact.numOfView)}}</v-card-title>
 								<v-divider></v-divider>
-								<v-card-title class="caption pb-0">Created {{fact.moment}} by {{fact.creator}}</v-card-title>
-								<v-card-actions class="pb-3">
-									<v-layout>
-										<v-flex xs12 sm6>
-											<v-tooltip top>
-												<v-chip slot="activator" outline class="mx-2" color="white">
-													<v-avatar>
-														<v-icon>remove_red_eye</v-icon>
-													</v-avatar>
-													<span v-if="!fact.numOfView">0</span>
-													<span v-if="fact.numOfView">{{fact.numOfView}}</span>
-												</v-chip>
-												<span>Views</span>
-											</v-tooltip>
-											<v-tooltip top>
-												<v-chip slot="activator" outline class="mx-2" color="white">
-													<v-avatar>
-														<v-icon>explicit</v-icon>
-													</v-avatar>
-													<span v-if="!fact.numOfEvidence">0</span>
-													<span v-if="fact.numOfEvidence">{{fact.numOfEvidence}}</span>
-												</v-chip>
-												<span>Related Evidence</span>
-											</v-tooltip>
-										</v-flex>
-										<v-flex xs12 sm6 class="pr-4">
-											<trustCounter :againstTrust="fact.against_trust_count" :supportTrust="fact.support_trust_count"></trustCounter>
-										</v-flex>
-									</v-layout>
+								<v-card-actions class="mt-1">
+									<v-tooltip top>
+										<v-chip slot="activator" outline class="mx-2" color="white">
+											<v-avatar>
+												<v-icon>explicit</v-icon>
+											</v-avatar>
+											<span v-if="!fact.numOfEvidence">0</span>
+											<span v-if="fact.numOfEvidence">{{fact.numOfEvidence}}</span>
+										</v-chip>
+										<span>{{$t('tooltips.evidence')}}</span>
+									</v-tooltip>
+									<trustCounter style="width:100%" class="px-3" :againstTrust="fact.against_trust_count" :supportTrust="fact.support_trust_count"></trustCounter>
 								</v-card-actions>
 								<v-card-actions v-if="isAdmin">
 									<span>{{fact.reported}}</span>
@@ -323,14 +291,8 @@
 </script>
 
 <style>
-	.slide {
-		display: flex;
-		justify-content: center
-	}
-	
 	.slide-card {
 		max-width: 500px;
-		width: 100%
 	}
 	
 	.empty-img {
@@ -363,7 +325,7 @@
 	p.truncate {
 		display: block;
 		display: -webkit-box;
-		-webkit-line-clamp: 5;
+		-webkit-line-clamp: 6;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 		text-overflow: ellipsis;

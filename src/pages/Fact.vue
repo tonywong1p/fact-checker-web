@@ -1,6 +1,6 @@
 <template>
 	<v-content>
-		<v-container grid-list-xl class="mt-3">
+		<v-container grid-list-xl class="mt-3" wrap>
 			<v-layout justify-center align-center wrap v-if="isLoading">
 				<v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
 			</v-layout>
@@ -26,42 +26,32 @@
 						<v-card-title primary-title>
 							<div style="width:100%">
 								<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
-								<h3 class="subtitle mb-0 mt-3 grey--text">{{$t('text.description')}}</h3>
+								<h3 class="subheading mb-0 mt-3 grey--text">{{$t('text.description')}}</h3>
 								<p>{{fact.description}}</p>
-								<h3 class="subtitle mb-0 mt-3 grey--text" v-if="fact.ref_url!=''">{{$t('text.referenceLink')}}</h3>
+								<h3 class="subheading mb-0 mt-3 grey--text" v-if="fact.ref_url!=''">{{$t('text.referenceLink')}}</h3>
 								<a class="truncate" :href="url" target="_blank" v-for="url in fact.ref_url" :key="url.id">{{url}}</a>
 							</div>
 						</v-card-title>
 						<v-divider></v-divider>
-						<v-card-text>
+						<v-card-text class="py-3">
 							<v-layout align-center>
-								<v-tooltip top>
-									<v-chip slot="activator" outline class="ma-2" color="white">
-										<v-avatar>
-											<v-icon>remove_red_eye</v-icon>
-										</v-avatar>
-										<span v-if="!fact.numOfView">0</span>
-										<span v-if="fact.numOfView">{{fact.numOfView}}</span>
-									</v-chip>
-									<span>{{$t('tooltips.views')}}</span>
-								</v-tooltip>
-								<span class="caption ma-3">{{$t('text.created')}} {{fact.moment}} by {{fact.creator}}</span>
+								<span class="caption px-3 grey--text">{{fact.moment}} by <span class="font-weight-bold mx-1">{{fact.creator}}</span> | {{fact.numOfView}} {{$tc('counter.views',fact.numOfView)}}</span>
 								<v-spacer></v-spacer>
 								<v-tooltip top>
-									<v-btn slot="activator" fab flat :class="{'pink--text':bookmarked}" @click="bookmark(fact.id)">
+									<v-btn slot="activator" icon flat :class="{'pink--text':bookmarked}" @click="bookmark(fact.id)">
 										<v-icon>bookmark</v-icon>
 									</v-btn>
 									<span>{{$t('tooltips.bookmark')}}</span>
 								</v-tooltip>
 								<social-sharing :url="`https://${domain}/#/fact/`+$route.params.id" :quote="fact.title" inline-template>
 									<network network="facebook">
-										<v-btn fab flat>
+										<v-btn icon flat>
 											<v-icon dark>share</v-icon>
 										</v-btn>
 									</network>
 								</social-sharing>
 								<v-tooltip top>
-									<v-btn slot="activator" fab flat color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
+									<v-btn slot="activator" icon flat color="white" @click="openReportDialog({type:'fact',id:$route.params.id})">
 										<v-icon>warning</v-icon>
 									</v-btn>
 									<span>{{$t('tooltips.report')}}</span>
@@ -129,13 +119,13 @@
 									</v-layout>
 								</v-card-media>
 								<v-card-text>{{evidence.text}}
-									<h3 class="subtitle mb-0 mt-3 grey--text" v-if="evidence.ref_url.length!=0&&evidence.ref_url[0]!=''">{{$t('text.referenceLink')}}</h3>
+									<h3 class="subheading mb-0 mt-3 grey--text" v-if="evidence.ref_url.length!=0&&evidence.ref_url[0]!=''">{{$t('text.referenceLink')}}</h3>
 									<a style="display:block" class="truncate" :href="url" target="_blank" v-for="url in evidence.ref_url" :key="url.id">{{url}}</a>
 								</v-card-text>
 								<v-divider></v-divider>
 								<v-card-text>
 									<v-layout>
-										<span class="caption ma-3">{{$t('text.created')}} {{evidence.moment}} by {{evidence.creator}}</span>
+										<span class="caption ma-3  grey--text">{{evidence.moment}} by <span class="font-weight-bold mx-1">{{evidence.creator}}</span></span>
 										<v-spacer></v-spacer>
 										<v-tooltip top>
 											<v-btn slot="activator" fab small flat dark color="white" @click="openReportDialog({type:'evidence',id:evidence.id})">

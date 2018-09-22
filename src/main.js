@@ -36,10 +36,10 @@ Vue.use(GSignInButton)
 
 Vue.config.productionTip = false
 
-const domain = 'localhost'
-Vue.prototype.domain = domain
-Vue.prototype.api_url = `http://${domain}:3000/api`
-Vue.prototype.media_server_url = `http://${domain}:8080/uploads`
+import { domain, api_url, media_server_url } from './config';
+Vue.prototype.domain = domain;
+Vue.prototype.api_url = api_url;
+Vue.prototype.media_server_url = media_server_url;
 
 const i18n = new VueI18n({
     locale: 'ch', // set locale

@@ -42,12 +42,12 @@
           </v-list-tile-action>
           <v-list-tile-title>Register</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile @click="selectedTab=1">
-          <v-list-tile-action>
-            <v-icon>language</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Language</v-list-tile-title>
-        </v-list-tile>
+        <!-- <v-list-tile @click="selectedTab=1">
+                      <v-list-tile-action>
+                        <v-icon>language</v-icon>
+                      </v-list-tile-action>
+                      <v-list-tile-title>Language</v-list-tile-title>
+                    </v-list-tile> -->
       </v-list>
     </v-card>
     <v-card v-if="selectedTab==1">
@@ -73,17 +73,20 @@
           </v-btn>
         </v-card-title>
         <v-card-text>
-          <v-layout wrap justify-center align-center @keyup.enter="userLogin()">
-            <img style="width:100px;height:100px;" src="../assets/logo.png" />
-            <h3 class="display-1 ml-3">Fact Checker</h3>
-            <v-flex xs12>
-              <v-text-field v-model="loginForm.username" label="Username" required></v-text-field>
-            </v-flex>
-            <v-flex xs12>
-              <v-text-field v-model="loginForm.password" label="Password" type="password" required></v-text-field>
-            </v-flex>
-            <v-btn style="width:100%" @click.native="userLogin()">Login</v-btn>
-          </v-layout>
+          <v-form ref="loginForm" v-model="loginValid" lazy-validation>
+            <v-layout wrap justify-center align-center @keyup.enter="userLogin()">
+              <img style="width:100px;height:100px;" src="../assets/logo.png" />
+              <h3 class="display-1 ml-3">Fact Checker</h3>
+              <v-flex xs12>
+                <v-text-field v-model="loginForm.username" :rules="usernameRules" label="Username" required></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field v-model="loginForm.password" :rules="passwordRules" label="Password" type="password" required></v-text-field>
+              </v-flex>
+              <span class="red--text">{{loginMessage}}</span>
+              <v-btn style="width:100%" @click.native="userLogin()" :disabled="!loginValid">Login</v-btn>
+            </v-layout>
+          </v-form>
           <div class="my-3" style="text-align:center">OR</div>
           <g-signin-button :params="googleSignInParams" @success="onSignInSuccess">
             <v-btn style="width:100%;margin:0px">
@@ -103,26 +106,28 @@
           </v-btn>
         </v-card-title>
         <v-container>
-          <v-layout wrap justify-center align-center @keyup.enter="userRegister()">
-            <img style="width:100px;height:100px;" src="../assets/logo.png" />
-            <h3 class="display-1 ml-3">Fact Checker</h3>
-            <v-flex xs12>
-              <v-text-field v-model="registerForm.fullname" label="Full name" required></v-text-field>
-            </v-flex>
-            <v-flex xs12>
-              <v-text-field v-model="registerForm.username" label="Username" required></v-text-field>
-            </v-flex>
-            <v-flex xs12>
-              <v-text-field v-model="registerForm.password" label="Password" type="password" required></v-text-field>
-            </v-flex>
-            <v-flex xs12>
-              <v-text-field v-model="registerForm.email" label="Email" required></v-text-field>
-            </v-flex>
-          </v-layout>
+          <v-form ref="registerForm" v-model="registerValid" lazy-validation>
+            <v-layout wrap justify-center align-center @keyup.enter="userRegister()">
+              <img style="width:100px;height:100px;" src="../assets/logo.png" />
+              <h3 class="display-1 ml-3">Fact Checker</h3>
+              <v-flex xs12>
+                <v-text-field v-model="registerForm.fullname" label="Full name" required></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field v-model="registerForm.username" label="Username" required></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field v-model="registerForm.password" label="Password" type="password" required></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field v-model="registerForm.email" label="Email" required></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-form>
         </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click.native="userRegister()">Register</v-btn>
+          <v-btn @click.native="userRegister()" :disabled="!registerValid">Register</v-btn>
         </v-card-actions>
       </v-card>
       <!-- Edit Profile -->
@@ -153,15 +158,15 @@
             <v-flex xs12>
               <v-text-field disabled v-model="profile.email" label="Email" required></v-text-field>
             </v-flex>
-            <v-flex xs12>
+            <!-- <v-flex xs12>
               <v-text-field v-if="profile.type=='self'" v-model="profile.password" label="Password" type="password" required></v-text-field>
-            </v-flex>
+            </v-flex> -->
           </v-layout>
         </v-card-text>
-        <v-card-actions>
+        <!-- <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click.native="userLogin()">Update</v-btn>
-        </v-card-actions>
+        </v-card-actions> -->
       </v-card>
     </v-dialog>
   </v-menu>
@@ -174,24 +179,32 @@
     components: {
       vue2Dropzone: vue2Dropzone
     },
-    props: {
-    },
+    props: {},
     data: () => ({
       selectedTab: 0,
       userMode: 0,
+      loginMessage: null,
       loginForm: {
         username: null,
         password: null,
       },
+      loginValid: false,
+      usernameRules: [
+        v => !!v || 'Username is required',
+      ],
+      passwordRules: [
+        v => !!v || 'Password is required',
+      ],
       registerForm: {
-        username: null,
-        password: null,
-        fullname: null,
-        email: null,
-        imageUrl: null,
+        username: '',
+        password: '',
+        fullname: '',
+        email: '',
+        imageUrl: '',
       },
+      registerValid: false,
       googleSignInParams: {
-        client_id: '18039521998-g0ko2ashkdg14sbbi23gc940osdbe8vt.apps.googleusercontent.com', //http://localhost:8080
+        client_id: '18039521998-ghoqvs71559aae2birkrjij9s49l61v7.apps.googleusercontent.com', //http://localhost:8081
       },
       langs: [{
         name: '繁體中文',
@@ -243,13 +256,25 @@
         let self = this;
         let api = self.api_url + "/users/login";
         let credential = self.loginForm;
-        self.axios.post(api, credential).then(res => {
-          // eslint-disable-next-line
-          let userProfile = res.data;
-          userProfile.type = 'self';
-          sessionStorage.setItem("factchecker_profile", JSON.stringify(userProfile));
-          location.reload();
-        });
+        if (self.$refs.loginForm.validate()) {
+          self.axios.post(api, credential)
+            .then(res => {
+              // eslint-disable-next-line
+              let userProfile = res.data;
+              userProfile.type = 'self';
+              sessionStorage.setItem("factchecker_profile", JSON.stringify(userProfile));
+              location.reload();
+            })
+            .catch((err) => {
+              if (err.response.status === 400) {
+                self.loginMessage = 'Wrong username or password.';
+                self.loginForm = {
+                  username: '',
+                  password: ''
+                }
+              }
+            });
+        }
       },
       userLogout() {
         sessionStorage.removeItem('factchecker_profile');
@@ -260,11 +285,13 @@
         let api = self.api_url + "/users/";
         let register = self.registerForm;
         register.type = 'self';
-        self.axios.post(api, register).then(() => {
-          // eslint-disable-next-line
-          sessionStorage.setItem("factchecker_profile", JSON.stringify(register));
-          location.reload();
-        });
+        if (self.$refs.registerForm.validate()) {
+          self.axios.post(api, register).then(() => {
+            // eslint-disable-next-line
+            sessionStorage.setItem("factchecker_profile", JSON.stringify(register));
+            location.reload();
+          });
+        }
       },
       onSignInSuccess(googleUser) {
         // `googleUser` is the GoogleUser object that represents the just-signed-in user.
@@ -278,7 +305,7 @@
           imageUrl: googleProfile['Paa'],
           type: 'google'
         };
-        this.userRegister();        
+        this.userRegister();
         sessionStorage.setItem("factchecker_profile", JSON.stringify(this.registerForm));
         location.reload();
       },
