@@ -88,7 +88,7 @@
           <div class="my-3" style="text-align:center">OR</div>
           <g-signin-button :params="googleSignInParams" @success="onSignInSuccess">
             <v-btn style="width:100%;margin:0px">
-              <img width="20px" alt="Google &quot;G&quot; Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+              <img width="20px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
               <span class="mx-3">Google Login</span>
             </v-btn>
           </g-signin-button>
@@ -202,7 +202,8 @@
       },
       registerValid: false,
       googleSignInParams: {
-        client_id: '18039521998-ghoqvs71559aae2birkrjij9s49l61v7.apps.googleusercontent.com', //http://localhost:8081
+        // client_id: '18039521998-ghoqvs71559aae2birkrjij9s49l61v7.apps.googleusercontent.com', //http://localhost:8081
+        client_id: '18039521998-k2go8jfk99gtv7mbv2aleb022kt7o38g.apps.googleusercontent.com'  //https://factchecker.xyz
       },
       langs: [{
         name: '繁體中文',
