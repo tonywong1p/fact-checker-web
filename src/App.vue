@@ -1,7 +1,16 @@
 <template>
   <v-app id="fact-cracker" dark>
-    <v-navigation-drawer clipped fixed app dark v-if="$route.path=='/'" mobile-break-point="1024" v-model="drawer" :value="selectedTag">
-      <v-list dense>
+    <!-- Side Bar -->
+    <v-navigation-drawer v-if="$route.path=='/'" clipped fixed app dark mobile-break-point="1024" v-model="drawer" :value="selectedTag">
+      <v-list>
+        <!-- <v-list-tile @click="goToBookmark()" avatar ripple :class="{'grey darken-2':selectedTag=='bookmark'}">
+                <v-list-tile-avatar color="yellow darken-3">
+                  <v-icon>local_play</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                  <v-list-tile-title>Top Players</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile> -->
         <v-list-tile @click="selectTag('all')" avatar ripple :class="{'grey darken-2':selectedTag=='all'}">
           <v-list-tile-avatar color="grey">
             <v-icon>all_inclusive</v-icon>
@@ -30,8 +39,9 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
+    <!-- Top Bar -->
     <v-toolbar fixed app clipped-left>
-      <v-btn icon v-if="$route.path!='/'" @click="goBack()">
+      <v-btn icon v-if="$route.path!='/'" @click="goToMain()">
         <v-icon>arrow_back_ios</v-icon>
       </v-btn>
       <v-toolbar-side-icon v-if="$route.path=='/'" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
@@ -42,15 +52,21 @@
       <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" append-icon="clear" @click:append="clearSearch" :label="$t('search')" class="hidden-sm-and-down" v-model="search" @keyup.enter="checkAdmin(search)"></v-text-field>
       <v-spacer></v-spacer>
       <v-btn flat v-if="isAdmin" @click="isAdmin=false">I am Admin</v-btn>
+      <v-btn flat style="height:100%" @click="goToProfile()" v-if="profile.username!='guest'">
+        <v-avatar size="40" class="mr-2" :class="{'grey':profile.username=='guest'}" :color="color[(profile.fullname.charCodeAt(0)+profile.fullname.charCodeAt(profile.fullname.length-1))%color.length]">
+          <v-icon dark v-if="profile.username=='guest'">account_circle</v-icon>
+          <span style="font-size:20px" v-if="profile.username!='guest' && profile.imageUrl==''">{{profile.fullname[0]}}</span>
+          <img v-if="profile.imageUrl!=''" :src="profile.imageUrl">
+        </v-avatar>
+        <span>{{profile.fullname}}</span>
+      </v-btn>
       <v-btn flat icon @click="goToFaq()">
         <v-icon>contact_support</v-icon>
       </v-btn>
-      <v-btn flat icon @click="goToBookmark()">
-        <v-icon>bookmarks</v-icon>
-      </v-btn>
       <admin-notification :isAdmin="isAdmin"></admin-notification>
-      <profile></profile>
+      <setting></setting>
     </v-toolbar>
+    <!-- Main Router -->
     <router-view :profile="profile" :search="search" :tagFilter="selectedTag" :isAdmin="isAdmin"></router-view>
   </v-app>
 </template>
@@ -61,29 +77,18 @@
     Slide
   } from "vue-carousel";
   import adminNotification from '@/components/adminNotification.vue';
-  import profile from '@/components/profile.vue';
+  import setting from '@/components/setting.vue';
   export default {
     components: {
       Carousel,
       Slide,
       adminNotification,
-      profile
+      setting
     },
     props: {
       source: String
     },
     data: () => ({
-      loginForm: {
-        username: null,
-        password: null,
-      },
-      registerForm: {
-        username: null,
-        password: null,
-        fullname: null,
-        email: null,
-        imageUrl: null,
-      },
       langs: [{
         name: '繁體中文',
         value: 'ch',
@@ -109,7 +114,7 @@
     }),
     computed: {
       profile: function() {
-        let profile = sessionStorage.getItem('factchecker_profile');
+        let profile = localStorage.getItem('factchecker_profile');
         if (profile == null) {
           return ({
             username: 'guest',
@@ -162,6 +167,16 @@
         if (window.innerWidth < 1024) {
           self.drawer = false;
         }
+      },
+      goToMain() {
+        this.$router.push({
+          name: "Main"
+        });
+      },
+      goToProfile() {
+        this.$router.push({
+          name: "Profile"
+        });
       },
       goToBookmark() {
         this.$router.push({

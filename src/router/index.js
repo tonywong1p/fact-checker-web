@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Main from '@/pages/Main.vue';
 import Fact from '@/pages/Fact.vue';
 import Bookmark from '@/pages/Bookmark.vue';
+import Profile from '@/pages/Profile.vue';
 import About from '@/pages/About.vue';
 Vue.use(Router);
 
@@ -15,6 +16,10 @@ export default new Router({
         path: '/fact/:id',
         name: 'Fact',
         component: Fact,
+    }, {
+        path: '/profile',
+        name: 'Profile',
+        component: Profile,
     }, {
         path: '/bookmark',
         name: 'Bookmark',

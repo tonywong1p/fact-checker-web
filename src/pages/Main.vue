@@ -46,8 +46,8 @@
 								<div class="empty-img">
 									<v-icon style="font-size:60px">photo</v-icon>
 								</div>
-								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
-								</v-card-media>
+								<v-img @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
+								</v-img>
 								<v-card-title primary-title style="height:250px;align-items:stretch;overflow:hidden">
 									<div style="width:100%">
 										<h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
@@ -83,8 +83,8 @@
 								<div class="empty-img">
 									<v-icon style="font-size:60px">photo</v-icon>
 								</div>
-								<v-card-media @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
-								</v-card-media>
+								<v-img @click="goToFact(fact.id)" class="hoverable" :src="fact.image_url" height="200px">
+								</v-img>
 								<v-card-title primary-title style="height:250px;align-items:stretch;overflow:hidden">
 									<div style="width:100%">
 										<h3 class="headline white--text mb-3 truncate">#{{fact.id}} - {{fact.title}}</h3>
@@ -136,9 +136,6 @@
 	import newFactDialog from "@/components/newFactDialog.vue";
 	import deletionDialog from "@/components/deletionDialog.vue";
 	import trustCounter from "@/components/trustCounter.vue";
-	// const moment = require("moment");
-	// require(`moment/locale/zh-cn`);
-	// en-au, zh-cn
 	
 	export default {
 		components: {
@@ -165,7 +162,7 @@
 				id: Number,
 				type: String
 			},
-			view: 'carousel'
+			view: 'grid'
 		}),
 		computed: {
 			sortList: function() {

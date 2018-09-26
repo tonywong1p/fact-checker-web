@@ -10,7 +10,7 @@
 						<div class="empty-img" style="height:300px">
 							<v-icon style="font-size:60px">photo</v-icon>
 						</div>
-						<v-card-media :src="fact.image_url" height="300px">
+						<v-img :src="fact.image_url" height="300px">
 							<v-layout>
 								<v-spacer></v-spacer>
 								<div class="pa-4">
@@ -22,7 +22,7 @@
 									</v-tooltip>
 								</div>
 							</v-layout>
-						</v-card-media>
+						</v-img>
 						<v-card-title primary-title>
 							<div style="width:100%">
 								<h3 class="headline mb-0">#{{$route.params.id}} - {{fact.title}}</h3>
@@ -105,7 +105,7 @@
 								<div class="empty-img" style="height:150px" v-if="evidence.image_url!=''">
 									<v-icon style="font-size:60px">photo</v-icon>
 								</div>
-								<v-card-media :src="evidence.image_url" v-if="evidence.image_url!=''" height="150px">
+								<v-img :src="evidence.image_url" v-if="evidence.image_url!=''" height="150px">
 									<v-layout>
 										<v-spacer></v-spacer>
 										<div class="pa-4">
@@ -117,7 +117,7 @@
 											</v-tooltip>
 										</div>
 									</v-layout>
-								</v-card-media>
+								</v-img>
 								<v-card-text>{{evidence.text}}
 									<h3 class="subheading mb-0 mt-3 grey--text" v-if="evidence.ref_url.length!=0&&evidence.ref_url[0]!=''">{{$t('text.referenceLink')}}</h3>
 									<a style="display:block" class="truncate" :href="url" target="_blank" v-for="url in evidence.ref_url" :key="url.id">{{url}}</a>

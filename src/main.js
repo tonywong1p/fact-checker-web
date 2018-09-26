@@ -21,9 +21,7 @@ Vue.use(Vuetify, {
 
 import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)
-
 import { messages } from './plugins/localization'
-
 const moment = require('moment')
 require('moment/locale/en-au')
 require('moment/locale/zh-cn')
@@ -50,7 +48,4 @@ new Vue({
     i18n,
     router,
     render: h => h(App),
-    // beforeCreate: function() {
-    //     window.alert(this.$appName)
-    // }
 }).$mount('#app')

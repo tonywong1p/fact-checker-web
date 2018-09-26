@@ -1,10 +1,8 @@
 <template>
   <v-menu :close-on-content-click="false" :nudge-width="200" offset-x>
-    <v-avatar slot="activator" class="ml-4">
-      <v-btn :class="{'grey':profile.username=='guest'}" :color="color[(profile.fullname.charCodeAt(0)+profile.fullname.charCodeAt(profile.fullname.length-1))%color.length]" fab small>
-        <v-icon dark v-if="profile.username=='guest'">account_circle</v-icon>
-        <span style="font-size:20px" v-if="profile.username!='guest' && profile.imageUrl==''">{{profile.fullname[0]}}</span>
-        <img v-if="profile.imageUrl!=''" :src="profile.imageUrl">
+    <v-avatar slot="activator" class="">
+      <v-btn flat icon>
+        <v-icon dark>more_vert</v-icon>
       </v-btn>
     </v-avatar>
     <v-card v-if="selectedTab==0">
@@ -30,24 +28,24 @@
       </v-list>
       <v-divider></v-divider>
       <v-list>
-        <v-list-tile v-if="profile.username!='guest'" @click="userLogout()">
-          <v-list-tile-action>
-            <v-icon>input</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Logout</v-list-tile-title>
-        </v-list-tile>
         <v-list-tile v-if="profile.username=='guest'" @click="dialog=!dialog;userMode=1">
           <v-list-tile-action>
             <v-icon>person_add</v-icon>
           </v-list-tile-action>
           <v-list-tile-title>Register</v-list-tile-title>
         </v-list-tile>
-        <!-- <v-list-tile @click="selectedTab=1">
-                      <v-list-tile-action>
-                        <v-icon>language</v-icon>
-                      </v-list-tile-action>
-                      <v-list-tile-title>Language</v-list-tile-title>
-                    </v-list-tile> -->
+        <v-list-tile @click="selectedTab=1">
+          <v-list-tile-action>
+            <v-icon>language</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title>Language</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="profile.username!='guest'" @click="userLogout()">
+          <v-list-tile-action>
+            <v-icon>input</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title>Logout</v-list-tile-title>
+        </v-list-tile>
       </v-list>
     </v-card>
     <v-card v-if="selectedTab==1">
@@ -159,14 +157,14 @@
               <v-text-field disabled v-model="profile.email" label="Email" required></v-text-field>
             </v-flex>
             <!-- <v-flex xs12>
-              <v-text-field v-if="profile.type=='self'" v-model="profile.password" label="Password" type="password" required></v-text-field>
-            </v-flex> -->
+                  <v-text-field v-if="profile.type=='self'" v-model="profile.password" label="Password" type="password" required></v-text-field>
+                </v-flex> -->
           </v-layout>
         </v-card-text>
         <!-- <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click.native="userLogin()">Update</v-btn>
-        </v-card-actions> -->
+              <v-spacer></v-spacer>
+              <v-btn @click.native="userLogin()">Update</v-btn>
+            </v-card-actions> -->
       </v-card>
     </v-dialog>
   </v-menu>
@@ -238,7 +236,7 @@
         })
       },
       profile: function() {
-        let profile = sessionStorage.getItem('factchecker_profile');
+        let profile = localStorage.getItem('factchecker_profile');
         if (profile == null) {
           return ({
             username: 'guest',
@@ -262,7 +260,7 @@
               // eslint-disable-next-line
               let userProfile = res.data;
               userProfile.type = 'self';
-              sessionStorage.setItem("factchecker_profile", JSON.stringify(userProfile));
+              localStorage.setItem("factchecker_profile", JSON.stringify(userProfile));
               location.reload();
             })
             .catch((err) => {
@@ -277,7 +275,7 @@
         }
       },
       userLogout() {
-        sessionStorage.removeItem('factchecker_profile');
+        localStorage.removeItem('factchecker_profile');
         location.reload();
       },
       userRegister() {
@@ -288,7 +286,7 @@
         if (self.$refs.registerForm.validate()) {
           self.axios.post(api, register).then(() => {
             // eslint-disable-next-line
-            sessionStorage.setItem("factchecker_profile", JSON.stringify(register));
+            localStorage.setItem("factchecker_profile", JSON.stringify(register));
             location.reload();
           });
         }
@@ -306,7 +304,7 @@
           type: 'google'
         };
         this.userRegister();
-        sessionStorage.setItem("factchecker_profile", JSON.stringify(this.registerForm));
+        localStorage.setItem("factchecker_profile", JSON.stringify(this.registerForm));
         location.reload();
       },
       changeLang(lang) {
