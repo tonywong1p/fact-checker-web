@@ -86,12 +86,12 @@
             </v-layout>
           </v-form>
           <!-- <div class="my-3" style="text-align:center">OR</div>
-          <g-signin-button :params="googleSignInParams" @success="onSignInSuccess">
-            <v-btn style="width:100%;margin:0px">
-              <img width="20px" alt="Google &quot;G&quot; Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
-              <span class="mx-3">Google Login</span>
-            </v-btn>
-          </g-signin-button> -->
+            <g-signin-button :params="googleSignInParams" @success="onSignInSuccess">
+              <v-btn style="width:100%;margin:0px">
+                <img width="20px" alt="Google &quot;G&quot; Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                <span class="mx-3">Google Login</span>
+              </v-btn>
+            </g-signin-button> -->
         </v-card-text>
       </v-card>
       <!-- Register -->
@@ -157,14 +157,14 @@
               <v-text-field disabled v-model="profile.email" label="Email" required></v-text-field>
             </v-flex>
             <!-- <v-flex xs12>
-                  <v-text-field v-if="profile.type=='self'" v-model="profile.password" label="Password" type="password" required></v-text-field>
-                </v-flex> -->
+                    <v-text-field v-if="profile.type=='self'" v-model="profile.password" label="Password" type="password" required></v-text-field>
+                  </v-flex> -->
           </v-layout>
         </v-card-text>
         <!-- <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn @click.native="userLogin()">Update</v-btn>
-            </v-card-actions> -->
+                <v-spacer></v-spacer>
+                <v-btn @click.native="userLogin()">Update</v-btn>
+              </v-card-actions> -->
       </v-card>
     </v-dialog>
   </v-menu>
@@ -276,7 +276,19 @@
       },
       userLogout() {
         localStorage.removeItem('factchecker_profile');
+        this.profile = {
+          username: 'guest',
+          fullname: 'Guest',
+          email: 'No email',
+          imageUrl: '',
+        };
         location.reload();
+        this.goToMain();
+      },
+      goToMain() {
+        this.$router.push({
+          name: "Main"
+        });
       },
       userRegister() {
         let self = this;
