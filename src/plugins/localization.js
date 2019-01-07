@@ -26,6 +26,13 @@ export const messages = {
             views: 'view | views',
             trusts: 'Trust | Trusts',
         },
+        profile: {
+            posts: 'Posts',
+            views: 'Views',
+            fact: 'My Fact',
+            evidence: 'My Evidence',
+            bookmark: 'My Bookmark'
+        },
         tooltips: {
             evidence: 'Related Evidence',
             newEvidence: 'Create a new evidence',
@@ -62,6 +69,11 @@ export const messages = {
             all: 'All',
             hottest: 'Hottest',
             topics: 'Topics'
+        },
+        setting: {
+            login: 'Login',
+            logout: 'Logout',
+            language: 'Language'
         },
         search: 'Search for title or fact ID',
         i_trust_it: 'I trust it',
@@ -125,6 +137,22 @@ export const messages = {
             all: '所有',
             hottest: '熱門',
             topics: '主題'
+        },
+        counter: {
+            views: '次觀看',
+            trusts: '個相任',
+        },
+        setting: {
+            login: '登入',
+            logout: '登出',
+            language: '選擇語言',
+        },
+        profile: {
+            posts: '上傳事件',
+            views: '次觀看',
+            fact: '我的真相',
+            evidence: '我的證據',
+            bookmark: '我的書籤'
         },
         search: '搜尋事件標題或ID',
         i_trust_it: '我相信',

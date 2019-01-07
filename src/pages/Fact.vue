@@ -95,7 +95,7 @@
 						<v-expansion-panel-content v-for="evidence in sortedEvidences" :key="evidence.id" :class="{'red darken-4':evidence.report!=null && isAdmin}">
 							<div slot="header" v-if="evidence.support=='1'">
 								{{$t('text.evidence')}} #{{evidence.id}} -
-								<span class="green--text">{{$t('form.support')}}</span> {{$t('text.with_trust', { count: evidence.trust_count })+$t('text.trust')}} 
+								<span class="green--text">{{$t('form.support')}}</span> {{$t('text.with_trust', { count: evidence.trust_count })+$t('text.trust')}}
 							</div>
 							<div slot="header" v-if="evidence.support=='0'">
 								{{$t('text.evidence')}} #{{evidence.id}} -
@@ -266,6 +266,7 @@
 					self.fact = res.data;
 					self.fact.moment = moment(parseInt(self.fact.createdAt)).fromNow();
 					self.isLoading = false;
+					this.checkBookmarked();
 				});
 			},
 			getEvidences() {
@@ -304,35 +305,37 @@
 			},
 			bookmark(factId) {
 				let self = this;
-				let bookmarks = [];
-				if (localStorage.getItem("factchecker_bookmarks") != null) {
-					bookmarks = localStorage.getItem("factchecker_bookmarks").split(',');
+				let api = self.api_url + '/bookmarks/facts/' + factId;
+				let post = {
+					bookmark: !self.bookmarked,
+					username: self.profile.username,
 				}
 				if (!self.bookmarked) {
-					bookmarks.unshift(factId);
-					localStorage.setItem("factchecker_bookmarks", bookmarks.toString())
-					self.bookmarked = true;
-					self.snackbar = true;
-					self.snackbarMessage = 'Bookmarked';
+					self.axios.post(api, post).then(() => {
+						self.bookmarked = true;
+						self.snackbar = true;
+						self.snackbarMessage = 'Bookmarked';
+					})
 				} else {
-					bookmarks.splice(bookmarks.findIndex((bookmark) => {
-						return bookmark == factId
-					}), 1);
-					localStorage.setItem("factchecker_bookmarks", bookmarks.toString());
-					self.bookmarked = false;
-					self.snackbar = true;
-					self.snackbarMessage = 'Undo bookmarked';
+					self.axios.post(api, post).then(() => {
+						self.bookmarked = false;
+						self.snackbar = true;
+						self.snackbarMessage = 'Undo bookmarked';
+					})
 				}
 			},
 			checkBookmarked() {
 				let self = this;
-				let bookmarks = [];
-				if (localStorage.getItem("factchecker_bookmarks") != null) {
-					bookmarks = localStorage.getItem("factchecker_bookmarks").split(',');
-				}
-				self.bookmarked = (bookmarks.find((bookmark) => {
-					return bookmark == parseInt(self.$route.params.id)
-				}) != null);
+				let api = self.api_url + '/bookmarks/facts/' + self.fact.id;
+				self.axios.get(api, {
+					params: {
+						username: self.profile.username
+					}
+				}).then((res) => {
+					if (res.data == true) {
+						self.bookmarked = true;
+					}
+				})
 			},
 			resetAllDialog() {
 				this.reportDialog = false;

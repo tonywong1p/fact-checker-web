@@ -38,13 +38,13 @@
           <v-list-tile-action>
             <v-icon>language</v-icon>
           </v-list-tile-action>
-          <v-list-tile-title>Language</v-list-tile-title>
+          <v-list-tile-title>{{$t('setting.language')}}</v-list-tile-title>
         </v-list-tile>
         <v-list-tile v-if="profile.username!='guest'" @click="userLogout()">
           <v-list-tile-action>
             <v-icon>input</v-icon>
           </v-list-tile-action>
-          <v-list-tile-title>Logout</v-list-tile-title>
+          <v-list-tile-title>{{$t('setting.logout')}}</v-list-tile-title>
         </v-list-tile>
       </v-list>
     </v-card>
@@ -85,13 +85,13 @@
               <v-btn style="width:100%" @click.native="userLogin()" :disabled="!loginValid">Login</v-btn>
             </v-layout>
           </v-form>
-          <div class="my-3" style="text-align:center">OR</div>
+          <!-- <div class="my-3" style="text-align:center">OR</div>
           <g-signin-button :params="googleSignInParams" @success="onSignInSuccess">
             <v-btn style="width:100%;margin:0px">
               <img width="20px" alt="Google &quot;G&quot; Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
               <span class="mx-3">Google Login</span>
             </v-btn>
-          </g-signin-button>
+          </g-signin-button> -->
         </v-card-text>
       </v-card>
       <!-- Register -->

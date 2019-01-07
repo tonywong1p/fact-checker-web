@@ -20,7 +20,7 @@
 							<v-card-text>
 								<v-layout column>
 									<span style="font-size:50px">{{facts.length}}</span>
-									<span>Posts</span>
+									<span>{{$t('profile.posts')}}</span>
 								</v-layout>
 							</v-card-text>
 						</v-card>
@@ -28,22 +28,22 @@
 							<v-card-text>
 								<v-layout column>
 									<span style="font-size:50px">{{views}}</span>
-									<span>Views</span>
+									<span>{{$t('profile.views')}}</span>
 								</v-layout>
 							</v-card-text>
 						</v-card>
 					</div>
 				</v-layout>
 				<v-layout wrap justify-center>
-					<v-flex xs12 sm8 md6>
+					<v-flex xs12 sm10 md8 lg6>
 						<v-tabs dark centered color="grey darken-4">
-							<v-tab>Fact</v-tab>
-							<v-tab>Evidence</v-tab>
-							<v-tab>Bookmark</v-tab>
+							<v-tab>{{$t('profile.fact')}}</v-tab>
+							<v-tab>{{$t('profile.evidence')}}</v-tab>
+							<v-tab>{{$t('profile.bookmark')}}</v-tab>
 							<v-tab-item>
 								<v-card>
 									<v-list two-line subheader>
-										<v-subheader class="subtitle" v-if="facts.length==0">No fact yet.</v-subheader>
+										<v-subheader class="subtitle" v-if="facts.length==0">No fact from you yet.</v-subheader>
 										<v-list-tile avatar v-for="fact in facts" :key="fact.id" @click="goToFact(fact.id)">
 											<v-list-tile-avatar>
 												<img :src="fact.image_url">
@@ -61,24 +61,46 @@
 							<v-tab-item>
 								<v-card>
 									<v-list two-line subheader>
-										<v-subheader class="subtitle">Coming soon</v-subheader>
+										<v-subheader class="subtitle" v-if="evidences.length==0">No evidence from you yet.</v-subheader>
+										<v-list-tile avatar v-for="evidence in evidences" :key="evidence.id" @click="goToFact(evidence.fact_id)">
+											<v-list-tile-avatar v-if="evidence.image_url">
+												<img :src="evidence.image_url">
+											</v-list-tile-avatar>
+											<v-list-tile-content>
+												<v-list-tile-title v-html="evidence.text"></v-list-tile-title>
+												<v-list-tile-sub-title v-html="evidence.moment"></v-list-tile-sub-title>
+											</v-list-tile-content>
+											<v-spacer></v-spacer>
+											<v-list-tile-action>
+												<v-chip color="grey darken-2" text-color="white">{{evidence.trust_count}} Trusts</v-chip>
+											</v-list-tile-action>
+										</v-list-tile>
 									</v-list>
 								</v-card>
 							</v-tab-item>
 							<v-tab-item>
 								<v-card>
 									<v-list two-line subheader>
-										<v-subheader class="subtitle">Coming soon</v-subheader>
+										<v-subheader class="subtitle" v-if="bookmarks.length==0">No bookmark from you yet.</v-subheader>
+										<v-list-tile avatar v-for="fact in bookmarks" :key="fact.id" @click="goToFact(fact.id)">
+											<v-list-tile-avatar>
+												<img :src="fact.image_url">
+											</v-list-tile-avatar>
+											<v-list-tile-content>
+												<v-list-tile-title v-html="fact.title"></v-list-tile-title>
+												<v-list-tile-sub-title v-html="fact.moment"></v-list-tile-sub-title>
+											</v-list-tile-content>
+											<v-spacer></v-spacer>
+											<trustCounter style="min-width:200px" :againstTrust="fact.against_trust_count" :supportTrust="fact.support_trust_count"></trustCounter>
+										</v-list-tile>
 									</v-list>
 								</v-card>
 							</v-tab-item>
 						</v-tabs>
 					</v-flex>
 				</v-layout>
-	
 			</v-layout>
 		</v-container>
-	
 	</v-content>
 </template>
 
@@ -96,7 +118,8 @@
 			isLoading: true,
 			color: ['blue', 'pink', 'teal', 'orange', 'purple', 'deep-purple', 'indigo', 'cyan', 'brown', 'deep-orange'],
 			facts: [],
-			newFactDialog: false,
+			evidences: [],
+			bookmarks: [],
 		}),
 		computed: {
 			views: function() {
@@ -115,7 +138,6 @@
 				let api = self.api_url + "/facts";
 				self.axios.get(api, {
 						params: {
-							search: self.search,
 							username: self.profile.username
 						}
 					})
@@ -138,6 +160,28 @@
 						console.log(error);
 					})
 			},
+			getEvidences() {
+				const self = this;
+				let api = self.api_url + "/evidences";
+				self.axios.get(api, {
+					params: {
+						username: self.profile.username
+					}
+				}).then((res) => {
+					self.evidences = res.data;
+				})
+			},
+			getBookmarks() {
+				const self = this;
+				let api = self.api_url + "/bookmarks/facts";
+				self.axios.get(api, {
+					params: {
+						username: self.profile.username
+					}
+				}).then((res) => {
+					self.bookmarks = res.data;
+				})
+			},
 			goToFact(factId) {
 				this.$router.push({
 					name: "Fact",
@@ -146,16 +190,11 @@
 					}
 				});
 			},
-			resetAllDialog() {
-				this.newFactDialog = false;
-			},
-			openFactDialog() {
-				this.resetAllDialog();
-				this.newFactDialog = true;
-			},
 		},
 		mounted() {
-			this.getFacts()
+			this.getFacts();
+			this.getEvidences();
+			this.getBookmarks();
 		}
 	};
 </script>
