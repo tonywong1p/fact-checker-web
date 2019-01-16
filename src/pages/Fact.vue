@@ -38,12 +38,12 @@
 								<span class="caption px-3 grey--text">{{fact.moment}} by <span class="font-weight-bold mx-1">{{fact.creator}}</span> | {{fact.numOfView}} {{$tc('counter.views',fact.numOfView)}}</span>
 								<v-spacer></v-spacer>
 								<v-tooltip top>
-									<v-btn slot="activator" icon flat :class="{'pink--text':bookmarked}" @click="bookmark(fact.id)">
+									<v-btn slot="activator" icon flat :class="{'pink--text':bookmarked}" v-if="profile.username!='guest'" @click="bookmark(fact.id)">
 										<v-icon>bookmark</v-icon>
 									</v-btn>
 									<span>{{$t('tooltips.bookmark')}}</span>
 								</v-tooltip>
-								<social-sharing :url="`https://${domain}/#/fact/`+$route.params.id" :quote="fact.title" inline-template>
+								<social-sharing :url="`http://${domain}/#/fact/`+$route.params.id" :quote="fact.title" inline-template>
 									<network network="facebook">
 										<v-btn icon flat>
 											<v-icon dark>share</v-icon>
